@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+{% load static %}
+<html class="ui-page-login">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title></title>
+    <link href="{% static 'entrance/css/mui.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/app.css' %}" rel="stylesheet"/>
+
+
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">学生健康信息</h1>
+</header>
+<img src="{% static 'entrance/images/daxiang.png' %}" alt="" class="positionImgbj"/>
+<div class="mui-content">
+    <!--进度条-->
+    <div class="timeline">
+        <ul class="flex box_sizing">
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p></li>
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p></li>
+            <li><p></p></li>
+            <li><p></p>
+                <p></p></li>
+        </ul>
+        <!--<p class="border"></p>-->
+    </div>
+    <!--表单-->
+    <div class="mui-input-group box_sizing" id="input_information">
+        {% for hel_field in hel_field_list %}
+            {% if hel_field.fields__fieldName == "身高" %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>现在身高：</label>
+                    <input type="number" name="height" class="mui-input-clear" placeholder="请输入身高" id="statureHeight"
+                           onkeyup="num(this,'')"
+                           size="6">
+                    <div class="right_pop flex_center">厘米</div>
+                </div>
+            {% elif hel_field.fields__fieldName == "体重" %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>现在体重：</label>
+                    <input type="number" name="weight" class="mui-input-clear" placeholder="请输入体重" id="weight" onkeyup="num(this,'')"
+                           size="6">
+                    <div class="right_pop flex_center">公斤</div>
+                </div>
+                <div class="mui-input-row box_sizing bodyMass">
+
+                    <div class="title">BMI（身体质量指数）：<span>23.95</span></div>
+                    <ul class="flex_between">
+                        <li class="flex_center"><p>WHO标准<span>正常</span></p></li>
+                        <li class="flex_center"><p>亚洲标准<span>偏胖</span></p></li>
+                        <li class="flex_center"><p>中国标准<span>超重</span></p></li>
+                    </ul>
+                </div>
+            {% elif hel_field.fields__fieldName == "视力" %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>左眼：</label>
+                    <input type="number" name="vision_left" class="mui-input-clear" placeholder="暂不清楚可不填写" onkeyup="num(this,'name')" size="6">
+                </div>
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>右眼：</label>
+                    <input type="number" name="vision_right" class="mui-input-clear" placeholder="暂不清楚可不填写" onkeyup="num(this,'name')" size="6">
+                </div>
+
+            {% elif hel_field.fields__fieldName == '视力状况' %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>视力情况：</label>
+                    <input  type="text" name="vision_status" class="mui-input-clear" placeholder="请选择视力情况" id="visionType" readonly="readonly"
+                           data-input-clear="4"><span class="mui-icon mui-icon-clear mui-hidden"></span>
+                    <div class="right_pop flex_center">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </div>
+            {% elif hel_field.fields__fieldName == '过敏源' %}
+                <div class="mui-input-row flex_center box_sizing allergy">
+                    <label>过敏：</label>
+                    <input type="text" name="allergy" class="" value="无" data-id="" id="allergy" readonly="readonly">
+                    <div class="right_pop flex_center">选择过敏源<span class="mui-icon mui-icon-arrowright"></span></div>
+                </div>
+            {% elif hel_field.fields__fieldName == '遗传病' %}
+                <div class="mui-input-row flex_center box_sizing inheritance">
+                    <label>遗传病：</label>
+                    <input type="text" name="InheritedDisease" class="" value="无" data-id="" id="InheritedDisease" readonly="readonly">
+                    <div class="right_pop flex_center">选择<span class="mui-icon mui-icon-arrowright"></span></div>
+                </div>
+            {% elif  hel_field.fields__fieldName == '血型' %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>血型：</label>
+                    <input type="text" name="blood_type" class="mui-input-clear" placeholder="请选择血型" id='BloodType' readonly="readonly">
+                    <div class="right_pop flex_center">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </div>
+            {% elif hel_field.fields__fieldName == '残疾状况' %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>残疾：</label>
+                    <input type="text" name="disability" class="mui-input-clear" placeholder="请选择" id='disabilityType' readonly="readonly"
+                           data-id="1">
+                    <div class="right_pop flex_center">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="mui-button-row" id="input_information">
+            <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">下一步</button>
+        </div>
+    </div>
+    <div id="setting_pk" pk="{{ pk }}"></div>
+
+</div>
+<style>
+
+</style>
+
+<!--弹窗-->
+<div class="pop_Choice pop_allergy pop_Nation">
+    <div class="flex_center">
+        <div class="body box_sizing" id="allergyData">
+            暂无数据
+        </div>
+    </div>
+</div>
+<div class="pop_Choice pop_inheritance pop_Nation">
+    <div class="flex_center">
+        <div class="body box_sizing" id="inheritanceData">
+            暂无数据
+        </div>
+    </div>
+</div>
+<style>
+    #inheritanceData p {
+        width: 33.3%;
+    }
+</style>
+<script type="text/javascript" src="{% static 'entrance/js/jQuery1.9.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/ajaxUrl.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.min.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'entrance/js/rem.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.picker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.poppicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/city.data.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/city.data-3.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/app2.js' %}"></script>
+
+</body>
+
+</html>
+

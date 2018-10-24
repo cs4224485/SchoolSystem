@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>登陆</title>
+    <link href="{% static 'entrance/css/mui.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/app.css' %}" rel="stylesheet"/>
+</head>
+<style type="text/css">
+    body, html {
+        height: 100%;
+        background: #2EB6BE;
+    }
+
+    .landing {
+        background: #fff;
+        border-radius: 25px 25px 0px 0;
+        width: 100%;
+        height: 90%;
+        position: fixed;
+        bottom: 0px;
+        overflow-y: scroll;
+        left: 0;
+        padding: 30px 0
+    }
+
+    .logo .text {
+        font-size: 30px;
+        padding: 20px 0;
+        text-align: center;
+        color: #323232;
+    }
+
+    .logo .text p {
+        font-size: 16px;
+        color: #2EB6BE;
+        padding-top: 15px;
+    }
+</style>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">{{ setting_obj.title }}</h1>
+</header>
+<div class="landing">
+    <ul class="logo">
+        <li class="flex_center"><img src="/media/{{ school_obj.logo }} "/></li>
+        <li class="text">{{ school_obj.school_name }} {% if school_obj.campus_district  %}
+            {{ school_obj.campus_district }}
+            {% endif %}
+            <p>{{ school_obj.English_name }}</p></li>
+    </ul>
+
+    <div class="mui-input-group box_sizing" id="input_information">
+
+        <div class="mui-input-row flex_center box_sizing">
+            <label>学生姓名：</label>
+            <input type="text" class="mui-input-clear" placeholder="请输入" id="statureHeight">
+        </div>
+        <div class="mui-input-row flex_center box_sizing">
+            <label>生日：</label>
+            <input type="text" class="mui-input-clear Birthday" id='result'
+                   data-options='{"type":"date","beginYear":"1990","endYear":""}'
+                   placeholder="请选择日期">
+            <div class="right_pop flex_center">
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </div>
+        </div>
+        <div class="mui-input-row flex_center box_sizing">
+            <label>所在年级：</label>
+            <input type="text" class="mui-input-clear" placeholder="选择年级" id='BloodType' readonly="readonly">
+            <div class="right_pop flex_center">
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </div>
+        </div>
+
+        <div class="mui-input-row flex_center box_sizing">
+            <label>亲子关系：</label>
+            <input type="text" class="mui-input-clear" placeholder="请选择" id='visionType' readonly="readonly">
+            <div class="right_pop flex_center">
+                <span class="mui-icon mui-icon-arrowright"></span>
+            </div>
+        </div>
+
+        <div class="mui-button-row" id="input_information">
+            <button type="submit" class="mui-btn mui-btn-primary Submission mui-btn-block">登录</button>
+        </div>
+
+
+    </div>
+    <div id="school_id" pk="{{ school_obj.pk }}"></div>
+</div>
+<script type="text/javascript" src="{% static 'entrance/js/jQuery1.9.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/ajaxUrl.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.picker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/mui.poppicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/city.data.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/city.data-3.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/landing.js' %}"></script>
+
+
+</body>
+</html>

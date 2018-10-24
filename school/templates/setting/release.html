@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div>链接分享</div>
+            <p>{{ url }}</p>
+
+            <div>二维码分享</div>
+            <p>
+                <img src="{{ qrfile }}">
+            </p>
+        </div>
+    </div>
+
+{% endblock %}

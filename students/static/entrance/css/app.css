@@ -1,0 +1,466 @@
+/*-webkit-overflow-scrolling:touch;*/
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+li, p {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+html {
+    font-size: 100px;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-size: 14px;
+    -webkit-overflow-scrolling: touch;
+    background: url(../images/bj.png);
+    background-size: 100%;
+}
+.mui-content{ overflow-y: scroll !important}
+.MuiBjColor {
+    background: #2EB6BE;
+}
+
+.right_pop {
+    position: absolute;
+    right: 0;
+    color: #2EB6BE;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/*弹性布局*/
+.flex {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.flex_around {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flex_between {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex_center {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex_wrap {
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: wrap;
+    flex-wrap: wrap;
+}
+
+.box_sizing {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /* Firefox */
+    -webkit-box-sizing: border-box; /* Safari */
+}
+
+/*修改提示文字的颜色*/
+
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #666;
+    font-size: 13px;
+}
+
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #666;
+    font-size: 13px;
+}
+
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #666;
+    font-size: 13px;
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #666;
+    font-size: 13px;
+}
+
+.mui-bar {
+    background: #2EB6BE;
+    z-index: 999;
+}
+
+.mui-bar .mui-title {
+    color: #fff;
+}
+
+.mui-input-group .mui-input-row:after {
+    left: 0;
+}
+
+.mui-input-group .mui-input-row {
+    height: auto;
+}
+
+.mui-input-row label {
+    padding: 0;
+}
+
+.mui-input-row {
+    padding: 10px;
+}
+
+.positionImgbj {
+    position: fixed;
+    left: 0;
+    bottom: 30px;
+    width: 1rem;
+    height: 1.35rem;
+}
+
+.mui-content, .mui-input-group, .mui-input-group:after {
+    background: none;
+}
+
+/*1*/
+.timeline {
+    position: relative;
+    width: 90%;
+    margin: 25px auto;
+}
+
+.timeline .border {
+    border-top: 1px dashed #2EB6BE;
+    width: 100%;
+    position: absolute;
+    top: 8px;
+    left: 0;
+}
+
+.timeline ul {
+    margin: 20px auto 0 auto;
+}
+
+.timeline ul li {
+    border-bottom: 1px dashed #D8D8D8;
+    width: 25%;
+    position: relative;
+}
+
+.timeline ul li p {
+    width: 20px;
+    height: 20px;
+    background: #D8D8D8;
+    z-index: 10;
+    border-radius: 2px;
+    position: absolute;
+    top: -10px;
+    transform: rotate(50deg);
+    -ms-transform: rotate(50deg); /* IE 9 */
+    -moz-transform: rotate(50deg); /* Firefox */
+    -webkit-transform: rotate(50deg); /* Safari 和 Chrome */
+    -o-transform: rotate(50deg);
+}
+
+.timeline ul li.act p span {
+    transform: rotate(-50deg);
+    -ms-transform: rotate(-50deg); /* IE 9 */
+    -moz-transform: rotate(-50deg); /* Firefox */
+    -webkit-transform: rotate(-50deg); /* Safari 和 Chrome */
+    -o-transform: rotate(-50deg);
+}
+
+.timeline ul li.act {
+    border-bottom: 1px dashed #2EB6BE;
+}
+
+.timeline ul li.act p {
+    background: #2EB6BE;
+    color: #fff;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timeline ul li:nth-child(4) p:nth-child(1) {
+    left: 0px;
+}
+
+.timeline ul li:nth-child(4) p:nth-child(2) {
+    right: 0px;
+}
+
+/*2*/
+#input_information {
+    padding: 10px;
+    font-size: 15px;
+}
+
+#input_information input {
+    font-size: 15px;
+    color: #000;
+}
+
+#input_information label span {
+    font-size: 13px;
+    color: #666;
+}
+
+.nationality img {
+    width: .65rem;
+    height: .5rem;
+    position: absolute;
+    left: 35%;
+}
+
+.nationality .mui-input-clear {
+    padding-left: 0.65rem;
+}
+
+.right_pop {
+    position: absolute;
+    right: 0;
+    color: #2EB6BE;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.positionSex {
+    position: absolute;
+    left: 35%;
+}
+
+.positionSex img {
+    margin-right: 10px;
+    width: .45rem;
+    height: .5rem;
+}
+
+.positionSex .act {
+}
+
+.imageup {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+}
+
+.Submission {
+    background: #2EB6BE;
+    border: 0px;
+}
+
+.pop_Choice {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 999;
+    display: none;
+}
+
+.pop_Choice .flex_center {
+    width: 100%;
+    height: 100%;
+}
+
+.pop_Choice .body {
+    width: 95%;
+    max-height: 80%;
+    background: #fff;
+    border-radius: 10px;
+    overflow-y: scroll;
+    padding: 10px;
+    box-shadow: 0px 0px 10px #000;
+}
+
+.pop_Choice .mui-btn {
+    height: 30px;
+    line-height: 10px;
+}
+
+.pop_Choice .act {
+    background: #F0AD4E;
+    color: #fff;
+    border: 1px solid #fff
+}
+
+.pop_Nation {
+}
+
+.pop_Nation p {
+    width: 24.5%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    float: left;
+    border: 1px solid #E3E3E3
+}
+
+.bodyMass {
+    background: #fff;
+    display: none;
+}
+
+.bodyMass span {
+    color: #666;
+}
+
+.bodyMass ul {
+    margin-top: 10px;
+}
+
+.bodyMass ul li {
+    width: 1.6rem;
+    height: 1rem;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.bodyMass ul li p {
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+}
+
+.bodyMass ul li p span {
+    display: block;
+    color: #fff;
+    font-size: 14px;
+}
+
+.bodyMass ul li:nth-child(1) {
+    background: #41B668
+}
+
+.bodyMass ul li:nth-child(2) {
+    background: #FF973B
+}
+
+.bodyMass ul li:nth-child(3) {
+    background: #EC6868
+}
+
+.FamilyBox {
+    background: #fff;
+    position: relative;
+}
+
+.FamilyBox label {
+    width: 20%;
+    font-size: 15px;
+}
+
+.FamilyBox .mui-input-clear {
+    width: 80%;
+    font-size: 12px;
+    color: #666;
+}
+
+.FamilyBox .flex {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.mui_loading {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    background: #fff;
+    display: none;
+}
+
+.mui_loading div {
+    width: 100%;
+    height: 100%;
+}
+
+/*单选*/
+.MUIradio {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.addMUIradio {
+    border: 1px solid #007AFF;
+}
+
+.addMUIradio span {
+    background: #007AFF;
+    width: 15px;
+    height: 15px;
+    display: block;
+    border-radius: 50%;
+}
+
+#school {
+    z-index: 1;
+    width: 100%;
+    background: #fff;
+    text-align: left;
+    color: #666;
+}
+
+#school li {
+    border-bottom: 1px solid #e2e2e2;
+    line-height: 30px;
+    text-indent: 20px;
+}
+
+.pop_school {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #ececec;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: none;
+}
+
+.pop_school .inputBox {
+    padding: 10px
+}
+
+.pop_school label {
+    width: 100px;
+    background: #fff;
+    height: 40px;
+    border-radius: 5px;
+    margin-left: 10px;
+    color: #666;
+    line-height: 40px;
+    text-align: center;
+}
+
+.addFamilybj {
+    background: #2EB6BE;
+    color: #fff;
+}
+
+.addFamilybj .mui-input-clear {
+    color: #fff;
+}

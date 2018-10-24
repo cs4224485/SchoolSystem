@@ -1,0 +1,470 @@
+{% extends "layout.html" %}
+{% load tags %}
+{% load staticfiles %}
+{% block css %}
+    <style>
+        a {
+            text-decoration: none;
+            cursor: pointer
+        }
+
+        .info-item {
+            font-size: 16px;
+            border: 1px solid royalblue;
+            text-align: center;
+            display: block;
+            cursor: pointer;
+        }
+
+        .choice-item:hover .sub-info {
+            display: block;
+            color: orange;
+        }
+
+        .sub-info {
+            font-size: 14px;
+            border: 1px solid skyblue;
+            width: 500px;
+            text-align: center;
+            background: #2EB6BE;
+            z-index: 10;
+            display: none;
+            left: -100px;
+            border-radius: 3px;
+        }
+
+        .sub-info a {
+            border-radius: 4px;
+            display: inline-block;
+            height: 30px;
+            border: 1px solid green;
+            text-align: center;
+            width: 80px;
+            background: #fff;
+            line-height: 30px;
+        }
+
+        .content-area {
+            margin: 40px;
+        }
+
+        .is_choice {
+            background: #2b669a;
+            color: skyblue;
+            border: 1px solid black;
+            line-height: 30px;
+            text-align: center;
+            font-size: 20px;
+            border-radius: 4px;
+        }
+
+        .choice-wrap {
+            padding: 15px;
+            position: relative;
+        }
+
+        .choice-wrap:hover {
+            border: 1px solid orange;
+
+        }
+
+        .edit-bar {
+            position: absolute;
+            right: 10px;
+            display: none;
+            font-size: 10px;
+        }
+
+        .choice-wrap:hover .edit-bar {
+            display: block;
+        }
+
+        .disabled {
+            background: #ddd !important;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+        {% fields %}
+        <div class="content-area">
+            <div class="panel panel-default" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">设置信息
+                        <span class="pull-right"></span>
+                    </h3>
+                </div>
+                <div class="panel-body setting" id="" style="margin-top: 20px">
+                    <p>
+                        <label for="title">标题</label>
+                        <input class="form-control" type="text" name="title" id="title">
+                    </p>
+                    <p>
+                        <label for="start_date">开始日期</label>
+                        <input type="date" id="start_date" class="form-control">
+                    </p>
+
+                    <p>
+                        <label for="end_date">结束日期</label>
+                        <input type="date" id="end_date" class="form-control">
+                    </p>
+
+                    <div style="margin-bottom: 10px">
+                        <label for="school">学校范围</label>
+                        <div data-toggle="distpicker" class="row form-inline distpicker" style="margin-left: 1px">
+                            <select class="form-control location" id="province" data-province="---- 选择省 ----"></select>
+                            <select class="form-control location" id="city" data-city="---- 选择市 ----"></select>
+                            <select class="form-control location" id="region" data-district="---- 选择区 ----"></select>
+                            <select name="layer" id="layer" class="form-control">
+                                <option value="">--- 选择层次 ---</option>
+                                <option value="1">幼儿园</option>
+                                <option value="2">小学</option>
+                                <option value="3">中学</option>
+                            </select>
+                        </div>
+
+                        <div class="school-range checkbox">
+
+                        </div>
+
+                        <label>已选学校</label>
+                        <div class="choiced-school checkbox">
+
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label>填表范围</label>
+                        <div class="checkbox range">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="老师" value="1">老师
+                            </label>
+                            <label>
+                                <input type="checkbox" id="学生" value="2">学生
+                            </label>
+                            <label>
+                                <input type="checkbox" id="家长" value="3">家长
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-primary" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">学生信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body stu-info" id="" style="margin-top: 20px">
+                    <div class="choice-wrap item">
+                          <p class="is_choice"><span name='2' id='2'>国籍</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                            </div>
+                     </div>
+
+                    <div class="choice-wrap item">
+                          <p class="is_choice"><span name='10' id='10'>姓名</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                            </div>
+                     </div>
+                </div>
+            </div>
+            <div class="panel panel-success " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        健康信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body hel-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+            <div class="panel panel-warning " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家庭信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body fam-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+            <div class="panel panel-danger" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家长信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body par-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
+                <span class="glyphicon glyphicon-check" id="preview">预览</span>
+            </a>
+            <a class="pull-right btn-xs btn-warning" style="padding: 3px 5px; ">
+                <span class="glyphicon glyphicon-floppy-saved " id="save">保存</span>
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
+    <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
+    <script>
+        var selectField = ['国籍', '姓名'];
+
+        /*
+        $(function () {
+            moveUpDownDelete();
+            choiceField();
+            operation();
+            filterSchool();
+            choicedSchool();
+        });
+
+        function choiceField() {
+            $('.sub-info').on('click', '.field', function () {
+                var field = $(this).html();
+                var fieldId = $(this).attr('id');
+                var field_type = $(this).prop('type');
+                if (IsInArray(selectField, field)) {
+                    alert('该字段已被选择中无法重复选择');
+                } else {
+                    var stringTag = `
+                     <div class="choice-wrap item">
+                          <p class="is_choice"><span name='${field}' id='${fieldId}'>${ field }</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+                     </div>`;
+                    $('.' + field_type).append(stringTag);
+                    selectField.push(field);
+
+                    if (field == '身份证') {
+                        $('#1,#4').removeClass('field').addClass('disabled')
+                    }
+                }
+            });
+        }
+
+        function IsInArray(arr, val) {
+            // 判断字段是否被选中
+            var testStr = ',' + arr.join(",") + ",";
+            return testStr.indexOf("," + val + ",") != -1;
+        }
+
+        function moveUpDownDelete() {
+            $('.body').on('click', '.move-down', function () {
+
+                if ($(this).parents('.item').nextAll().length > 0) {
+                    $(this).parents('.item').next().after($(this).parents('.item').prop('outerHTML'));
+                    $(this).parents('.item').remove();
+                }
+            }).on('click', '.move-up', function () {
+                //判断是否有上一个节点
+                if ($(this).parents('.item').prevAll().length > 0) {
+                    $(this).parents('.item').prev().before($(this).parents('.item').prop('outerHTML'));
+                    $(this).parents('.item').remove();
+                }
+
+            }).on('click', '.remove', function () {
+                // 点击删除
+                var field = $(this).parent().prev().children();
+                field = field.html();
+                $(this).parents('.item').remove();
+                var fieldIndex = selectField.indexOf(field);
+                delete selectField[fieldIndex];
+                if (field == '身份证') {
+                    $('#1,#4').addClass('field').removeClass('disabled')
+                }
+            })
+        }
+
+        function createDate() {
+            // 构建发送的数据
+            var data = {
+                'title': $('#title').val(),
+                'statTime': $('#start_date').val(),
+                'endTime': $('#end_date').val(),
+            };
+
+            var range = [];
+            var choiceId = [];
+            var fieldName = [];
+            var school = [];
+            $('.content-area span').each(function (index) {
+                var id = $(this).attr('id');
+                if (id) {
+                    choiceId.push($(this).attr('id'));
+                    fieldName.push($(this).html());
+                }
+            });
+
+            $('.range input').each(function () {
+                if ($(this).prop("checked")) {
+                    var val = $(this).val();
+                    range.push(val)
+                }
+            });
+
+            $('.choiced-school a').each(function () {
+                console.log('chice', $(this));
+                var val = $(this).attr('value');
+                school.push(val)
+
+            });
+
+            data.school = school;
+            data.range = range;
+            data.choiceFieldId = choiceId;
+            data.fieldName = fieldName;
+            return data
+        }
+
+        function operation() {
+            // 保存和预览操作
+            $('.actions').on('click', '#save,#preview', function () {
+                var data = createDate();
+                var action = $(this).html();
+                if (action == '保存') {
+                    var url = '/school/settings/';
+                    if (check(data)) {
+                        sendData(url, data)
+                    }
+
+                } else if (action == '预览') {
+                    var url = '/school/preview/?data=' + JSON.stringify(data);
+                    window.open(url)
+                }
+
+            })
+        }
+
+        function check(data) {
+            var flag = false;
+            if (!data.title) {
+                alert('请填写标题');
+                return flag
+            } else if (!data.statTime) {
+                alert('请选择开始日期');
+                return flag
+            } else if (!data.endTime) {
+                alert('请选择结束日期');
+                return flag
+            } else if (data.school.length == 0) {
+                alert('请选择学校');
+                return flag
+            } else if (data.range.length == 0) {
+                alert('请选择填表范围');
+                return flag
+            } else {
+                flag = true;
+                return flag
+            }
+        }
+
+        function sendData(url, data) {
+            // 发送数据到后台
+            console.log(data);
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {'data': JSON.stringify(data)},
+                success: function (data) {
+                    alert('保存成功');
+                    console.log(data);
+                    var nid = data.setting_obj_id;
+                    location.href = '/school/release/' + nid + '/'
+                }
+            })
+
+
+        }
+
+        function filterSchool() {
+            // 根据省市区过滤学校
+            $('#layer,#region').change(function () {
+                var province = $('#province').val();
+                var city = $('#city').val();
+                var region = $('#region').val();
+                var layer = $('#layer').val();
+                console.log(layer);
+                if (province && city && region) {
+                    console.log(province, city, region);
+                    $.ajax({
+                        url: '/school/filter/',
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            'province': province,
+                            'city': city,
+                            'region': region,
+                            'layer': layer
+                        },
+                        success: function (data) {
+                            console.log('ok', data);
+                            $('.school-range label').remove();
+                            $.each(data['school_list'], function (index, item) {
+                                var campus = item.campus_district;
+                                if (!campus) {
+                                    campus = ''
+                                }
+                                var htmlTag = `<label class="checkbox-inline">
+                                                    <input class="choiced", type="checkbox"  value="${item.pk}"><span>${item.school_name} ${campus}</span>
+                                              </label>`;
+                                $('.school-range').append(htmlTag)
+
+                            })
+                        }
+                    })
+                }
+
+            })
+
+        }
+
+        function choicedSchool() {
+            // 已选中的学校
+            $('.school-range').on('click', '.choiced', function () {
+                console.log($(this).next('span').html());
+                var school_name = $(this).next('span').html();
+                var nid = $(this).attr("value");
+                var htmlTag = ` <a style="margin: 5px" value="${nid}"><span value="${nid}">${school_name}</span></a>`;
+                if ($(this).prop('checked')){
+                    $('.choiced-school').append(htmlTag)
+                }else {
+                    //console.log($("span[value="+nid+"]"));
+                   $(".choiced-school a[value="+nid+"]").remove()
+                }
+
+
+            })
+        }
+        */
+    </script>
+
+{% endblock %}

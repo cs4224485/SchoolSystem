@@ -1,0 +1,300 @@
+{% extends "layout.html" %}
+{% load tags %}
+{% load static %}
+{% block css %}
+    <style>
+        a {
+            text-decoration: none;
+            cursor: pointer
+        }
+
+        .info-item {
+            font-size: 16px;
+            border: 1px solid royalblue;
+            text-align: center;
+            display: block;
+            cursor: pointer;
+        }
+
+        .choice-item:hover .sub-info {
+            display: block;
+            color: orange;
+        }
+
+        .sub-info {
+            font-size: 14px;
+            border: 1px solid skyblue;
+            width: 500px;
+            text-align: center;
+            background: #2EB6BE;
+            z-index: 10;
+            display: none;
+            left: -130px;
+            border-radius: 3px;
+        }
+
+        .sub-info a {
+            border-radius: 4px;
+            display: inline-block;
+            height: 30px;
+            border: 1px solid green;
+            text-align: center;
+            width: 80px;
+            background: #fff;
+            line-height: 30px;
+        }
+
+        .content-area {
+            margin: 40px;
+        }
+
+        .is_choice {
+
+            background: #2b669a;
+            color: skyblue;
+            border: 1px solid black;
+            line-height: 30px;
+            text-align: center;
+            font-size: 20px;
+            border-radius: 4px;
+        }
+
+        .choice-wrap {
+            padding: 15px;
+            position: relative;
+        }
+
+        .choice-wrap:hover {
+            border: 1px solid orange;
+
+        }
+
+        .edit-bar {
+            position: absolute;
+            right: 10px;
+            display: none;
+            font-size: 10px;
+        }
+
+        .choice-wrap:hover .edit-bar {
+            display: block;
+        }
+
+        .disabled {
+            background: #ddd !important;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% fields %}
+        <div class="content-area">
+            <div class="panel panel-default" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">设置信息
+                        <span class="pull-right"></span>
+                    </h3>
+                </div>
+                <div class="panel-body setting" id="" style="margin-top: 20px">
+                    <p>
+                        <label for="title">标题</label>
+                        <input class="form-control" value="{{ setting_obj.title }}" type="text" name="title" id="title">
+                    </p>
+                    <p>
+                        <label for="start_date">开始日期</label>
+                        <input type="date" id="start_date" class="form-control"
+                               value="{{ setting_obj.stat_time|date:"Y-m-d" }}">
+                    </p>
+
+                    <p>
+                        <label for="end_date">结束日期</label>
+                        <input type="date" id="end_date" class="form-control"
+                               value="{{ setting_obj.end_time|date:"Y-m-d" }}">
+                    </p>
+
+                    <div style="margin-bottom: 10px">
+                        <label for="school">学校范围</label>
+                        <div data-toggle="distpicker" class="row form-inline distpicker" style="margin-left: 1px">
+                            <select class="form-control location" id="province" data-province="---- 选择省 ----"></select>
+                            <select class="form-control location" id="city" data-city="---- 选择市 ----"></select>
+                            <select class="form-control location" id="region" data-district="---- 选择区 ----"></select>
+                            <select name="layer" id="layer" class="form-control">
+                                <option value="">--- 选择层次 ---</option>
+                                <option value="1">幼儿园</option>
+                                <option value="2">小学</option>
+                                <option value="3">中学</option>
+                            </select>
+                        </div>
+
+                        <div class="school-range checkbox">
+
+                        </div>
+
+                        <label>已选学校</label>
+                        <div class="choiced-school checkbox">
+                            {% for item in setting_obj.school_range.all %}
+                                <a style="margin: 5px" value="{{ item.pk }}"><span
+                                        value="{{ item.pk }}">{{ item.school_name }}</span></a>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label>填表范围</label>
+                        <div class="checkbox range">
+                            {% for role in scope %}
+                                {% if role in setting_obj.fill_range.all %}
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="{{ role.get_name_display }}" value="{{ role.pk }}"
+                                               checked="checked">{{ role.get_name_display }}
+                                    </label>
+                                {% else %}
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox"  id="{{ role.get_name_display }}" value="{{ role.pk }}">{{ role.get_name_display }}
+                                    </label>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-primary" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">学生信息
+                    </h3>
+                </div>
+                <div class="panel-body body stu-info" id="" style="margin-top: 20px">
+                     <div class="choice-wrap item">
+                          <p class="is_choice"><span name='2' id='2'>国籍</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                            </div>
+                     </div>
+
+                    <div class="choice-wrap item">
+                          <p class="is_choice"><span name='10' id='10'>姓名</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                            </div>
+                     </div>
+                    {% for stu_field in stu_field_list %}
+                        {% if stu_field.fields__fieldName == '姓名' or stu_field.fields__fieldName == '国籍' %}
+                        {% else %}
+                            <div class="choice-wrap item">
+                                <p class="is_choice"><span
+                                        id='{{ stu_field.fields__pk }}'>{{ stu_field.fields__fieldName }}</span></p>
+                                <div class="edit-bar">
+                                    <a class="move-up">上移</a>
+                                    <a class="move-down">下移</a>
+                                    <a class="remove">删除</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+            <div class="panel panel-success " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        健康信息
+                    </h3>
+                </div>
+                <div class="panel-body body hel-info" id="" style="margin-top: 20px">
+                    {% for hel_field in hel_field_list %}
+                        <div class="choice-wrap item">
+                            <p class="is_choice"><span
+                                    id='{{ hel_field.fields__pk }}'>{{ hel_field.fields__fieldName }}</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="panel panel-warning " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家庭信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body fam-info" id="" style="margin-top: 20px">
+                    {% for fam_field in fam_filed_list %}
+                        <div class="choice-wrap item">
+                            <p class="is_choice"><span
+                                    id='{{ fam_field.fields__pk }}'>{{ fam_field.fields__fieldName }}</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="panel panel-danger" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家长信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body par-info" id="" style="margin-top: 20px">
+                    {% for par_field in par_field_list %}
+                        <div class="choice-wrap item">
+                            <p class="is_choice"><span
+                                    id='{{ par_field.fields__pk }}'>{{ par_field.fields__fieldName }}</span></p>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <div class="actions">
+                <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
+                    <span class="glyphicon glyphicon-check" id="preview">预览</span>
+                </a>
+                <a class="pull-right btn-xs btn-warning" style="padding: 3px 5px; ">
+                    <span class="glyphicon glyphicon-floppy-saved " id="save">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="selected_fields" value="{{ selected_fields }}"></div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
+    <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
+    <script>
+        let selectField = ['姓名', '国籍'];
+
+        function setSelectField() {
+            let selected = JSON.parse($('#selected_fields').attr('value'));
+            for (let item in selected) {
+                selectField.push(selected[item][0])
+            }
+        }
+
+        setSelectField()
+    </script>
+
+{% endblock %}

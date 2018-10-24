@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .school input {
+            width: 500px !important;
+        }
+
+        ul li {
+            list-style: none;
+            display: inline-block;
+        }
+
+        .error {
+            color: red;
+            position: relative;
+            right: 80px;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div style="width: 680px;margin: 0 auto;" class="shcool row">
+        <form action="" method="post" novalidate enctype="multipart/form-data">
+            <div class="form-group form-inline">
+                <label for="country">所在国家:</label>
+                {{ form.country }}
+                <span class="pull-right error">{{ form.errors.country.0 }}</span>
+
+            </div>
+
+            <div class="form-group form-inline">
+                <label for="id_logo">
+                    <span>学校LOGO</span>
+                    <img id="id_logo_img" width="124" height="124" src="/media/{{ form.instance.logo }}"
+                         style="margin-left: 10px">
+                </label>
+                {{ form.logo }}
+            </div>
+
+            <div class="form-group form-inline">
+                <label for="id_pattern">
+                    <span>校名图案&nbsp&nbsp&nbsp</span>
+                    <img id="id_pattern_img" width="124" height="124" src="/media/{{ form.instance.pattern }}"
+                         style="margin-left: 10px">
+                </label>
+                {{ form.pattern }}
+            </div>
+
+
+            <div class="form-group ">
+                <label for="school_name">学校名称：</label>
+                {{ form.school_name }}
+                <span class="pull-right error">{{ form.errors.school_name.0 }}</span>
+            </div>
+
+            <div class="form-group ">
+                <label for="school_name">校名(英文)：</label>
+                {{ form.English_name }}
+            </div>
+
+            <div class="form-group ">
+                <label for="school_name">校名(本地语言)：</label>
+                {{ form.local_school_name }}
+            </div>
+
+            <div data-toggle="distpicker" id="target" class="row form-inline distpicker form-group"
+                 style="margin-left: 1px">
+                <label>所属省市区:</label>
+                {{ form.province }}
+                {{ form.city }}
+                {{ form.region }}
+            </div>
+            <div>
+                <span class="pull-right error">{{ form.errors.province.0 }}</span>
+            </div>
+
+
+            <div class=" form-group">
+                <label for="school_name">校区名称：</label>
+                {{ form.campus_district }}
+            </div>
+
+            <div class="form-group ">
+                <label for="school_name">校区英文名称：</label>
+                {{ form.campus_english_name }}
+            </div>
+
+            <div class=" form-group">
+                <label for="school_address">学校地址：</label>
+                {{ form.address }}
+                <span class="pull-right error">{{ form.errors.address.0 }}</span>
+            </div>
+
+            <div class="form-group ">
+                <label for="school_name">学校官网：</label>
+                {{ form.website }}
+            </div>
+
+
+            <div class="form-group">
+                <label>学校类型:</label>
+                <div class="checkbox range">
+                    {{ form.school_type }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>办学层次:</label>
+                <div class="checkbox range">
+                    {{ form.school_layer }}
+                </div>
+            </div>
+
+
+            <div class="pull-right">
+                <button class="btn btn-primary">提交</button>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
+    <script>
+        var kinderGarten = ['小班', '中班', '大班'];
+        var PrimarySchool = ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级'];
+        var middleSchool = ['初一', '初二', '初三'];
+        var highSchool = ['高一', '高二', '高三'];
+        var stuClass = {
+            1: kinderGarten,
+            2: PrimarySchool,
+            3: middleSchool,
+            4: highSchool,
+            5: PrimarySchool.concat(middleSchool),
+            6: highSchool,
+            7: PrimarySchool.concat(middleSchool).concat(highSchool)
+        };
+        $(function () {
+            $("#province").val("{{ form.instance.province }}");
+            $("#province").trigger("change");
+            $("#city").val("{{ form.instance.city }}");
+            $("#city").trigger('change');
+            $("#district").val("{{ form.instance.region }}");
+            $("#district").trigger("change");
+            bindChangePicture("id_logo");
+            bindChangePicture("id_pattern");
+            choiceGrade()
+        });
+
+
+        function bindChangePicture(id) {
+            $("#" + id).change(function () {
+                console.log($(this));
+                var file_obj = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file_obj);
+                reader.onload = function () {
+                    $("#" + id + "_img").attr("src", reader.result)
+                };
+            })
+        }
+
+        function choiceGrade() {
+            $('.school_layer input').click(function () {
+                console.log($(this).val());
+                let schoolLayer = $(this).val();
+                for (var key in stuClass) {
+                    console.log(key);
+
+                    if (schoolLayer == key) {
+                        console.log(stuClass[key]);
+                    }
+
+                }
+            })
+        }
+
+    </script>
+{% endblock %}
