@@ -346,7 +346,8 @@ class StarkConfig(object):
         return form
 
     def get_edit_form(self, model_form, request, obj):
-        return self.get_add_form(model_form, request)
+        form = model_form(request.POST, instance=obj)
+        return form
 
     def add_view(self, request, template='stark/change.html'):
         """

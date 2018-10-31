@@ -210,19 +210,19 @@ class FieldType(models.Model):
     '''
     每个字段所属于的表
     '''
-    name_choice = ((1, '学生信息'), (2, '健康信息'), (3, '家庭信息'), (4, '家长信息'))
+    name_choice = ((1, '学生信息'), (2, '健康信息'), (3, '家庭信息'), (4, '家长信息'), (5, '自定义信息'))
     name = models.IntegerField(verbose_name='所属分类', choices=name_choice)
 
     def __str__(self):
         return self.get_name_display()
 
 
-class SchoolSettings(models.Model):
+class TableSettings(models.Model):
     '''
-    学校入学调查表配置
+    学生调查表配置
     '''
     stat_time = models.DateField(verbose_name='开始日期')
-    end_time = models.DateField(verbose_name='结束日期')
+    end_time = models.DateField(verbose_name='结束日期', null=True)
     title = models.CharField(verbose_name='名称', max_length=64)
     school_range = models.ManyToManyField('SchoolInfo', verbose_name='学校范围', related_name='setting')
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
@@ -235,9 +235,31 @@ class SchoolSettings(models.Model):
 
 
 class SettingToField(models.Model):
-    setting = models.ForeignKey(verbose_name='设置信息', to='SchoolSettings', on_delete=models.CASCADE)
+    setting = models.ForeignKey(verbose_name='设置信息', to='TableSettings', on_delete=models.CASCADE)
     fields = models.ForeignKey(verbose_name='字段', to='ChoiceField', on_delete=models.CASCADE)
     order = models.IntegerField(verbose_name='排序')
+
+
+class ScaleSetting(models.Model):
+    '''
+    量表设置相关
+    '''
+    title = models.CharField(verbose_name='量表标题', max_length=64)
+    setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE, related_name='scale')
+
+
+class ScaleOptionDes(models.Model):
+    '''
+    量表每个分值的描述信息
+    '''
+
+    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE, related_name='options')
+    des = models.CharField(verbose_name='分值描述信息', max_length=64)
+
+
+class ScaleLineTitle(models.Model):
+    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE, related_name='line_title')
+    des = models.CharField(verbose_name='量表行标题', max_length=32)
 
 
 class ScopeOfFilling(models.Model):
@@ -249,3 +271,12 @@ class ScopeOfFilling(models.Model):
 
     def __str__(self):
         return self.get_name_display()
+
+
+class TableInfo(models.Model):
+    '''
+    填表信息
+    '''
+    table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE)
+    finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
+

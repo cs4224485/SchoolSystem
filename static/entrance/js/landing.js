@@ -39,7 +39,7 @@ var schoolId = $("#school_id").attr("pk");
             error: function (xhr, type, errorThrown) {
                 mui.alert("亲，请求出错了")
             }
-        })
+        });
 
 
         picker.pickers[0].setSelectedIndex(1);
@@ -189,7 +189,7 @@ mui("#input_information").on('tap', '.Submission', function () {
                 console.log(data)
                 if (data.state) {
                     setTimeout(function () {
-                        window.location.href = "?step=1&student_id=" + data.student_id +"&school_id="+schoolId+"&relation="+personalState.relationship
+                        window.location.href = "?step=stu_info_page&student_id=" + data.student_id +"&school_id="+schoolId+"&relation="+personalState.relationship
                     }, 1500)
                 } else {
                     mui.alert(data.msg)

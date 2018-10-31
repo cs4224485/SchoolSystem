@@ -1,4 +1,5 @@
 var urlId = $.getUrlParam('student_id');
+var relation = $.getUrlParam('relation');
 var province = "", city = "", region = "", FamilyText = [];
 var FamilyObj = {};
 (function ($, doc) {
@@ -192,10 +193,10 @@ mui("#input_information").on('tap', '.Submission', function () {
             success: function (data) {
 
                 if (data.state) {
-                    var setting_pk = $('#setting_pk').attr('pk')
-                    mui.alert(data.msg)
+                    var setting_pk = $('#setting_pk').attr('pk');
+                    mui.alert(data.msg);
                     setTimeout(function () {
-                        window.location.href = "/student/student_info/" + setting_pk + "/?step=4&student_id=" + data.data[0].student_id
+                        window.location.href = "/student/student_info/" + setting_pk + "/?step=parents_page&student_id=" + data.data[0].student_id + "&relation=" + relation
                     }, 1500)
                 } else {
                     mui.alert(data.msg)

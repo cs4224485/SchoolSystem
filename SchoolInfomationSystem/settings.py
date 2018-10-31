@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-MIDDLEWARE_CLASSES = ('APIS.disableCSRF.DisableCSRF',)
+
 
 ROOT_URLCONF = 'SchoolInfomationSystem.urls'
 

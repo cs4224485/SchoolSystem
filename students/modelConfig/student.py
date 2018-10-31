@@ -1,10 +1,14 @@
 from students import models
+from django.shortcuts import render
 from stark.service.stark import StarkConfig, Option
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.forms import fields as Ffields
 from django.forms import widgets as Fwidgets
 from django import forms
+from django.urls import re_path
+from django.core import serializers
+from django.http import JsonResponse
 import copy
 
 
@@ -36,12 +40,19 @@ class StudentConfig(StarkConfig):
         添加学生ModelForm验证
         :return:
         '''
+
         class ModelForm(forms.ModelForm):
             gender = Ffields.ChoiceField(required=True, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
-            stu_class_list = tuple(models.StuClass.objects.filter(school=self.request.GET.get('school_id')).distinct())
+            stu_class_list = tuple(models.StuClass.objects.filter(school=self.request.GET.get('school_id')))
             stu_class_list = [(item.pk, item) for item in stu_class_list]
-            stu_class = Ffields.ChoiceField(required=True, choices=stu_class_list, widget=Fwidgets.Select(
-                attrs={'class': 'form-control', 'style': 'width: 600px'}), error_messages={"required": "请选择班级"})
+            stu_class = Ffields.ChoiceField(required=True, choices=stu_class_list,widget=Fwidgets.Select(
+                attrs={'class': 'form-control', 'id': 'class'}), error_messages={"required": "请选择班级"})
+            grade_list = tuple(
+                models.Grade.objects.filter(stuclass__school=self.request.GET.get('school_id')).all().distinct())
+            grade_list = [(item.pk, item) for item in grade_list]
+            grade_list.insert(0, (0, '--- 选择年级 ---'))
+            grade = Ffields.ChoiceField(required=True, choices=grade_list, widget=Fwidgets.Select(
+                attrs={'class': 'form-control', 'id': 'grade', 'data-province': '---- 选择年级 ----'}))
 
             class Meta:
                 model = self.model_class
@@ -64,20 +75,61 @@ class StudentConfig(StarkConfig):
         return super().add_view(request, template='operation_table/add_student.html')
 
     def get_add_form(self, model_form, request):
+        '''
+        添加学生
+        :param model_form:
+        :param request:
+        :return:
+        '''
         request_data = copy.deepcopy(request.POST)
-        stu_class_obj = models.StuClass.objects.filter(id=request.POST.get('stu_class')).first()
-        grade_obj = stu_class_obj.grade
         school_id = request.GET.get('school_id')
         request_data['school'] = school_id
-        request_data['full_name'] = request_data['last_name']+request_data['first_name']
+        request_data['full_name'] = request_data['last_name'] + request_data['first_name']
         import uuid
         request_data['interior_student_id'] = 'str:%s' % uuid.uuid4()
         form = model_form(request_data)
+        stu_class_obj = models.StuClass.objects.filter(id=request.POST.get('stu_class')).first()
+        grade_obj = models.Grade.objects.filter(id=request.POST.get('grade')).first()
         form.instance.stu_class = stu_class_obj
         form.instance.grade = grade_obj
         return form
 
-    list_display = ['full_name', display_health, display_family,  display_parent, 'id_card']
+    def get_stu_class(self, request):
+        '''
+        根据年级过滤出学校的班级
+        :param request:
+        :return:
+        '''
+
+        school_id = request.GET.get('school_id')
+        grade = request.GET.get('grade')
+        # 筛选出符合父级要求的所有子级，因为输出的是一个集合，需要将数据序列化 serializers.serialize（）
+        stu_class = serializers.serialize("json",
+                                          models.StuClass.objects.filter(school=school_id, grade=grade).order_by(
+                                              'name'))
+        # 判断是否存在，输出
+        if stu_class:
+            return JsonResponse({'stu_class': stu_class})
+
+    def extra_urls(self):
+        temp = []
+        temp.append(re_path("students/stu_class/", self.get_stu_class))
+        return temp
+
+    def display_full_name(self, row=None, header=False):
+        if header:
+            return '学生姓名'
+        return "%s%s" %(row.first_name, row.last_name)
+
+    def display_stu_class(self, row=None, header=False):
+        if header:
+            return '班级'
+        return "%s" %(row.stu_class)
+
+    def get_add_btn(self):
+        return None
+
+    list_display = [display_full_name, display_stu_class, display_health, display_family, display_parent, 'id_card']
     search_list = ['full_name']
 
 

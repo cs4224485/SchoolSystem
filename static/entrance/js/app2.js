@@ -1,6 +1,6 @@
 var personalState = {}; //血型视力情况等等
 var urlId = $.getUrlParam('student_id');
-
+var relation = $.getUrlParam('relation');
 
 (function ($, doc) {
     $.init();
@@ -37,7 +37,7 @@ var urlId = $.getUrlParam('student_id');
             BloodTypeButton.addEventListener('tap', function (event) {
                 userPicker.show(function (items) {
                     BloodTypeButton.value = items[0].text;
-                    console.log(items[0].value)
+                    console.log(items[0].value);
                     personalState.blood_type = items[0].value
                 });
             }, false);
@@ -238,12 +238,12 @@ mui("#input_information").on('tap', '.Submission', function () {
             data: data,
             dataType: 'json',
             success: function (data) {
-                console.log(data)
+                console.log(data);
                 if (data.state) {
-                    var setting_pk = $('#setting_pk').attr('pk')
-                    mui.alert(data.msg)
+                    var setting_pk = $('#setting_pk').attr('pk');
+                    mui.alert(data.msg);
                     setTimeout(function () {
-                        window.location.href = "/student/student_info/" + setting_pk + "/?step=3&student_id=" + data.data[0].student_id
+                        window.location.href = "/student/student_info/" + setting_pk + "/?step=family_page&student_id=" + data.data[0].student_id + "&relation=" + relation
                     }, 1500)
                 } else {
                     mui.alert(data.msg)
@@ -251,7 +251,7 @@ mui("#input_information").on('tap', '.Submission', function () {
 
             },
             error: function (xhr, type, errorThrown) {
-                mui.alert("亲，请求出错了")
+                mui.alert("亲，请求出错了");
                 console.log(xhr);
                 console.log(type);
                 console.log(errorThrown);

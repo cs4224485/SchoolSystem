@@ -48,10 +48,12 @@
             </div>
 
 
-            <div class="form-group">
-                <label for="student_name">班级:</label>
+            <div class="row form-inline distpicker form-group" style="margin-left: 1px">
+                <label>所在班级:</label>
+                {{ form.grade }}
                 {{ form.stu_class }}
-                <span class="pull-right error">{{ form.errors.stu_class.0 }}</span>
+
+                 <span class="pull-right error">{{ form.errors.stu_class.0 }}</span>
             </div>
 
             <div class="pull-right" style="margin-top: 10px">
@@ -61,4 +63,48 @@
         </form>
 
     </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            // 根据年级过滤班级
+            $('#class option').remove();
+            schoolId = getQueryString("school_id");
+            $('#grade').change(function () {
+                let grade = $('#grade').val();
+                console.log( $('#class')[0]);
+                $('#class option').remove();
+                if(grade !=0){
+                    $.ajax({
+                        url:"students/stu_class/",
+                        type:"get",
+                        data:{"school_id":schoolId, 'grade':grade},
+                        success:function (data) {
+                            data = JSON.parse(data.stu_class);
+                            console.log(data);
+                            for(let i =0; i < data.length; i++){
+                                var item = {text:data[i].fields.name, value:data[i].pk, $order:i+1};
+                                console.log(item);
+                                var opHtml = `<option value="${ item.value}">${ item.text }</option>`;
+                                console.log(opHtml);
+                                $('#class').append(opHtml)
+                            }
+                        }
+                    })
+                }
+            })
+        });
+
+        // 获取url中的参数
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 匹配目标参数
+            var result = window.location.search.substr(1).match(reg); // 对querystring匹配目标参数
+            if (result != null) {
+                return decodeURIComponent(result[2]);
+            } else {
+                return null;
+            }
+        }
+    </script>
 {% endblock %}

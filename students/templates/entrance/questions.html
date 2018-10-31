@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load static %}
+<html class="ui-page-login">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>问卷调查</title>
+    <link href="{% static 'entrance/css/mui.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/questions.css' %}" rel="stylesheet"/>
+
+
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">问卷调查</h1>
+</header>
+
+<div class="mui-content" id="input_information">
+    <!--1-->
+    {% for scale_item in scale_list %}
+        <div class="AnswerBox" scale_pk= {{ scale_item.pk }}>
+            <h3 class="component-title">{{ scale_item.title }}</h3>
+            {% for line_title in scale_item.line_title.all %}
+                <div class="box">
+                    <div class="title">{{ line_title.des }}</div>
+                    <div class="radioBox  flex">
+                        {% for option in scale_item.options.all %}
+                            <div class="mui-radio">
+                                <div class="Pradio" data-text="0" optionValue="{{ option.pk }}" lineTitle="{{ line_title.pk }}"><p></p></div>
+                                <label>{{ option.des }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <!--2-->
+
+
+    <div class="mui-button-row" id="input_information">
+        <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">提交</button>
+    </div>
+</div>
+<div id="setting_pk" pk="{{ pk }}"></div>
+<script type="text/javascript" src="{% static 'entrance/js/mui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/jQuery1.9.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/ajaxUrl.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/questionnaire.js' %}"></script>
+
+<!--	<script type="text/javascript" src="js/app.js"></script>-->
+
+
+</body>
+
+</html>
+

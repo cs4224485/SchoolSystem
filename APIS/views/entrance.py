@@ -83,15 +83,17 @@ class StudentInfoViewSet(BaseViewSet):
         print(request.data)
         request_data = copy.deepcopy(request.data)
         country = request_data.get('country', '1')
-        birthday = request_data.get('birthday', None)
+        birthday = request_data.get('birthday', '')
 
         # 隐私信息
         full_name = request_data.get('name')
-        id_card = request_data.get('id_card', None)
+        id_card = request_data.get('id_card', '')
 
         # 获取学生对象
         student_id = request_data.get('student_id')
         student_obj = StudentInfo.objects.filter(pk=student_id).first()
+        if student_obj:
+            birthday = str(student_obj.birthday)
 
         if id_card:
             is_exist = check_id_exist(id_card)
@@ -100,7 +102,6 @@ class StudentInfoViewSet(BaseViewSet):
                 return Response(self.message)
             # 对身份证进行合法性校验
             check_state, info = check_id_card(id_card)
-
             if not check_state:
                 self.message['msg'] = info['msg']
                 return Response(self.message)
@@ -340,19 +341,30 @@ class StudentParentsViewSet(BaseViewSet):
         return Response(self.message)
 
 
-class TestView(BaseViewSet):
-    '''
-    一个测试接口无需关注
-    '''
-    queryset = Country.objects.all()
+class CustomizationQuestionViewSet(BaseViewSet):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    queryset = ScaleQuestion.objects.all()
+    serializer_class = ScaleQuestionSerializers
 
     def create(self, request, *args, **kwargs):
-        print(self.message)
-        print(request.data)
+        request_data = copy.deepcopy(request.data.get('info'))
+        import json
+        request_data = json.loads(request_data)
+        print(request_data)
+        for scale_item in request_data.get('scaleInfo'):
+            for scale_pk, des_info in scale_item.items():
+                save_data = {'student': request_data.get('studentId'), 'scale':scale_pk}
+                scale_serialize = ScaleQuestionSerializers(data=save_data)
+                if scale_serialize.is_valid():
+                    scale_obj = scale_serialize.save()
+                    for item in des_info:
+                        for key, value in item.items():
+                            ScaleValue.objects.create(title_id=key, value_id=value, scale_stu=scale_obj)
 
-    def list(self, request, *args, **kwargs):
-        query_set = Country.objects.all()
-        return Response(self.message)
-
-
-
+                else:
+                    self.response_error(scale_serialize.errors)
+                    return Response(self.message)
+        else:
+            self.message['state'] = True
+            self.message['msg'] = '创建成功'
+            return Response(self.message)

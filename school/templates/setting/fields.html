@@ -31,4 +31,14 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="col-md-2 choice-item">
+        <a class="info-item">自定义信息</a>
+        <div class="sub-info " style="position: absolute;">
+            {% for item in customization_field %}
+                <a class="field" id="{{ item.pk }}" type="customization">{{ item.fieldName }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>

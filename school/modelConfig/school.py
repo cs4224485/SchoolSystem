@@ -41,16 +41,18 @@ class SchoolInfoConfig(StarkConfig):
 
         edit_school_url = reverse('stark:school_schoolinfo_edit', args=(row.pk,))
         add_student_url = reverse('stark:students_studentinfo_add') + '?school_id=%s' % row.pk
+        import_student_url = '/student/import_student/%s/' % row.pk
         html = '''
             <div class='op_father'>
                 <span><img src="/static/stark/imgs/op.png" width="18" height="18"></span>  
                 <div class='op_list'>
                     <a href='%s'>编辑学校</a>
                     <a href='%s'>添加学生</a>
+                    <a href='%s'>导入学生</a>
                     <a>添加老师</a>
                 </div>
             </div>
-        ''' % (self.reverse_edit_url(row), add_student_url)
+        ''' % (edit_school_url, add_student_url, import_student_url)
         return mark_safe(html)
 
     search_list = ['school_name']
@@ -186,6 +188,7 @@ class SchoolInfoConfig(StarkConfig):
 
     def change_view(self, request, pk, template='stark/change.html'):
         return super().change_view(request, pk, template='edit_school.html')
+
 
 class ChoiceFieldConfig(StarkConfig):
     list_display = ['fieldName', 'field_english', 'field_type']

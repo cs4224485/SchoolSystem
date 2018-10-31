@@ -1,6 +1,6 @@
 var urlId = $.getUrlParam('student_id');
 var Birthday = $('.mui-input-group .Birthday');
-
+var relation = $.getUrlParam('relation');
 
 formFunctionTap();
 
@@ -12,7 +12,7 @@ function formFunctionTap() {
         btns.each(function (i, btn) {
             btn.addEventListener('tap', function () {
                 var _self = this;
-                console.log(_self)
+                console.log(_self);
                 if (_self.picker) {
                     _self.picker.show(function (rs) {
 
@@ -189,7 +189,7 @@ mui("#input_information").on('tap', '.Submission', function () {
                 "first_name": $("input[name='first_name']").eq(e).val() || '', //名
                 "birthday": $("input[name='birthday']").eq(e).val() || '', //生日
                 "telephone": $("input[name='telephone']").eq(e).val() || "", //联系电话
-                "education": parseInt(education) || "",  		//最高学历
+                "education": parseInt(education) || 7,  		//最高学历
                 "company": $("input[name='company']").eq(e).val() || "", 	//工作单位
                 "job": $("input[name='job']").eq(e).val() || "", 			//当前职务
                 "wechat": $("input[name='wechat']").eq(e).val() || "", 		   // 微信号
@@ -205,25 +205,28 @@ mui("#input_information").on('tap', '.Submission', function () {
 //						console.log(JSON.stringify(obj))
 //						var ss = JSON.stringify(obj)
 
-
         mui.ajax({
             url: ajaxUrl + '/api/v1/parents/',
             type: 'post',
             data: {'parents': JSON.stringify(obj)},
             dataType: 'json',
             success: function (data) {
-                console.log(data)
+                console.log(data);
                 if (data.state) {
-                    mui.alert(data.msg)
-
-                    //setTimeout(function () {window.location.href = "index4.html?student_id="+urlId}, 1500)
+                    var setting_pk = $('#setting_pk').attr('pk');
+                    mui.alert(data.msg);
+                    setTimeout(
+                        function () {
+                            window.location.href = "/student/student_info/" + setting_pk + "/?step=question_page&student_id=" + urlId
+                        },
+                        1500)
                 } else {
                     mui.alert(data.msg)
                 }
 
             },
             error: function (xhr, type, errorThrown) {
-                mui.alert("亲，请求出错了")
+                mui.alert("亲，请求出错了");
                 console.log(xhr);
                 console.log(type);
                 console.log(errorThrown);

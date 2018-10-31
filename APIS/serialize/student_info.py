@@ -90,7 +90,7 @@ class HomeAddressSerializers(serializers.ModelSerializer):
     class Meta:
         model = HomeAddress
         fields = "__all__"
-        extra_kwargs = {'address': {"error_messages": {"required": "请输家庭住址"}},}
+        extra_kwargs = {'address': {"error_messages": {"required": "请输家庭住址"}}}
 
 
 class StudentParentsSerializers(serializers.ModelSerializer):
@@ -118,4 +118,10 @@ class StudentToParentsSerializers(serializers.ModelSerializer):
 class StuClassSerializers(serializers.ModelSerializer):
     class Meta:
         model = StuClass
+        fields = "__all__"
+
+
+class ScaleQuestionSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ScaleQuestion
         fields = "__all__"

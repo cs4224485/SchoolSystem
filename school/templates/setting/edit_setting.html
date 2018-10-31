@@ -2,91 +2,7 @@
 {% load tags %}
 {% load static %}
 {% block css %}
-    <style>
-        a {
-            text-decoration: none;
-            cursor: pointer
-        }
-
-        .info-item {
-            font-size: 16px;
-            border: 1px solid royalblue;
-            text-align: center;
-            display: block;
-            cursor: pointer;
-        }
-
-        .choice-item:hover .sub-info {
-            display: block;
-            color: orange;
-        }
-
-        .sub-info {
-            font-size: 14px;
-            border: 1px solid skyblue;
-            width: 500px;
-            text-align: center;
-            background: #2EB6BE;
-            z-index: 10;
-            display: none;
-            left: -130px;
-            border-radius: 3px;
-        }
-
-        .sub-info a {
-            border-radius: 4px;
-            display: inline-block;
-            height: 30px;
-            border: 1px solid green;
-            text-align: center;
-            width: 80px;
-            background: #fff;
-            line-height: 30px;
-        }
-
-        .content-area {
-            margin: 40px;
-        }
-
-        .is_choice {
-
-            background: #2b669a;
-            color: skyblue;
-            border: 1px solid black;
-            line-height: 30px;
-            text-align: center;
-            font-size: 20px;
-            border-radius: 4px;
-        }
-
-        .choice-wrap {
-            padding: 15px;
-            position: relative;
-        }
-
-        .choice-wrap:hover {
-            border: 1px solid orange;
-
-        }
-
-        .edit-bar {
-            position: absolute;
-            right: 10px;
-            display: none;
-            font-size: 10px;
-        }
-
-        .choice-wrap:hover .edit-bar {
-            display: block;
-        }
-
-        .disabled {
-            background: #ddd !important;
-        }
-
-
-    </style>
-
+    <link rel="stylesheet" href="{% static 'tables_setting/css/table_setting.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -102,18 +18,19 @@
                 <div class="panel-body setting" id="" style="margin-top: 20px">
                     <p>
                         <label for="title">标题</label>
-                        <input class="form-control" value="{{ setting_obj.title }}" type="text" name="title" id="title">
+                        <input class="form-control" value="{{ tb_info.setting_obj.title }}" type="text" name="title"
+                               id="title">
                     </p>
                     <p>
                         <label for="start_date">开始日期</label>
                         <input type="date" id="start_date" class="form-control"
-                               value="{{ setting_obj.stat_time|date:"Y-m-d" }}">
+                               value="{{ tb_info.setting_obj.stat_time|date:"Y-m-d" }}">
                     </p>
 
                     <p>
                         <label for="end_date">结束日期</label>
                         <input type="date" id="end_date" class="form-control"
-                               value="{{ setting_obj.end_time|date:"Y-m-d" }}">
+                               value="{{ tb_info.setting_obj.end_time|date:"Y-m-d" }}">
                     </p>
 
                     <div style="margin-bottom: 10px">
@@ -136,7 +53,7 @@
 
                         <label>已选学校</label>
                         <div class="choiced-school checkbox">
-                            {% for item in setting_obj.school_range.all %}
+                            {% for item in tb_info.setting_obj.school_range.all %}
                                 <a style="margin: 5px" value="{{ item.pk }}"><span
                                         value="{{ item.pk }}">{{ item.school_name }}</span></a>
                             {% endfor %}
@@ -148,15 +65,16 @@
                     <div>
                         <label>填表范围</label>
                         <div class="checkbox range">
-                            {% for role in scope %}
-                                {% if role in setting_obj.fill_range.all %}
+                            {% for role in tb_info.scope %}
+                                {% if role in tb_info.setting_obj.fill_range.all %}
                                     <label class="checkbox-inline">
                                         <input type="checkbox" id="{{ role.get_name_display }}" value="{{ role.pk }}"
                                                checked="checked">{{ role.get_name_display }}
                                     </label>
                                 {% else %}
                                     <label class="checkbox-inline">
-                                        <input type="checkbox"  id="{{ role.get_name_display }}" value="{{ role.pk }}">{{ role.get_name_display }}
+                                        <input type="checkbox" id="{{ role.get_name_display }}"
+                                               value="{{ role.pk }}">{{ role.get_name_display }}
                                     </label>
                                 {% endif %}
                             {% endfor %}
@@ -172,22 +90,22 @@
                     </h3>
                 </div>
                 <div class="panel-body body stu-info" id="" style="margin-top: 20px">
-                     <div class="choice-wrap item">
-                          <p class="is_choice"><span name='2' id='2'>国籍</span></p>
-                            <div class="edit-bar">
-                                <a class="move-up">上移</a>
-                                <a class="move-down">下移</a>
-                            </div>
-                     </div>
+                    <div class="choice-wrap item">
+                        <p class="is_choice"><span name='2' id='2'>国籍</span></p>
+                        <div class="edit-bar">
+                            <a class="move-up">上移</a>
+                            <a class="move-down">下移</a>
+                        </div>
+                    </div>
 
                     <div class="choice-wrap item">
-                          <p class="is_choice"><span name='10' id='10'>姓名</span></p>
-                            <div class="edit-bar">
-                                <a class="move-up">上移</a>
-                                <a class="move-down">下移</a>
-                            </div>
-                     </div>
-                    {% for stu_field in stu_field_list %}
+                        <p class="is_choice"><span name='10' id='10'>姓名</span></p>
+                        <div class="edit-bar">
+                            <a class="move-up">上移</a>
+                            <a class="move-down">下移</a>
+                        </div>
+                    </div>
+                    {% for stu_field in tb_info.field_dic.stu_field_list %}
                         {% if stu_field.fields__fieldName == '姓名' or stu_field.fields__fieldName == '国籍' %}
                         {% else %}
                             <div class="choice-wrap item">
@@ -211,7 +129,7 @@
                     </h3>
                 </div>
                 <div class="panel-body body hel-info" id="" style="margin-top: 20px">
-                    {% for hel_field in hel_field_list %}
+                    {% for hel_field in tb_info.field_dic.hel_field_list %}
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ hel_field.fields__pk }}'>{{ hel_field.fields__fieldName }}</span></p>
@@ -232,7 +150,7 @@
                     </h3>
                 </div>
                 <div class="panel-body body fam-info" id="" style="margin-top: 20px">
-                    {% for fam_field in fam_filed_list %}
+                    {% for fam_field in tb_info.field_dic.fam_filed_list %}
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ fam_field.fields__pk }}'>{{ fam_field.fields__fieldName }}</span></p>
@@ -253,7 +171,7 @@
                     </h3>
                 </div>
                 <div class="panel-body body par-info" id="" style="margin-top: 20px">
-                    {% for par_field in par_field_list %}
+                    {% for par_field in tb_info.field_dic.par_field_list %}
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ par_field.fields__pk }}'>{{ par_field.fields__fieldName }}</span></p>
@@ -267,7 +185,143 @@
                 </div>
             </div>
 
+            <div class="panel panel-primary" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        自定制信息
+                    </h3>
+                </div>
+                <div class="panel-body body customization" id="" style="margin-top: 20px">
+                    {% for item in tb_info.scale %}
+                        <div class="div_question scale-table choice-wrap item">
+                            <div>
+                                <h3>{{ item.title }}</h3>
+                            </div>
+                            <div class="div_table_par">
+                                <div class="div_table_radio_question">
+                                    <table style="width: 100%;" border="0px" cellpadding="5" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <td class="des"></td>
+                                            {% for option_des in item.options.all %}
+                                                <td align="center" class="des">{{ option_des.des }}</td>
+                                            {% endfor %}
 
+                                        </tr>
+                                        <tr>
+                                            <th style="color: #efa030; font-size: 14px;" align="left">分值</th>
+                                            <td align="center" style="color: #efa030; font-size: 14px">1</td>
+                                            <td align="center" style="color: #efa030; font-size: 14px">2</td>
+                                            <td align="center" style="color: #efa030; font-size: 14px">3</td>
+                                            <td align="center" style="color: #efa030; font-size: 14px">4</td>
+                                            <td align="center" style="color: #efa030; font-size: 14px">5</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for titel in item.line_title.all %}
+                                            <tr>
+                                                <th align="left"
+                                                    style="border-bottom: 1px solid #efefef">{{ titel.des }}</th>
+                                                <td style="border-bottom: 1px solid #efefef" align="center">
+                                                    <a href="###" class="jqRadio" style="position:static;"></a>
+                                                    <input style="display: none" type="radio">
+                                                </td>
+
+                                                <td style="border-bottom: 1px solid #efefef" align="center">
+                                                    <a href="###" class="jqRadio" style="position:static;"></a>
+                                                    <input style="display: none" type="radio">
+                                                </td>
+                                                <td style="border-bottom: 1px solid #efefef" align="center">
+                                                    <a href="###" class="jqRadio" style="position:static;"></a>
+                                                    <input style="display: none" type="radio">
+                                                </td>
+                                                <td style="border-bottom: 1px solid #efefef" align="center">
+                                                    <a href="###" class="jqRadio" style="position:static;"></a>
+                                                    <input style="display: none" type="radio">
+                                                </td>
+                                                <td style="border-bottom: 1px solid #efefef" align="center">
+                                                    <a href="###" class="jqRadio" style="position:static;"></a>
+                                                    <input style="display: none" type="radio">
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="div_title_attr_question">
+                                <div class="div_title_attr_question_triangle"></div>
+                                <div>
+                                    <input type="text" class="form-control scale-title" value="{{ item.title }}">
+                                </div>
+                                <div class="tb_container">
+                                    <div style="padding-top: 10px;"></div>
+                                    <div class="spanLeft" style="position: relative;z-index:1; width: 415px ">
+                                        <div class="matrixtitle" style="width: 415px">
+                                            <div class="matrixhead" style="padding-left: 4px">
+                                            <span style="float:left;">
+                                                <b>行标题</b>
+                                            </span>
+                                            </div>
+                                            <textarea wrap="off" rows="7" class="inputtext" tabindex="1"
+                                                      style="width: 390px; height: 172px; overflow: auto; padding: 2px; margin-top: 7px; border: 1px solid rgb(205, 205, 205); resize: none;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="spanLeft" style="text-align:center; width: 570px">
+                                        <table class="tableoption" cellspacing="0" cellpadding="2" width="98%">
+                                            <tbody>
+                                            <tr>
+                                                <td style="width: 170px" align="center">
+                                                        <span>
+                                                            <a href="javascript:;"
+                                                               style="color: rgb(34, 34, 34); margin-left: 7px; text-decoration: none">
+                                                                选择文字
+                                                            </a>
+                                                        </span>
+                                                </td>
+                                                <td align="center" style="padding: 3px 5px 3px 15px;">
+                                                    <span>移动</span>
+                                                </td>
+                                            </tr>
+                                            {% for option_des in item.options.all %}
+                                                <tr>
+                                                    <td style="width: 170px;" align="center">
+                                                        <input type="text" value="{{ option_des.des }}"
+                                                               class="choicetext choicetxt"
+                                                               tabindex="1"
+                                                               style="width: 125px; border: 1px solid rgb(205, 205, 205);">
+                                                    </td>
+                                                    <td align="center" style="padding-left: 15px;">
+                                            <span title="将当前选项上移一个位置" class="choiceimg design-icon design-cup"
+                                                  style="cursor: pointer;"></span>
+                                                        <span title="将当前选项下移一个位置"
+                                                              class="choiceimg design-icon design-cdown"
+                                                              style="cursor: pointer;"></span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div style="margin: 14px 50px 20px">
+                                    <div style="color: red; font-size: 14px; display: inline-block; margin: 0px 0px 6px 10px"></div>
+                                    <input type="button" value="完成编辑" class="submitbutton" style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
             <div class="actions">
                 <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
                     <span class="glyphicon glyphicon-check" id="preview">预览</span>
@@ -278,22 +332,38 @@
             </div>
         </div>
     </div>
-    <div id="selected_fields" value="{{ selected_fields }}"></div>
+    <div id="selected_fields" value="{{ tb_info.select_field }}"></div>
 {% endblock %}
 
 {% block js %}
     <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
     <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
+    <script src="{% static 'tables_setting/js/scale_table.js' %}"></script>
     <script>
         let selectField = ['姓名', '国籍'];
-
         function setSelectField() {
-            let selected = JSON.parse($('#selected_fields').attr('value'));
-            for (let item in selected) {
+            var selected = JSON.parse($('#selected_fields').attr('value'));
+            for (var item in selected) {
                 selectField.push(selected[item][0])
             }
         }
 
+        function lineTitleToText(){
+            // 把行标题中的值放到textarea
+            $('.div_table_radio_question').each(function () {
+                var valueArry = [];
+                $(this).find('th').each(function (index) {
+                    if(index != '0'){
+                        var lineTitleValue = $(this).text();
+                        valueArry.push(lineTitleValue)
+                    }
+                });
+                $(this).parents('.div_table_par').next().find('textarea').val(valueArry.join('\n'))
+            });
+
+        }
+
+        lineTitleToText();
         setSelectField()
     </script>
 

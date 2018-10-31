@@ -1,22 +1,13 @@
 from django.db import models
-from school.models import SchoolInfo,Grade,StuClass
-
+from school.models import SchoolInfo, Grade,  StuClass, ScaleSetting, ScaleLineTitle, ScaleOptionDes
 # Create your models here.
-
-
-# class StudentInnerInfo(models.Model):
-#     '''
-#     公司内部学生信息表
-#     '''
-#     interior_student_id = models.CharField(verbose_name='内部学生ID', unique=True, max_length=255)
-#     student = models.OneToOneField('StudentInfo', on_delete=models.CASCADE)
 
 
 class StudentInfo(models.Model):
     '''
     学生基本信息表
     '''
-    interior_student_id = models.CharField(verbose_name='内部学生ID', unique=True, max_length=255)
+    interior_student_id = models.CharField(verbose_name='内部学生ID', unique=True, max_length=255, null=True)
     first_name = models.CharField(verbose_name='学生名', max_length=128)
     last_name = models.CharField(verbose_name='学生姓', max_length=128)
     full_name = models.CharField(verbose_name='学生全名', db_index=True, max_length=256)
@@ -37,7 +28,7 @@ class StudentInfo(models.Model):
     chinese_zodiac_choice = ((1, '猴'), (2, '鸡'), (3, '狗'), (4, '猪'), (5, '鼠'),
                              (6, '牛'), (7, '虎'), (8, '兔'), (9, '龙'), (10, '蛇'), (11, '马'), (12, '羊'))
     id_card = models.CharField(verbose_name='身份证号码', null=True, db_index=True, max_length=32)
-    student_code = models.IntegerField(verbose_name='学籍号', null=True)
+    student_code = models.CharField(verbose_name='学籍号', null=True, max_length=64)
     telephone = models.CharField(verbose_name='电话号码', max_length=32, null=True)
     chinese_zodiac = models.IntegerField(verbose_name='生肖', choices=chinese_zodiac_choice, null=True)
     photo = models.FileField(upload_to='student/photo/', verbose_name='照片', null=True)
@@ -194,7 +185,7 @@ class StudentParents(models.Model):
     last_name = models.CharField(verbose_name='姓', max_length=64, null=True, blank=True)
     birthday = models.DateField(verbose_name='生日', null=True, blank=True)
     telephone = models.CharField(verbose_name='联系电话', max_length=32, null=True, blank=True)
-    education_choice = ( (1,'博士'), (2, '硕士'), (3, '本科'), (4, '大专'), (5, '高中'), (6, '高中以下'))
+    education_choice = ((1, '博士'), (2, '硕士'), (3, '本科'), (4, '大专'), (5, '高中'), (6, '高中以下'), (7, '暂不知道'))
     education = models.IntegerField(verbose_name='学历', choices=education_choice, null=True, blank=True)
     company = models.CharField(verbose_name='工作单位', max_length=64, null=True, blank=True)
     job = models.CharField(verbose_name='职位', max_length=32, null=True, blank=True)
@@ -221,3 +212,24 @@ class StudentToParents(models.Model):
 
     def __str__(self):
         return "学生：%s 家长：%s" %(self.student.full_name, self.parents.last_name+self.parents.first_name)
+
+
+class ScaleQuestion(models.Model):
+    '''
+    矩阵量表信息与学生对应表
+    '''
+    student = models.ForeignKey(verbose_name='对应学生', to=StudentInfo, on_delete=models.CASCADE)
+    scale = models.ForeignKey(verbose_name='对应量表', to=ScaleSetting, on_delete=models.CASCADE)
+    # question = models.ForeignKey(verbose_name='对应的自定制问题表', to='CustomizationQuestion', on_delete=models.CASCADE)
+
+
+class ScaleValue(models.Model):
+    '''
+    量表的行标题所对应的值
+    '''
+    title = models.ForeignKey(verbose_name='对应的行标题', to=ScaleLineTitle, on_delete=models.CASCADE)
+    value = models.ForeignKey(verbose_name='对应的值', to=ScaleOptionDes, on_delete=models.CASCADE)
+    # score = models.IntegerField(verbose_name='分数')
+    scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE)
+
+
