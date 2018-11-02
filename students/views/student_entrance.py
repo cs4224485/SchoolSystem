@@ -1,11 +1,9 @@
 # Create your views here
 import json
-import time
-import datetime
 import xlrd
-from APIS.utils.checkinfo import *
-from APIS.utils.common import *
-from django.shortcuts import render, redirect, HttpResponse
+from utils.common import *
+from utils.checkinfo import *
+from django.shortcuts import render
 from django.http import JsonResponse
 from django import views
 from school import models as sc_models
@@ -16,16 +14,51 @@ class StudentInfo(views.View):
     '''
     跳转学生填表页面
     '''
-    message = {
-        'state': False,
-        'msg': '',
-        'data': []
-    }
+
     start_time = []
 
     def get(self, request, nid, *args, **kwargs):
         step = request.GET.get('step', 'start_page')
         setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
+        self.check(setting_obj)
+        self.start_time.append(time.time())
+        if hasattr(self, step):
+            func = getattr(self, step)
+            return func(request, setting_obj)
+
+    def post(self, request, nid, *args, **kwargs):
+        self.message = {
+            'state': False,
+            'msg': '',
+            'data': []
+        }
+        stu_name = request.POST.get('name')
+        birthday = request.POST.get('birthday')
+        grade = request.POST.get('classes')
+        stu_class = request.POST.get('classess')
+        stu_obj = stu_models.StudentInfo.objects.filter(full_name=stu_name, birthday=birthday, grade=grade,
+                                                        stu_class=stu_class).first()
+
+        setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
+
+        if not stu_obj:
+            self.message['msg'] = '您好，你所填学生信息与学校记录不符，请查证后再填'
+            return JsonResponse(self.message)
+        else:
+            table_info = sc_models.TableInfo.objects.filter(table=setting_obj, student=stu_obj)
+            if table_info:
+                self.message['msg'] = '该学生已填写完成,无法再次填写'
+                return JsonResponse(self.message)
+            self.message['state'] = True
+            self.message['student_id'] = stu_obj.pk
+            return JsonResponse(self.message)
+
+    def check(self, setting_obj ):
+        self.message = {
+            'state': False,
+            'msg': '',
+            'data': []
+        }
         if not setting_obj:
             self.message['msg'] = '该表单不存在或已过期'
             return JsonResponse(self.message)
@@ -39,25 +72,7 @@ class StudentInfo(views.View):
             if current_time > end_time:
                 self.message['msg'] = '填表已结束'
                 return JsonResponse(self.message)
-        self.start_time.append(time.time())
-        if hasattr(self, step):
-            func = getattr(self, step)
-            return func(request, setting_obj)
 
-    def post(self, request, nid, *args, **kwargs):
-        stu_name = request.POST.get('name')
-        birthday = request.POST.get('birthday')
-        grade = request.POST.get('classes')
-        stu_class = request.POST.get('classess')
-        stu_obj = stu_models.StudentInfo.objects.filter(full_name=stu_name, birthday=birthday, grade=grade,
-                                                        stu_class=stu_class).first()
-        if not stu_obj:
-            self.message['msg'] = '您好，你所填学生信息与学校记录不符，请查证后再填'
-            return JsonResponse(self.message)
-        else:
-            self.message['state'] = True
-            self.message['student_id'] = stu_obj.pk
-            return JsonResponse(self.message)
 
     def start_page(self, request, setting_obj):
         school_obj = setting_obj.school_range.first()
@@ -69,7 +84,7 @@ class StudentInfo(views.View):
             self.message['msg'] = '您好，请先填写登陆页面'
             return JsonResponse(self.message)
         student_obj = stu_models.StudentInfo.objects.filter(id=student_id).first()
-        stu_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=1).values(
+        stu_field_list = sc_models.SettingToField.objects.order_by('order').filter(setting=setting_obj, fields__field_type=1).values(
             'fields__fieldName', 'fields__pk')
         if stu_field_list:
             return render(request, 'entrance/student_info.html',
@@ -88,8 +103,9 @@ class StudentInfo(views.View):
         fam_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=3).values(
             'fields__fieldName', 'fields__pk')
         if fam_field_list:
+            school_district = setting_obj.school_range.values('province', 'city', 'region').first()
             return render(request, 'entrance/family_info.html',
-                          {'fam_field_list': fam_field_list, 'pk': setting_obj.pk})
+                          {'fam_field_list': fam_field_list, 'pk': setting_obj.pk, 'school_district': json.dumps(school_district)})
         return self.parents_page(request, setting_obj)
 
     def parents_page(self, request, setting_obj):
@@ -114,8 +130,9 @@ class StudentInfo(views.View):
         return self.finish_page(request, setting_obj)
 
     def finish_page(self, request, setting_obj):
+        student_id = request.GET.get('student_id')
         end_time = time.time() - self.start_time[0]
-        sc_models.TableInfo.objects.create(table=setting_obj, finish_time=int(end_time))
+        sc_models.TableInfo.objects.create(table=setting_obj, finish_time=int(end_time), student_id=student_id)
         return render(request, 'entrance/table_finish.html')
 
 
@@ -156,6 +173,8 @@ class ImportStudent(views.View):
                         row_dict['grade'] = sc_models.Grade.objects.filter(grade_name=row[0].value).first()
                         row_dict['stu_class'] = sc_models.StuClass.objects.filter(name=row[1].value,
                                                                                   grade=row_dict['grade']).first()
+                        # 届别
+                        row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
                         continue
                     elif col_num == 1:
                         continue
@@ -164,6 +183,9 @@ class ImportStudent(views.View):
                 row_dict['full_name'] = row[2].value + row[3].value
                 # 所在学校
                 row_dict['school'] = sc_models.SchoolInfo.objects.filter(pk=school_id).first()
+                # 学生内部ID
+                import uuid
+                row_dict['interior_student_id'] = 'str:%s' % uuid.uuid4()
                 # 根据身份证计算信息
                 id_card = row[5].value
                 if id_card:
@@ -173,8 +195,7 @@ class ImportStudent(views.View):
                     # 对身份证进行合法性校验
                     check_state, info = check_id_card(id_card)
                     if not check_state:
-                        print(id_card, 'no id')
-                        continue
+                        pass
                     row_dict['birthday'] = info['birthday']
                     row_dict['gender'] = info['gender'][0]
                     if row_dict['birthday']:
@@ -183,13 +204,9 @@ class ImportStudent(views.View):
                         row_dict['age'] = calculate_age(int(y))
                         row_dict['day_age'] = calculate_day_age(int(y), int(m), int(d))
                         row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
-                # print(row_dict)
                 object_list.append(stu_models.StudentInfo(**row_dict))
-            print(object_list)
             stu_models.StudentInfo.objects.bulk_create(object_list, batch_size=20)
-
         except Exception as e:
-            print(e)
             context['status'] = False
             context['msg'] = '导入失败'
 

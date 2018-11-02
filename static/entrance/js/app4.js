@@ -1,6 +1,7 @@
 var urlId = $.getUrlParam('student_id');
-var Birthday = $('.mui-input-group .Birthday');
 var relation = $.getUrlParam('relation');
+var Birthday = $('.mui-input-group .Birthday');
+
 
 formFunctionTap();
 
@@ -122,20 +123,19 @@ function formFunctionTap() {
 //			下一步
 mui("#input_information").on('tap', '.Submission', function () {
     let check = true;
-				mui("#input_information input").each(function() {
+    mui("#input_information input").each(function () {
 
-						//若当前input为空，则alert提醒
-						if(!this.value || this.value.trim() == "") {
-						    var label = this.previousElementSibling;
-						    mui.alert(label.innerText + "不允许为空");
-						    check = false;
-						    return false;
-						}
+        //若当前input为空，则alert提醒
+        if (!this.value || this.value.trim() == "") {
+            var label = this.previousElementSibling;
+            mui.alert(label.innerText + "不允许为空");
+            check = false;
+            return false;
+        }
 
-						check = true;
-				}); //校验通过，继续执行业务逻辑
+        check = true;
+    }); //校验通过，继续执行业务逻辑
     if (check) {
-        mui.alert('验证通过!')
         let input = mui('.mui-input-row input').input();
         let obj = {}
 
@@ -161,7 +161,6 @@ mui("#input_information").on('tap', '.Submission', function () {
                     relation = 3
                     break;
                 case "奶奶":
-                    console.log("xxxxxxxxxxxxx")
                     education = $(".visionType").eq(e).attr("name")
                     relation = 4
                     break;
@@ -214,7 +213,6 @@ mui("#input_information").on('tap', '.Submission', function () {
                 console.log(data);
                 if (data.state) {
                     var setting_pk = $('#setting_pk').attr('pk');
-                    mui.alert(data.msg);
                     setTimeout(
                         function () {
                             window.location.href = "/student/student_info/" + setting_pk + "/?step=question_page&student_id=" + urlId
@@ -249,25 +247,25 @@ Close.addEventListener('tap', function (event) {
     $(".pop_Choice").hide()
 })
 var add_radio_num = 1;
-document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener('selected',function(e){
-			 let check;
-			 let name = e.detail.el.innerText; //当前弹窗选中的name
-			 let bodyName = $("#addPersonnel .mui-navigate-right");
+document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener('selected', function (e) {
+    let check;
+    let name = e.detail.el.innerText; //当前弹窗选中的name
+    let bodyName = $("#addPersonnel .mui-navigate-right");
 
-			 let  nameBox=$("#input_information").find(".mui-navigate-right");
-			 if(nameBox.length<=0){
-			 	 check = true;
-			 }else{
-                  $(".find_li").each(function(e){
-                    let index_name = $(".mui-table-view").find(".find_li .mui-navigate-right").eq(e).attr("data-name"); //当前页面的name
-                        if($.trim(index_name)==$.trim(name)){
-                            mui.alert("请误重复添加")
-                            check = false;
-                            return false;
-                        }
-                        check = true;
-                  });
-			  }
+    let nameBox = $("#input_information").find(".mui-navigate-right");
+    if (nameBox.length <= 0) {
+        check = true;
+    } else {
+        $(".find_li").each(function (e) {
+            let index_name = $(".mui-table-view").find(".find_li .mui-navigate-right").eq(e).attr("data-name"); //当前页面的name
+            if ($.trim(index_name) == $.trim(name)) {
+                mui.alert("请误重复添加")
+                check = false;
+                return false;
+            }
+            check = true;
+        });
+    }
     add_radio_num++
     let radio_name = "add_radio" + add_radio_num;
     if (check) {
@@ -369,13 +367,49 @@ $("#input_information").on("click", ".MUIradio", function (e) {
 
 })
 //删除主要联系人
-$("#input_information").on("click",".btnClose",function(e){
-	let that = $(this);
-	let btnArray = ['否', '是'];
-	mui.confirm('确定要删除主要联系人？', '', btnArray, function(e) {
+$("#input_information").on("click", ".btnClose", function (e) {
+    let that = $(this);
+    let btnArray = ['否', '是'];
+    mui.confirm('确定要删除主要联系人？', '', btnArray, function (e) {
         if (e.index == 1) {
-        	that.parents(".find_li").remove();
+            that.parents(".find_li").remove();
         }
-	})
+    })
 
 })
+
+if (relation != "" && relation != null) {
+
+        switch (relation) {
+            case "1":
+                addHtmls("父亲")
+                break;
+            case "2":
+                addHtmls("母亲")
+                break;
+            case "3":
+                addHtmls("爷爷")
+                break;
+            case "4":
+                addHtmls("奶奶")
+                break;
+            case "5":
+                addHtmls("外公")
+                break;
+            case "6":
+                addHtmls("外婆")
+                break;
+                break;
+            case "7":
+                addHtmls("其他亲属")
+                break;
+            default:
+
+        }
+    }
+
+    function addHtmls(name) {
+        $("#input_information").find(".mui-navigate-right").eq(0).find("span").text(name)
+        $("#input_information").find(".mui-navigate-right").eq(0).attr("data-name", name)
+
+    }

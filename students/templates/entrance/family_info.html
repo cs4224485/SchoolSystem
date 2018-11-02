@@ -37,7 +37,7 @@
             {% if fam_field.fields__fieldName == '居住地址' %}
                 <div class="mui-input-row flex_center box_sizing">
                     <label>现居住地址：</label>
-                    <input type="text" class="mui-input-clear"  placeholder="默认显示学校所在的区，可选择" id='householdRegister'>
+                    <input type="text" value="{{ school_district.province }}{{ school_district.city }}{{ school_district.region }}" class="mui-input-clear"  placeholder="默认显示学校所在的区，可选择" id='householdRegister'>
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                         <div id='userResult' class="ui-alert" style="display: none;"></div>
@@ -125,7 +125,8 @@
         </div>
     </div>
 
-    <div id="setting_pk" pk="{{ pk }}"></div>
+    <dic id="family_district" style="display: none">{{ school_district }}</dic>
+    <div id="setting_pk" style="display: none" pk="{{ pk }}"></div>
 </div>
 
 <script type="text/javascript" src="{% static 'entrance/js/jQuery1.9.js' %}"></script>

@@ -1,14 +1,15 @@
-from rest_framework.views import APIView, Response
-from django.shortcuts import render
+from rest_framework.views import Response
 from rest_framework import viewsets
 from django.db import transaction
 from django.db.models import Q
 from APIS.serialize.student_info import *
 from students.models import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from APIS.utils.common import *
-from APIS.utils.checkinfo import *
+from utils.common import *
+from utils.checkinfo import *
+from school import models as sc_models
 import copy
+
 
 # Create your views here.
 
@@ -23,6 +24,7 @@ class BaseViewSet(viewsets.ModelViewSet):
     '''
     自定制一个接口基类，可以自定义一些共用方法和功能
     '''
+
     def dispatch(self, request, *args, **kwargs):
 
         self.message = {
@@ -75,12 +77,11 @@ class StudentInfoViewSet(BaseViewSet):
         # 获取照片
         photo = request.FILES.get('photo')
         if photo:
-            print(photo)
             request._mutable = True
             del request.data['photo']
 
         # 基本信息
-        print(request.data)
+        # print(request.data)
         request_data = copy.deepcopy(request.data)
         country = request_data.get('country', '1')
         birthday = request_data.get('birthday', '')
@@ -142,7 +143,6 @@ class StudentInfoViewSet(BaseViewSet):
         if stu_serialize.is_valid():
             # 创建学生对象
             student_obj = stu_serialize.save()
-
             if student_obj:
                 self.message['state'] = True
                 self.message['msg'] = '创建成功'
@@ -152,7 +152,7 @@ class StudentInfoViewSet(BaseViewSet):
                 self.message['msg'] = '创建失败'
                 response = Response(self.message)
         else:
-            print(stu_serialize.errors)
+            # print(stu_serialize.errors)
             self.response_error(stu_serialize.errors)
             response = Response(self.message)
         return response
@@ -172,13 +172,14 @@ class StuClassViewSet(BaseViewSet):
         self.queryset = StuClass.objects.filter(school=school_id).order_by('name')
         class_dict = {}
         for item in self.queryset:
+
             if item.grade.pk in class_dict:
                 class_dict[item.grade.pk]['children'].append({'value': item.pk, 'text': item.name})
             else:
                 class_dict[item.grade.pk] = {
                     'value': item.grade.pk,
                     'text': item.grade.get_grade_name_display(),
-                    'children': []
+                    'children': [{'value': item.pk, 'text': item.name}]
                 }
         if class_dict:
             self.message['data'] = class_dict
@@ -200,20 +201,36 @@ class CountryViewSet(BaseViewSet):
 
 class GraduateInstitutionsViewSet(BaseViewSet):
     '''
-    获取毕业学校接口
+    根据输入过滤出毕业学校
     '''
-    queryset = GraduateInstitutions.objects.all()
-    serializer_class = GraduateInstitutionsSerializer
+    queryset = SchoolInfo.objects.all().values('school_name')
+    serializer_class = SchoolListSerializer
 
     def list(self, request, *args, **kwargs):
         name_start = request.GET.get('filter', '')
         condition = Q()
         condition.connector = 'or'
-        condition.children.append(('name__startswith', name_start))
+        condition.children.append(('school_name__startswith', name_start))
         try:
-            self.queryset = GraduateInstitutions.objects.filter(condition)[0:6]
+            self.queryset = sc_models.SchoolInfo.objects.filter(condition).values('id', 'school_name')[0:9]
         except Exception:
-            self.queryset = GraduateInstitutions.objects.filter(condition)
+            self.queryset = sc_models.SchoolInfo.objects.filter(condition)
+        return self.self_list(self.queryset, self.serializer_class)
+
+
+class AllGraduateInstitutionsViewSet(BaseViewSet):
+    queryset = sc_models.SchoolInfo.objects.all()
+    serializer_class = SchoolListSerializer
+
+    def list(self, request, *args, **kwargs):
+        school_id = request.GET.get('school_id')
+
+        # 当前学校信息
+        current_school_info = sc_models.SchoolInfo.objects.filter(id=school_id).values('province', 'city', 'region',
+                                                                                       'school_layer').first()
+        current_school_info['school_layer'] -= 1
+        # 根据当前学校的信息列出所有学校
+        self.queryset = self.queryset.filter(**current_school_info)
         return self.self_list(self.queryset, self.serializer_class)
 
 
@@ -225,7 +242,7 @@ class HealthInfoViewSet(BaseViewSet):
     serializer_class = HealthInfoSerializers
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
-    def create(self, request,  *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         request_data = copy.deepcopy(request.data)
         print(request_data)
         health_serialize = HealthInfoSerializers(data=request_data)
@@ -312,7 +329,7 @@ class StudentParentsViewSet(BaseViewSet):
 
         request_data = request.data.get('parents')
         import json
-        request_data =json.loads(request_data)
+        request_data = json.loads(request_data)
         print(request_data)
         for key, item in request_data.items():
             parents_serialize = StudentParentsSerializers(data=item)
@@ -353,7 +370,7 @@ class CustomizationQuestionViewSet(BaseViewSet):
         print(request_data)
         for scale_item in request_data.get('scaleInfo'):
             for scale_pk, des_info in scale_item.items():
-                save_data = {'student': request_data.get('studentId'), 'scale':scale_pk}
+                save_data = {'student': request_data.get('studentId'), 'scale': scale_pk}
                 scale_serialize = ScaleQuestionSerializers(data=save_data)
                 if scale_serialize.is_valid():
                     scale_obj = scale_serialize.save()

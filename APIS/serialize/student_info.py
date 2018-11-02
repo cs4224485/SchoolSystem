@@ -68,6 +68,12 @@ class GraduateInstitutionsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class SchoolListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolInfo
+        fields = ('id', 'school_name')
+
+
 class CountrySerializers(serializers.ModelSerializer):
     class Meta:
         model = Country

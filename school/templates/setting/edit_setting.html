@@ -54,7 +54,7 @@
                         <label>已选学校</label>
                         <div class="choiced-school checkbox">
                             {% for item in tb_info.setting_obj.school_range.all %}
-                                <a style="margin: 5px" value="{{ item.pk }}"><span
+                                <a style="margin: 5px" class="selectedSchool" value="{{ item.pk }}"><span
                                         value="{{ item.pk }}">{{ item.school_name }}</span></a>
                             {% endfor %}
 

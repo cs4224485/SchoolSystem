@@ -421,7 +421,7 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     width: 100%;
     background: #fff;
     text-align: left;
-    color: #666;
+    color: #666; height: 90%; overflow-x: scroll; padding-bottom: 10px;
 }
 
 #school li {
