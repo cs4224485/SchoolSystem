@@ -74,14 +74,12 @@ var FamilyObj = {};
         }, {
             value: '2',
             text: '中文方言'
-        }, {
+        },
+         {
             value: '3',
-            text: '听力语言'
-        }, {
-            value: '4',
             text: '英语'
         }, {
-            value: '5',
+            value: '4',
             text: '其它外语'
         }]);
         var disabilityButton = doc.getElementById('language');
@@ -194,7 +192,6 @@ mui("#input_information").on('tap', '.Submission', function () {
 
                 if (data.state) {
                     var setting_pk = $('#setting_pk').attr('pk');
-                    mui.alert(data.msg);
                     setTimeout(function () {
                         window.location.href = "/student/student_info/" + setting_pk + "/?step=parents_page&student_id=" + data.data[0].student_id + "&relation=" + relation
                     }, 1500)
@@ -204,7 +201,7 @@ mui("#input_information").on('tap', '.Submission', function () {
 
             },
             error: function (xhr, type, errorThrown) {
-                mui.alert("亲，请求出错了")
+                mui.alert("亲，请求出错了");
                 console.log(xhr);
                 console.log(type);
                 console.log(errorThrown);
@@ -215,3 +212,16 @@ mui("#input_information").on('tap', '.Submission', function () {
     }
 
 })
+
+
+var showUserPickerButton = document.getElementById('householdRegister');
+var family_district =  JSON.parse($("#family_district").text());
+
+if(family_district){
+
+	province = family_district.province;
+	city= family_district.city;
+	region= family_district.region;
+	showUserPickerButton.value = province+city+region;
+	console.log(province,city,region)
+}

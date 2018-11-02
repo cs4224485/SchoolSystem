@@ -37,7 +37,7 @@
         <ul class="mui-table-view">
             <li class="mui-table-view-cell mui-collapse mui-active find_li">
             <button class="btnClose">×</button>
-                <a class="mui-navigate-right" href="#" data-name="父亲"><span>父亲</span></a>
+                <a class="mui-navigate-right" href="#" data-name=""><span></span></a>
                 <div class="mui-collapse-content">
                     {% for fam_field in fam_field_list %}
                         {% if fam_field.fields__fieldName == '家长姓名' %}
@@ -100,70 +100,7 @@
                     </div>
                 </div>
             </li>
-            <li class="mui-table-view-cell mui-collapse  find_li">
-            <button class="btnClose">×</button>
-                <a class="mui-navigate-right" href="#" data-name="母亲"><span>母亲</span></a>
-                <div class="mui-collapse-content">
-                    {% for fam_field in fam_field_list %}
-                        {% if fam_field.fields__fieldName == '家长姓名' %}
 
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>中文姓：</label>
-                                <input type="text" class="mui-input-clear" placeholder="请填写您的中文姓" name="first_name">
-                            </div>
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>中文名：</label>
-                                <input type="text" class="mui-input-clear" placeholder="请填写您的中文名" name="last_name">
-                            </div>
-                        {% elif fam_field.fields__fieldName == '家长生日' %}
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>生日：</label>
-                                <input type="text" class="mui-input-clear Birthday"
-                                       data-options='{"type":"date","beginYear":"1940","endYear":""}'
-                                       placeholder="请选择日期" name="birthday">
-                                <div class="right_pop flex_center">
-                                    <span class="mui-icon mui-icon-arrowright"></span>
-                                </div>
-                            </div>
-                        {% elif fam_field.fields__fieldName == '学历' %}
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>最高学历：</label>
-                                <input type="text" class="mui-input-clear visionType" placeholder="请选择最高学历" name='0'
-                                       readonly="readonly">
-                                <div class="right_pop flex_center">
-                                    <span class="mui-icon mui-icon-arrowright"></span>
-                                </div>
-                            </div>
-
-                        {% elif fam_field.fields__fieldName == '工作单位' %}
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>工作单位：</label>
-                                <input type="text" class="mui-input-clear" placeholder="请填写您的工作单位" name="company">
-                            </div>
-
-                        {% elif fam_field.fields__fieldName == '职务' %}
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>当前职务：</label>
-                                <input type="text" class="mui-input-clear" placeholder="请填写您的当前职务" name="job">
-                            </div>
-
-                        {% elif  fam_field.fields__fieldName == '家长微信' %}
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>微信号：</label>
-                                <input type="text" class="mui-input-clear" placeholder="选填写" name="wechat">
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    <div class="mui-input-row flex box_sizing">
-                        <label class="flex_center" style=" height: 30px;">设为主要联络人：</label>
-                        <div class="flex_center">
-                            <div class="flex_center" style=" height: 30px;">
-                                <div class="MUIradio flex_center " data-id=""><span></span></div>
-                                <label>是</label>
-                            </div>
-                        </div>
-                    </div>
-            </li>
         </ul>
 
         <div class="addPersonnel" id="addPersonnel"><span class="mui-icon mui-icon-plusempty"></span>添加其它监护人</div>

@@ -256,14 +256,13 @@ mui("#input_information").on('tap', '.Submission', function () {
             timeout: 10000,
             success: function (data) {
                 if (data.state) {
-                    $(".mui_loading").hide()
-                    var setting_pk = $('#setting_pk').attr('pk')
-                    mui.alert(data.msg)
+                    $(".mui_loading").hide();
+                    var setting_pk = $('#setting_pk').attr('pk');
                     setTimeout(function () {
                         window.location.href = "/student/student_info/" + setting_pk + "/?step=health_page&student_id=" + data.data[0].student_id + "&relation=" + relation
                     }, 1500)
                 } else {
-                    $(".mui_loading").hide()
+                    $(".mui_loading").hide();
                     mui.alert(data.msg)
 
                 }
@@ -469,7 +468,7 @@ function ShowInputNum(obj) {
 }
 
 function school(that) {
-    that.value = that.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g, '')
+    that.value = that.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g, '');
     let filter = that.value;
     //console.log(filter)
     if (filter != "") {
@@ -478,22 +477,23 @@ function school(that) {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                console.log(data)
+                console.log(data);
                 $("#school").show();
                 if (data.state) {
                     let html = "";
                     for (var i in data.data) {
-                        html += "<li data-id=" + data.data[i].id + ">" + data.data[i].name + "</li>";
+                        html += "<li data-id=" + data.data[i].id + ">" + data.data[i].school_name + "</li>";
                     }
                     $("#school").html(html)
                 } else {
                     // mui.alert("暂无匹配学校")
-                    $("#school").html("")
+                     var htmlp = "<li data-id=''>暂无匹配学校</li>";
+                    $("#school").html(htmlp)
 
                 }
             },
             error: function (xhr, type, errorThrown) {
-                mui.alert("亲，请求出错了")
+                mui.alert("亲，请求出错了");
                 console.log(xhr);
                 console.log(type);
                 console.log(errorThrown);
@@ -502,14 +502,40 @@ function school(that) {
     }
 }
 
+function schoolList() {
+    $.ajax({
+        url: ajaxUrl + '/api/v1/all_institutions/?school_id=38',
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            if (data.state) {
+                let html = "";
+                for (var i in data.data) {
+                    html += "<li data-id=" + data.data[i].id + ">" +data.data[i].school_name + "</li>";
+                }
+                $("#school").html(html)
+            }
+        },
+        error: function (xhr, type, errorThrown) {
+            //mui.alert("亲，请求出错了")
+            console.log(xhr);
+            console.log(type);
+            console.log(errorThrown);
+        }
+    })
+}
+
 // 园校选择
 mui("#school").on('tap', 'li', function () {
-    $("#MschooiInput input").val($(this).text())
-    $("#MschooiInput input").attr("data-id", $(this).attr("data-id"))
-    $("#schooiInput").val($(this).text())
+    $("#MschooiInput input").val($(this).text());
+    $("#MschooiInput input").attr("data-id", $(this).attr("data-id"));
+    $("#schooiInput").val($(this).text());
     $(".pop_school").hide();
 })
 mui("#MschooiInput").on('tap', 'input', function () {
+    console.log(1);
+    schoolList();
     $(".pop_school").show();
 })
 mui(".pop_school").on('tap', 'label', function () {

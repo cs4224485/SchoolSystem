@@ -3,7 +3,7 @@
 
 
 class Pagination:
-    def __init__(self, data_num, current_page, params,  url_prefix,   per_page=10, max_show=10):
+    def __init__(self, data_num, current_page, params,  url_prefix,  per_page=10, max_show=11):
         """
         进行初始化.
         :param data_num: 数据总数
@@ -35,19 +35,25 @@ class Pagination:
             self.current_page = self.page_num  # 默认展示最后一页
 
         # 页码数的一半 算出来
-        self.half_show = max_show // 2
-
-        # 页码最左边显示多少
-        if self.current_page - self.half_show <= 1:
+        self.half_show = self.max_show // 2
+        # 如果数据总页码self.page_num<11 pager_page_count
+        if self.page_num <= self.max_show:
             self.page_start = 1
             self.page_end = self.page_num
-        elif self.current_page + self.half_show >= self.page_num:  # 如果右边越界
-            self.page_end = self.page_num
-            self.page_start = self.page_num - self.max_show +1
         else:
-            self.page_start = self.current_page - self.half_show
-            # 页码最右边显示
-            self.page_end = self.current_page + self.half_show
+            # 数据页码已经超过11
+            # 判断： 如果当前页 <= 5 self.half_show
+            if self.current_page <= self.half_show:
+                self.page_start = 1
+                self.page_end = self.max_show
+            else:
+                # 如果： 当前页+5 > 总页码
+                if (self.current_page + self.half_show) > self.page_num:
+                    self.page_start = self.page_num - self.max_show + 1
+                    self.page_end = self.page_num
+                else:
+                    self.page_start = self.current_page - self.half_show
+                    self.page_end = self.current_page + self.half_show
 
         import copy
         self.params = params # {"page":"12","title_startwith":"py","id__gt":"5"}
@@ -91,5 +97,7 @@ class Pagination:
             self.params['page'] = self.current_page + 1
             l.append('<li><a href="{}?{}">»</a></li>'.format(self.url_prefix, self.params.urlencode()))
         # 加一个尾页
-        l.append('<li><a href="{}?{}">尾页</a></li>'.format(self.url_prefix, self.params.urlencode()))
+        last_page = self.params
+        last_page['page'] = self.page_num
+        l.append('<li><a href="{}?{}">尾页</a></li>'.format(self.url_prefix, last_page.urlencode()))
         return "".join(l)

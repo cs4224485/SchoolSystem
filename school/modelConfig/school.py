@@ -60,7 +60,6 @@ class SchoolInfoConfig(StarkConfig):
 
     def get_list_display(self):
         val = super().get_list_display()
-        val.remove(StarkConfig.display_checkbox)
         val.remove(StarkConfig.display_edit)
         return val
 
@@ -199,6 +198,11 @@ class SchoolSettingsConfig(StarkConfig):
     def get_add_btn(self):
         return mark_safe('<a href="/school/settings/" class="btn btn-success">添加</a>')
 
+    def get_list_display(self):
+        val = super().get_list_display()
+        val.remove(StarkConfig.display_edit)
+        return val
+
     def display_release(self, row=None, header=None):
         if header:
             return '设置'
@@ -213,19 +217,11 @@ class SchoolSettingsConfig(StarkConfig):
         return mark_safe(
             '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % url)
 
-    def get_list_display(self):
-        '''
-        重新构建list_display
-        :return:
-        '''
-
-        display_list = []
-        display_list.append(StarkConfig.display_checkbox)
-        display_list.extend(self.list_display)
-        display_list.append(StarkConfig.display_del)
-        return display_list
-
-    list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_release, display_edit]
+    def display_count(self, row=None, header=False):
+        if header:
+            return '填表人数'
+        return row.table_info.all().count()
+    list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release, display_edit]
 
 
 class SettingToFieldConfig(StarkConfig):

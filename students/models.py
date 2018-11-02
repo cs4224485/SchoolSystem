@@ -38,7 +38,7 @@ class StudentInfo(models.Model):
     create_time = models.DateField(verbose_name='创建日期', auto_now=True)
     period = models.IntegerField(verbose_name='届别', null=True)
     grade = models.ForeignKey(verbose_name='年级', to=Grade, on_delete=models.CASCADE, null=True)
-    graduate_institutions = models.ForeignKey('GraduateInstitutions', verbose_name='毕业园校', on_delete=models.CASCADE, null=True)
+    graduate_institutions = models.ForeignKey(to=SchoolInfo, verbose_name='毕业园校', on_delete=models.CASCADE, null=True, related_name='school')
     school = models.ForeignKey(verbose_name='所在学校', to=SchoolInfo, on_delete=models.CASCADE)
     stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True)
 
@@ -51,7 +51,7 @@ class GraduateInstitutions(models.Model):
     毕业机构表
     '''
 
-    name = models.CharField(verbose_name='学校名称', max_length=32)
+    name = models.CharField(verbose_name='学校名称', max_length=32, )
 
     def __str__(self):
         return self.name
@@ -134,7 +134,7 @@ class FamilyInfo(models.Model):
     living_condition = models.IntegerField(verbose_name='居住条件', choices=living_condition_choice, null=True, blank=True)
     living_type_choice = ((1, '自有'), (2, '租赁'), (3, '亲友住宅'))
     living_type = models.IntegerField(verbose_name='居住类型', choices=living_condition_choice, null=True, blank=True)
-    language_choice = ((1, '中文普通话'), (2, '中文方言'), (3, '听力语言'), (4, '英语'), (5, '其他外语'))
+    language_choice = ((1, '中文普通话'), (2, '中文方言'), (3, '英语'), (4, '其他外语'))
     language = models.IntegerField(verbose_name='家庭语言', choices=language_choice, default=1, null=True, blank=True)
     create_time = models.DateField(verbose_name='创建日期', auto_now=True)
     # member_of_family = models.ManyToManyField('FamilyMember', verbose_name='家庭成员', blank=True)

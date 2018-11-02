@@ -80,13 +80,13 @@
                 </div>
             {% elif hel_field.fields__fieldName == '过敏源' %}
                 <div class="mui-input-row flex_center box_sizing allergy">
-                    <label>过敏：</label>
+                    <label>过敏源：</label>
                     <input type="text" name="allergy" class="" value="无" data-id="" id="allergy" readonly="readonly">
                     <div class="right_pop flex_center">选择过敏源<span class="mui-icon mui-icon-arrowright"></span></div>
                 </div>
             {% elif hel_field.fields__fieldName == '遗传病' %}
                 <div class="mui-input-row flex_center box_sizing inheritance">
-                    <label>遗传病：</label>
+                    <label>遗传和曾患疾病：</label>
                     <input type="text" name="InheritedDisease" class="" value="无" data-id="" id="InheritedDisease" readonly="readonly">
                     <div class="right_pop flex_center">选择<span class="mui-icon mui-icon-arrowright"></span></div>
                 </div>
@@ -100,8 +100,8 @@
                 </div>
             {% elif hel_field.fields__fieldName == '残疾状况' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>残疾：</label>
-                    <input type="text" name="disability" class="mui-input-clear" placeholder="请选择" id='disabilityType' readonly="readonly"
+                    <label>残疾状况：</label>
+                    <input type="text" value="无" name="disability" class="mui-input-clear" placeholder="请选择" id='disabilityType' readonly="readonly"
                            data-id="1">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>

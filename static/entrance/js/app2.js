@@ -238,10 +238,8 @@ mui("#input_information").on('tap', '.Submission', function () {
             data: data,
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 if (data.state) {
                     var setting_pk = $('#setting_pk').attr('pk');
-                    mui.alert(data.msg);
                     setTimeout(function () {
                         window.location.href = "/student/student_info/" + setting_pk + "/?step=family_page&student_id=" + data.data[0].student_id + "&relation=" + relation
                     }, 1500)

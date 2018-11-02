@@ -5,6 +5,7 @@ $(function () {
     operation();
     filterSchool();
     choicedSchool();
+    deleteSelectedSchool()
 });
 
 function choiceField() {
@@ -411,10 +412,9 @@ function filterSchool() {
 function choicedSchool() {
     // 已选中的学校
     $('.school-range').on('click', '.choiced', function () {
-        console.log($(this).next('span').html());
         var school_name = $(this).next('span').html();
         var nid = $(this).attr("value");
-        var htmlTag = ` <a style="margin: 5px" value="${nid}"><span value="${nid}">${school_name}</span></a>`;
+        var htmlTag = ` <a style="margin: 5px" value="${nid}" class="selectedSchool"><span value="${nid}">${school_name}</span></a>`;
         if ($(this).prop('checked')) {
             $('.choiced-school').append(htmlTag)
         } else {
@@ -422,6 +422,24 @@ function choicedSchool() {
             $(".choiced-school a[value=" + nid + "]").remove()
         }
 
+    })
+}
+
+
+
+function  deleteSelectedSchool() {
+    // 删除已选中的学习
+    $('.choiced-school').on('click', '.selectedSchool', function () {
+        console.log($(this).attr('value'));
+        console.log( $(this).parent().prevAll().eq(1).find('input'));
+        var selectedId = $(this).attr('value');
+        $(this).parent().prevAll().eq(1).find('input').each(function () {
+            if(selectedId == $(this).attr('value')){
+                $(this).prop('checked', '')
+            }
+        });
+        $(this).remove();
 
     })
+
 }

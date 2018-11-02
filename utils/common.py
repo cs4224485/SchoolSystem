@@ -51,3 +51,20 @@ def calculate_day_age(y, m, d):
     d1 = datetime.date(y, m, d)
     timestamp = time.mktime(d1.timetuple())
     return (int((int(time.time() - timestamp)) / 86400))
+
+
+def calculate_period(grade):
+    '''
+    根据年级计算届别
+    :param grade:
+    :return:
+    '''
+    grade_choice = (
+     '一年级',  '二年级',  '三年级',  '四年级',  '五年级',  '六年级',  '初一',  '初二',  '初三', '高一',  '高二',  '高三')
+    if grade in grade_choice:
+        grade_index = grade_choice.index(grade)
+        if datetime.date.today().month >= 9:
+            period = datetime.date.today().year - grade_index
+        else:
+            period = datetime.date.today().year - grade_index + 1
+        return period

@@ -318,7 +318,7 @@ class StarkConfig(object):
         query_params._mutable = True
         # 请求的URL
         base_url = self.request.path
-        page = Pagination(total_set, request.GET.get('page'), query_params, base_url, per_page=15, max_show=10)
+        page = Pagination(total_set, request.GET.get('page'), query_params, base_url, per_page=20)
         # 获取组合搜索筛选
         list_filter = self.get_list_filter()
 
@@ -366,7 +366,6 @@ class StarkConfig(object):
         if form.is_valid():
             self.save(form)
             return redirect(self.reverse_list_url())
-        print(form.errors)
         return render(request, template, {'form': form})
 
     def change_view(self, request, pk, template='stark/change.html'):
@@ -470,7 +469,6 @@ class StarkConfig(object):
         :return:
         '''
         display_list = []
-        display_list.append(StarkConfig.display_checkbox)
         display_list.extend(self.list_display)
         if not self.list_display_links:
             display_list.append(StarkConfig.display_edit)

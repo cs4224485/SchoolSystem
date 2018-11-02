@@ -9,6 +9,7 @@ from django import forms
 from django.urls import re_path
 from django.core import serializers
 from django.http import JsonResponse
+from utils.common import *
 import copy
 
 
@@ -45,7 +46,7 @@ class StudentConfig(StarkConfig):
             gender = Ffields.ChoiceField(required=True, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
             stu_class_list = tuple(models.StuClass.objects.filter(school=self.request.GET.get('school_id')))
             stu_class_list = [(item.pk, item) for item in stu_class_list]
-            stu_class = Ffields.ChoiceField(required=True, choices=stu_class_list,widget=Fwidgets.Select(
+            stu_class = Ffields.ChoiceField(required=True, choices=stu_class_list, widget=Fwidgets.Select(
                 attrs={'class': 'form-control', 'id': 'class'}), error_messages={"required": "请选择班级"})
             grade_list = tuple(
                 models.Grade.objects.filter(stuclass__school=self.request.GET.get('school_id')).all().distinct())
@@ -56,7 +57,8 @@ class StudentConfig(StarkConfig):
 
             class Meta:
                 model = self.model_class
-                fields = ("last_name", 'first_name', 'full_name', "gender", "birthday", 'school', 'interior_student_id')
+                fields = (
+                "last_name", 'first_name', 'full_name', "gender", "birthday", 'school', 'period', 'interior_student_id')
                 widgets = {
                     "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
                     "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
@@ -83,13 +85,15 @@ class StudentConfig(StarkConfig):
         '''
         request_data = copy.deepcopy(request.POST)
         school_id = request.GET.get('school_id')
+        stu_class_obj = models.StuClass.objects.filter(id=request.POST.get('stu_class')).first()
+        grade_obj = models.Grade.objects.filter(id=request.POST.get('grade')).first()
         request_data['school'] = school_id
         request_data['full_name'] = request_data['last_name'] + request_data['first_name']
         import uuid
+        request_data['period'] = calculate_period(grade_obj.get_grade_name_display())
         request_data['interior_student_id'] = 'str:%s' % uuid.uuid4()
         form = model_form(request_data)
-        stu_class_obj = models.StuClass.objects.filter(id=request.POST.get('stu_class')).first()
-        grade_obj = models.Grade.objects.filter(id=request.POST.get('grade')).first()
+
         form.instance.stu_class = stu_class_obj
         form.instance.grade = grade_obj
         return form
@@ -116,20 +120,30 @@ class StudentConfig(StarkConfig):
         temp.append(re_path("students/stu_class/", self.get_stu_class))
         return temp
 
-    def display_full_name(self, row=None, header=False):
-        if header:
-            return '学生姓名'
-        return "%s%s" %(row.first_name, row.last_name)
+    def get_list_display(self):
+        val = super().get_list_display()
+        val.remove(StarkConfig.display_edit)
+        return val
 
     def display_stu_class(self, row=None, header=False):
         if header:
             return '班级'
-        return "%s" %(row.stu_class)
+        return "%s(%s届)" % (row.stu_class, row.period)
 
     def get_add_btn(self):
         return None
 
-    list_display = [display_full_name, display_stu_class, display_health, display_family, display_parent, 'id_card']
+    def display_name(self, row=None, header=False):
+        if header:
+            return "姓名"
+        if len(row.first_name) > 1:
+            first_name = row.first_name[-1]
+            mark = '*'
+            mark *= len(row.first_name) - 1
+            return mark_safe('%s<span style="font-size:21px; color:black; position: relative; top: 5px;">%s</span>%s' % (row.last_name, mark, first_name))
+        return mark_safe('%s<span style="font-size:21px; color:black; position: relative; top: 5px;">*</span>%s' % (row.last_name, row.first_name))
+
+    list_display = [display_name, display_stu_class, 'school']
     search_list = ['full_name']
 
 

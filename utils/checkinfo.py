@@ -37,11 +37,10 @@ def check_id_card(id_number):
         info['msg'] = "身份证号码出生日期超出范围或含有非法字符"
         return False, info
     # 校验最后一位
-    if str(check_code_list[sum([a * b for a, b in zip(id_code_list, [int(a) for a in id_number[0:-1]])]) % 11]) != str(id_number.upper()[-1]):
-        info['msg'] = "身份证号码校验错误!"
-        return False, info
+    # if str(check_code_list[sum([a * b for a, b in zip(id_code_list, [int(a) for a in id_number[0:-1]])]) % 11]) != str(id_number.upper()[-1]):
+    #     info['msg'] = "身份证号码校验错误!"
+    #     return False, info
     # 判断男女
-
     gender = (1, '男') if int(id_number[-2]) % 2 == 1 else (2, '女')
 
     info['birthday'] = str(birthday)

@@ -1,5 +1,5 @@
 from django.db import models
-
+# from students.models import StudentInfo
 
 # Create your models here.
 
@@ -275,8 +275,9 @@ class ScopeOfFilling(models.Model):
 
 class TableInfo(models.Model):
     '''
-    填表信息
+    填表后的相关信息
     '''
-    table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE)
+    table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE, related_name='table_info')
     finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
-
+    student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CharField, related_name='for_student')
+    # teacher = models.ForeignKey(to='TeacherInfo', verbose_name='填表老师', on_delete=models.CharField)
