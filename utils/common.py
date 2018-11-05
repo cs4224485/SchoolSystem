@@ -1,7 +1,7 @@
 import uuid
 import datetime
 import time
-
+from pypinyin import lazy_pinyin
 
 def create_uuid():
     random_id = uuid.uuid4()
@@ -68,3 +68,16 @@ def calculate_period(grade):
         else:
             period = datetime.date.today().year - grade_index + 1
         return period
+
+
+def get_en_name(name):
+    pinyin_name = lazy_pinyin(name)
+    last_name = pinyin_name[0]
+    first_name_list = pinyin_name[1:]
+    first_name = ""
+    for y in first_name_list:
+        first_name += y
+    en_name = last_name + " " + first_name
+    en_name = en_name.title().lstrip()
+
+    return en_name

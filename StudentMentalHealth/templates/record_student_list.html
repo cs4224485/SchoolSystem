@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    记录个别档案
+{% endblock %}
+
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">教师</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
+            <div class="text">
+                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
+                <p class="p2">Cao Guangbiao primary school</p>
+            </div>
+        </div>
+
+        <h3 class="component-title">选择要记录的学生</h3>
+        <div class="classes flex_between">
+            <div class="btn-left"><p class="triangle-left"></p></div>
+            <div class="name">{{ class }}</div>
+            <div class="btn-right"><p class="triangle-right"></p></div>
+        </div>
+        <ul class="mui-table-view" id="StudentList">
+             {% for student in student_List %}
+
+                <li class="mui-table-view-cell">
+                    <span>{{ forloop.counter }}</span>
+                    <span>{{ student.full_name }}</span>
+                    <span class="mui-badge mui-badge-warning">33</span>
+                    <a href="/mental/stu_record/{{ student.pk }}/" class="mui-icon mui-icon-arrowright right"></a>
+                </li>
+             {% endfor %}
+
+        </ul>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

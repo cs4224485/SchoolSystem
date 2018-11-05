@@ -190,7 +190,7 @@ class StudentParents(models.Model):
     company = models.CharField(verbose_name='工作单位', max_length=64, null=True, blank=True)
     job = models.CharField(verbose_name='职位', max_length=32, null=True, blank=True)
     wechat = models.CharField(verbose_name='微信', max_length=32, null=True, blank=True)
-    wechat_open_id = models.ForeignKey(verbose_name='openID', to='WechatOpenID', null=True, on_delete=models.CASCADE)
+    wechat_open_id = models.ForeignKey(verbose_name='openID', to='students.WechatOpenID', null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.first_name+self.last_name

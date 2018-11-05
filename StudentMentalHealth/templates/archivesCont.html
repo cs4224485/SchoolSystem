@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    个别教育档案
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'MentalHealth/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'MentalHealth/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <style>
+
+        .tijiaoBox {
+        }
+
+        .tijiaoBox input {
+            width: 80%;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        .tijiaoBox button {
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">个别教育档案</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
+            <div class="text">
+                <p class="p1"><b>{{ student.full_name }}</b> <span>{{ student.stu_class }}</span></p>
+                <p class="p2">{{ en_name }}</p>
+            </div>
+        </div>
+        <div class="archives_title">
+            <p>学生个别教育档案</p>
+            <p>Individual educational records of students</p>
+        </div>
+        <div class="archives_zixun">请各位教师务必遵守我校《心理咨询隐私保密制度》</div>
+        <h3 class="component-title">记录教师</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">{{ teacher_info.identity__title }}
+                <span class="mui-badge ">{{ teacher_info.last_name }}{{ teacher_info.first_name }}</span>
+            </li>
+        </ul>
+        <h3 class="component-title">记录时间</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">今天是 <span>{{ current_time|date:"Y-m-d" }}</span>
+                <span class="mui-badge ">第一学期第12周</span>
+            </li>
+        </ul>
+        {% if teacher_info.identity__title  == "心理老师" %}
+            <h3 class="component-title">心理症状</h3>
+            <ul class="mui-table-view">
+                <li style="padding-top:10px">阿斯伯格综合征 Asperger syndrome</li>
+                <li class="tijiaoBox flex_between">
+                    <input type="text" class="mui-input-clear" placeholder="请选择心理症状" id='BloodType' readonly="readonly">
+                    <button type="button" class="mui-btn mui-btn-primary">提交</button>
+                </li>
+            </ul>
+        {% endif %}
+        <h3 class="component-title">关键词</h3>
+        <div class="AnswerBox" id="AnswerBox" scale_pk = {{ scale_item.pk }}>
+            {% for line_title in scale_item.line_title.all %}
+                <div class="box">
+                    <div class="title">{{ line_title.des }}</div>
+                    <div class="radioBox  flex">
+                        {% for option in scale_item.options.all %}
+                            <div class="mui-radio">
+                                <div class="Pradio" data-text="0" optionValue="{{ option.pk }}" lineTitle="{{ line_title.pk }}"><p></p></div>
+                                <label>{{ option.des }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="mui-button-row" id="radio_information">
+                <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">提交</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="student" student_id="{{ student.id }}"></div>
+    <!--。-->
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'MentalHealth/js/mui.picker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'MentalHealth/js/mui.poppicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'MentalHealth/js/archivesCont.js' %}"></script>
+
+    <script>
+
+    </script>
+{% endblock %}

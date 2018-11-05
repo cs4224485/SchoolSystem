@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'z90mwnm$m7@2zbr8*37w7lk0e$7%ka3cdo4_i@j#hs2jo)_su7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'school.apps.SchoolConfig',
-    'stark.apps.StarkConfig'
+    'stark.apps.StarkConfig',
+    'teacher.apps.TeacherConfig',
+    'StudentMentalHealth'
 ]
 
 
