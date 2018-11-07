@@ -14,11 +14,7 @@ admin.site.register(FamilyInfo)
 admin.site.register(StudentParents)
 admin.site.register(StudentToParents)
 
-
-
-
 class HealthInfoConfig(admin.ModelAdmin):
     list_display = ['student', 'record_date', 'allergy', 'InheritedDisease']
-
 
 admin.site.register(HealthInfo, HealthInfoConfig)
