@@ -244,7 +244,7 @@ class HealthInfoViewSet(BaseViewSet):
 
     def create(self, request, *args, **kwargs):
         request_data = copy.deepcopy(request.data)
-        print(request_data)
+       #print(request_data)
         health_serialize = HealthInfoSerializers(data=request_data)
         student_id = request_data.get('student')
         if health_serialize.is_valid():
@@ -290,7 +290,7 @@ class FamilyInfoViewSet(BaseViewSet):
     def create(self, request, *args, **kwargs):
 
         request_data = copy.deepcopy(request.data)
-        print(request_data)
+        #print(request_data)
         stu = request_data.get('student')
 
         family_info_serialize = FamilyInfoSerializers(data=request_data)
@@ -310,7 +310,7 @@ class FamilyInfoViewSet(BaseViewSet):
                 self.response_error(home_add_serialize.errors)
                 return Response(self.message)
         else:
-            print(family_info_serialize.errors)
+           # print(family_info_serialize.errors)
             self.response_error(family_info_serialize.errors)
             return Response(self.message)
 
@@ -330,11 +330,11 @@ class StudentParentsViewSet(BaseViewSet):
         request_data = request.data.get('parents')
         import json
         request_data = json.loads(request_data)
-        print(request_data)
+        #print(request_data)
         for key, item in request_data.items():
             parents_serialize = StudentParentsSerializers(data=item)
-            print('key', key)
-            print('item', item)
+           # print('key', key)
+           # print('item', item)
             if parents_serialize.is_valid():
                 with transaction.atomic():
                     # 创建家长信息
@@ -347,11 +347,11 @@ class StudentParentsViewSet(BaseViewSet):
                         self.message['state'] = True
                         self.message['msg'] = '创建成功'
                     else:
-                        print('stu_to_parents_error', stu_to_parents.errors)
+                       # print('stu_to_parents_error', stu_to_parents.errors)
                         self.response_error(stu_to_parents.errors)
                         return Response(self.message)
             else:
-                print('parents_errors', parents_serialize.errors)
+               #print('parents_errors', parents_serialize.errors)
                 self.response_error(parents_serialize.errors)
                 return Response(self.message)
 
@@ -367,7 +367,7 @@ class CustomizationQuestionViewSet(BaseViewSet):
         request_data = copy.deepcopy(request.data.get('info'))
         import json
         request_data = json.loads(request_data)
-        print(request_data)
+       # print(request_data)
         for scale_item in request_data.get('scaleInfo'):
             for scale_pk, des_info in scale_item.items():
                 save_data = {'student': request_data.get('studentId'), 'scale': scale_pk}
