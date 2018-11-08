@@ -102,7 +102,7 @@ class SchoolInfoConfig(StarkConfig):
                 判断学校是否已经存在了
                 :return:
                 '''
-                print(self.cleaned_data)
+                # print(self.cleaned_data)
                 # school_name = self.cleaned_data.get('school_name')
                 campus = self.cleaned_data.get('campus_district')
                 school_obj = models.SchoolInfo.objects.filter(**self.cleaned_data)
