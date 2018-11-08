@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mental_tag %}
+{% block title %}
+    个别教育档案
+{% endblock %}
+
+{% block css %}
+    <style>
+        .archives_zixun {
+            text-align: left;
+            padding: 10px;
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">个别教育档案</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+            {% head_stu_info student %}
+        </div>
+        <div class="archives_title">
+            <p>学生个别教育档案</p>
+            <p>Individual educational records of students</p>
+        </div>
+        <div class="archives_zixun">标题:{{ scale.title }}</div>
+
+        <div class="AnswerBox" id="AnswerBox" scale_pk= {{ scale.pk }}>
+            {% for line_title in scale.line_title.all %}
+                <div class="box">
+                    <div class="title">{{ line_title.des }}</div>
+                    <div class="radioBox  flex">
+                        {% for option in scale.options.all %}
+                            <div class="mui-radio">
+                                <div class="Pradio" data-text="0" optionValue="{{ option.pk }}"
+                                     lineTitle="{{ line_title.pk }}"><p></p></div>
+                                <label>{{ option.des }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="mui-button-row" id="radio_information">
+                <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">完成记录</button>
+            </div>
+        </div>
+        <!--。-->
+    </div>
+    <div id="student" student_id="{{ student.id }}"></div>
+
+{% endblock %}
+{% block js %}
+
+    <script type="text/javascript" src="{% static 'MentalHealth/js/archivesCont.js' %}"></script>
+    <script>
+    </script>
+
+{% endblock %}

@@ -608,7 +608,7 @@ var fetch = require('isomorphic-fetch');
 var errors = require('../errors');
 var utils = require('../utils');
 var URL = require('url-parse');
-var urlTemplate = require('url-template');
+var urlTemplate = require('url-templates');
 
 var parseResponse = function parseResponse(response, decoders, responseCallback) {
   return response.text().then(function (text) {

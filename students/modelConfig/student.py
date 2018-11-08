@@ -54,16 +54,17 @@ class StudentConfig(StarkConfig):
             grade_list.insert(0, (0, '--- 选择年级 ---'))
             grade = Ffields.ChoiceField(required=True, choices=grade_list, widget=Fwidgets.Select(
                 attrs={'class': 'form-control', 'id': 'grade', 'data-province': '---- 选择年级 ----'}))
+            birthday = Ffields.DateField(required=False, widget=Fwidgets.DateInput(
+                attrs={'class': 'form-control', 'type': 'date', 'style': 'width: 600px'}))
 
             class Meta:
                 model = self.model_class
                 fields = (
-                "last_name", 'first_name', 'full_name', "gender", "birthday", 'school', 'period', 'interior_student_id')
+                    "last_name", 'first_name', 'full_name', "gender", "birthday", 'school', 'period',
+                    'interior_student_id')
                 widgets = {
                     "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
                     "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
-                    "birthday": Fwidgets.DateInput(
-                        attrs={'class': 'form-control', 'type': 'date', 'style': 'width: 600px'})
                 }
                 error_messages = {
                     "last_name": {"required": "请输入学生姓"},
@@ -140,8 +141,11 @@ class StudentConfig(StarkConfig):
             first_name = row.first_name[-1]
             mark = '*'
             mark *= len(row.first_name) - 1
-            return mark_safe('%s<span style="font-size:21px; color:black; position: relative; top: 5px;">%s</span>%s' % (row.last_name, mark, first_name))
-        return mark_safe('%s<span style="font-size:21px; color:black; position: relative; top: 5px;">*</span>%s' % (row.last_name, row.first_name))
+            return mark_safe(
+                '%s<span style="font-size:21px; color:black; position: relative; top: 5px;">%s</span>%s' % (
+                row.last_name, mark, first_name))
+        return mark_safe('%s<span style="font-size:21px; color:black; position: relative; top: 5px;">*</span>%s' % (
+        row.last_name, row.first_name))
 
     list_display = [display_name, display_stu_class, 'school']
     search_list = ['full_name']

@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^student/', include('students.urls')),
     re_path(r'^school/', include('school.urls')),
+    re_path(r'^mental/', include('StudentMentalHealth.urls')),
     re_path(r'^api/', include('APIS.urls')),
     path('stark/', site.urls),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),

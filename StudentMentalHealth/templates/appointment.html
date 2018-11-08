@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    预约心理老师
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+
+{% block content %}
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">预约心理老师</h1>
+</header>
+<div class="mui-content">
+ <div class="public_logo flex">
+        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
+        <div class="text">
+            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
+            <p class="p2">Cao Guangbiao primary school</p>
+        </div>
+    </div>
+
+    <h3 class="component-title">选择学生</h3>
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell">
+            <span>一年级（10）班</span>
+            <span class="mui-badge mui-badge-success">蒋韫慧</span>
+        </li>
+    </ul>
+    <h3 class="component-title">选择心理老师</h3>
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell">
+            <span> &nbsp;</span>
+            <span class="mui-badge ">蒋韫慧</span>
+        </li>
+    </ul>
+    <h3 class="component-title">选择预约时间</h3>
+    <ul class="mui-table-view slassessList">
+        <li class="flex_between">
+            <span>2019-10-12</span>
+            <span>AM10:30</span>
+
+        </li>
+        <li class="flex_center">+预约</li>
+    </ul>
+
+    <!--。-->
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+</script>
+{% endblock %}

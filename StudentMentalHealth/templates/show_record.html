@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mental_tag %}
+{% block title %}
+    个别教育档案
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <style>
+
+        .tijiaoBox {
+        }
+
+        .tijiaoBox input {
+            width: 80%;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        .tijiaoBox button {
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">个别教育档案</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+           {% head_stu_info student %}
+        </div>
+        <div class="archives_title">
+            <p>学生个别教育档案</p>
+            <p>Individual educational records of students</p>
+        </div>
+        <div class="archives_zixun">请各位教师务必遵守我校《心理咨询隐私保密制度》</div>
+        <h3 class="component-title">记录教师</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">{{ request.session.teacher_info.identity}}
+                <span class="mui-badge ">{{ request.session.teacher_info.name}}</span>
+            </li>
+        </ul>
+        <h3 class="component-title">记录时间</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">今天是 <span>{{ current_time|date:"Y-m-d" }}</span>
+                <span class="mui-badge ">{{ school_week.1 }}第{{ school_week.0 }}周</span>
+            </li>
+        </ul>
+        {% if request.session.teacher_info.identity  == "班主任" %}
+        <h3 class="component-title">关键词</h3>
+        <ul class="mui-table-view">
+            {% for item in scale_item %}
+                <li class="mui-table-view-cell">{{ item.title.des }}<span>({{ item.value.des }})</span></li>
+            {% endfor %}
+        </ul>
+
+        {% endif %}
+    </div>
+
+    <div id="student" student_id="{{ student.id }}"></div>
+    <!--。-->
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'pub/js/mui.picker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+
+    <script>
+
+    </script>
+{% endblock %}

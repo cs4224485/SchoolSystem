@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    教师登陆
+{% endblock %}
+
+
+
+{% block content %}
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">曹光彪小学</h1>
+</header>
+<div class="landing mui-content">
+    <ul class="logo">
+        <li class="flex_center"><img src="{% static 'MentalHealth/images/logo.jpg' %}"/></li>
+        <li class="text">曹光彪小学<p>Cao Guangbiao primary school</p></li>
+        <li class="name">学生心理个别教育电子档案</li>
+        <li class="v">V0.9</li>
+    </ul>
+    <div class="mui-input-group box_sizing" id="input_information">
+        <div class="mui-input-row flex_center box_sizing">
+            <label>教师姓名：</label>
+            <input type="text" class="mui-input-clear" placeholder="请输入">
+        </div>
+        <div class="mui-input-row flex_center box_sizing">
+            <label>手机后4位：</label>
+            <input type="number" class="mui-input-clear" placeholder="请输入">
+        </div>
+        <div class="mui-button-row" id="input_information">
+            <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">登录</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="opop" data="38">1</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'MentalHealth/js/landing.js' %}"></script>
+<script>
+
+</script>
+{% endblock %}
