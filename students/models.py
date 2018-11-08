@@ -230,6 +230,6 @@ class ScaleValue(models.Model):
     title = models.ForeignKey(verbose_name='对应的行标题', to=ScaleLineTitle, on_delete=models.CASCADE)
     value = models.ForeignKey(verbose_name='对应的值', to=ScaleOptionDes, on_delete=models.CASCADE)
     # score = models.IntegerField(verbose_name='分数')
-    scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE)
+    scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE, related_name='scale_value')
 
 

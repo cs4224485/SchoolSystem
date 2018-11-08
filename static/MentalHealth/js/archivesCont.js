@@ -1,38 +1,4 @@
-(function ($, doc) {
-    $.init();
-    $.ready(function () {
-        //心理症状
-        var userPicker = new $.PopPicker();
-        userPicker.setData([{
-            value: '1',
-            text: '心理症状1'
-        }, {
-            value: '2',
-            text: '心理症状2'
-        }, {
-            value: '3',
-            text: '心理症状3'
-        }, {
-            value: '4',
-            text: '心理症状4'
-        }, {
-            value: '5',
-            text: '暂不清楚'
-        }]);
-        var BloodTypeButton = doc.getElementById('BloodType');
-        if (BloodTypeButton) {
-            BloodTypeButton.addEventListener('tap', function (event) {
-                userPicker.show(function (items) {
-                    BloodTypeButton.value = items[0].text;
-                    console.log(items[0].value)
 
-                });
-            }, false);
-        }
-
-
-    });
-})(mui, document);
 
 //选中
 mui("#AnswerBox").on('tap', '.mui-radio', function () {
@@ -83,10 +49,10 @@ mui("#AnswerBox").on('tap', '.Submission', function () {
             success: function (data) {
                 if (data.state) {
                     mui.alert(data.msg);
-                    var setting_pk = $('#setting_pk').attr('pk');
                     setTimeout(
                         function () {
-                            window.location.href = "/student/student_info/" + setting_pk + "/?step=finish_page&student_id=" + studentId
+                            var studentId =  $('#student').attr('student_id');
+                            window.location.href = "/mental/record_list/"+studentId +'/'
                         },
                         1500)
                 } else {

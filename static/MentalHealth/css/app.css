@@ -1,407 +1,390 @@
 /*-webkit-overflow-scrolling:touch;*/
-* {
-    margin: 0;
-    padding: 0;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-}
 
-li, p {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
+i{ font-style: normal;}
+li,
+p {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 html {
-    font-size: 100px;
-    width: 100%;
-    height: 100%;
+	font-size: 100px;
+	width: 100%;
+	height: 100%;
 }
 
-body, html {
-    height: 100%;
-    background: #FF9900;
+body,
+html {
+	height: 100%;
+	background: #FF9900;
 }
 
 body {
-    font-size: 14px;
-    -webkit-overflow-scrolling: touch;
+	font-size: 14px;
+	-webkit-overflow-scrolling: touch;
 }
 
 .mui-content {
-    overflow-y: scroll !important;
+	overflow-y: scroll !important;
 }
 
 .MuiBjColor {
-    background: #2EB6BE;
+	background: #2EB6BE;
 }
 
 .right_pop {
-    position: absolute;
-    right: 0;
-    color: #2EB6BE;
-    cursor: pointer;
-    font-size: 13px;
+	position: absolute;
+	right: 0;
+	color: #2EB6BE;
+	cursor: pointer;
+	font-size: 13px;
 }
 
 .right {
-    float: right;
+	float: right;
 }
 
+
 /*弹性布局*/
+
 .flex {
-    display: -webkit-flex;
-    display: flex;
+	display: -webkit-flex;
+	display: flex;
 }
 
 .flex_around {
-    display: -webkit-flex;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+	display: -webkit-flex;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
 }
 
 .flex_between {
-    display: -webkit-flex;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	display: -webkit-flex;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .flex_center {
-    display: -webkit-flex;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: -webkit-flex;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .flex_wrap {
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: wrap;
-    flex-wrap: wrap;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: wrap;
+	flex-wrap: wrap;
 }
 
 .box_sizing {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; /* Firefox */
-    -webkit-box-sizing: border-box; /* Safari */
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	/* Firefox */
+	-webkit-box-sizing: border-box;
+	/* Safari */
 }
+
 
 /*修改提示文字的颜色*/
 
-input::-webkit-input-placeholder { /* WebKit browsers */
-    color: #666;
-    font-size: 13px;
+input::-webkit-input-placeholder {
+	/* WebKit browsers */
+	color: #666;
+	font-size: 13px;
 }
 
-input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color: #666;
-    font-size: 13px;
+input:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18 */
+	color: #666;
+	font-size: 13px;
 }
 
-input::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color: #666;
-    font-size: 13px;
+input::-moz-placeholder {
+	/* Mozilla Firefox 19+ */
+	color: #666;
+	font-size: 13px;
 }
 
-input:-ms-input-placeholder { /* Internet Explorer 10+ */
-    color: #666;
-    font-size: 13px;
+input:-ms-input-placeholder {
+	/* Internet Explorer 10+ */
+	color: #666;
+	font-size: 13px;
 }
 
-.mui-bar-nav ~ .mui-content {
-    padding: 20px;
+.mui-bar-nav~.mui-content {
+	padding: 20px;
 }
 
 .mui-bar {
-    background: #FF9900 !important;;
-    z-index: 999;
+	background: #FF9900 !important;
+	;
+	z-index: 999;
 }
 
 .mui-bar .mui-title {
-    color: #fff;
+	color: #fff;
 }
 
 .mui-input-group .mui-input-row:after {
-    left: 0;
+	left: 0;
 }
 
 .mui-input-group .mui-input-row {
-    height: auto;
+	height: auto;
 }
 
 .mui-input-row label {
-    padding: 0;
+	padding: 0;
 }
 
 .mui-input-row {
-    padding: 10px;
+	padding: 10px;
 }
 
 .positionImgbj {
-    position: fixed;
-    left: 0;
-    bottom: 30px;
-    width: 1rem;
-    height: 1.35rem;
+	position: fixed;
+	left: 0;
+	bottom: 30px;
+	width: 1rem;
+	height: 1.35rem;
 }
 
-.mui-content, .mui-input-group, .mui-input-group:after {
-    background: none;
+.mui-content,
+.mui-input-group,
+.mui-input-group:after {
+	background: none;
 }
 
 #input_information {
-    padding: 10px;
-    font-size: 15px;
+	padding: 10px;
+	font-size: 15px;
 }
 
 #input_information input {
-    font-size: 15px;
-    color: #000;
+	font-size: 15px;
+	color: #000;
 }
 
 #input_information label span {
-    font-size: 13px;
-    color: #666;
+	font-size: 13px;
+	color: #666;
 }
 
 .Submission {
-    background: #FF9900;
-    border: 0px;
+	background: #FF9900;
+	border: 0px;
 }
 
 .mui-badge {
-    font-size: 14px;
+	font-size: 14px;
 }
 
+
 /*三角形*/
+
 .triangle-left {
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-right: 10px solid #666;
-    border-bottom: 5px solid transparent;
+	width: 0;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-right: 10px solid #666;
+	border-bottom: 5px solid transparent;
 }
 
 .triangle-right {
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-left: 10px solid #666;
-    border-bottom: 5px solid transparent;
+	width: 0;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-left: 10px solid #666;
+	border-bottom: 5px solid transparent;
 }
 
+
 /*登陆*/
+
 .mui-content {
-    background: #fff;
-    border-radius: 25px 25px 0px 0;
-    width: 100%;
-    height: 90%;
-    position: fixed;
-    bottom: 0px;
-    left: 0;
-    overflow-y: scroll;
+	background: #fff;
+	border-radius: 25px 25px 0px 0;
+	width: 100%;
+	height: 90%;
+	position: fixed;
+	bottom: 0px;
+	left: 0;
+	overflow-y: scroll;
 }
 
 .landing .logo li {
-    text-align: center
+	text-align: center
 }
 
 .landing .logo .text {
-    font-size: 30px;
-    padding: 20px 0 10px 0;
-    color: #323232;
+	font-size: 30px;
+	padding: 20px 0 10px 0;
+	color: #323232;
 }
 
 .landing .logo img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
 }
 
 .landing .logo .text p {
-    font-size: 14px;
-    color: #FF9900;
-    padding-top: 15px;
+	font-size: 14px;
+	color: #FF9900;
+	padding-top: 15px;
 }
 
 .landing .logo .name {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .landing .logo .v {
-    font-size: 14px;
-    color: #C0C0C0;
+	font-size: 14px;
+	color: #C0C0C0;
 }
 
+
 /*头部*/
+
 .public_logo {
-    padding-bottom: 15px;
-    margin-bottom: 5px;
+	padding-bottom: 15px;
+	margin-bottom: 5px;
 }
 
 .public_logo img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
 }
 
 .public_logo .text {
-    margin-left: 20px;
-    margin-top: 20px;
+	margin-left: 20px;
+	margin-top: 20px;
 }
 
 .public_logo .text .p1 {
-    font-size: 16px;
+	font-size: 16px;
 }
 
 .public_logo .text .p1 b {
-    padding-right: 20px;
+	padding-right: 20px;
 }
 
 .public_logo .text .p1 span {
-    font-size: 14px;
-    padding: 0px 5px
+	font-size: 14px;
+	padding: 0px 5px
 }
 
 .public_logo .text .p2 {
-    color: #FF9900;
-    font-size: 14px;
+	color: #FF9900;
+	font-size: 14px;
 }
 
 .component-title {
-    margin-top: 1.5em;
-    margin-bottom: .5em;
-    font-size: 1.0em;
-    font-weight: bold;
-    color: #FF9900 !important;
-    padding: .3em 1em;
-    border-left: 4px solid #FF9900;
+	margin-top: 1.5em;
+	margin-bottom: .5em;
+	font-size: 1.0em;
+	font-weight: bold;
+	color: #FF9900 !important;
+	padding: .3em 1em;
+	border-left: 4px solid #FF9900;
 }
 
+
 /*档案页*/
+
 .archives_title {
-    color: #fff;
-    font-size: 15px;
-    text-align: center;
-    background: #FF9900;
-    padding: 10px 0
+	color: #fff;
+	font-size: 15px;
+	text-align: center;
+	background: #FF9900;
+	padding: 10px 0
 }
 
 .archives_title p {
-    color: #fff;
+	color: #fff;
 }
 
 .archives_zixun {
-    border-bottom: 1px solid #f00;
-    text-align: center;
-    font-size: 12px;
-    padding: 6px 0;
-    background: #ccc;
+	border-bottom: 1px solid #f00;
+	text-align: center;
+	font-size: 12px;
+	padding: 6px 0;
+	 color: #f00;
+	background: #fbf5f5;
 }
 
+
 /*选择要记录的学生*/
+
 .classes {
-    height: 50px;
+	height: 50px;
 }
 
 .classes p {
-    color: #333;
+	color: #333;
 }
 
 #StudentList {
-    color: #333;
+	color: #333;
 }
 
 #StudentList .mui-badge {
-    margin-right: 30px;
-    padding: 8px
+	margin-right: 30px;
+	padding: 8px
 }
 
 #StudentList .mui-icon {
-    color: #ccc
+	color: #ccc
 }
+
 
 /*心理档案*/
-.slassessList {
-}
+
+.slassessList {}
 
 .slassessList li {
-    padding: 10px
+	padding: 10px
 }
 
 .slassessList span.fot {
-    font-size: 12px;
-    color: #999;
+	font-size: 12px;
+	color: #999;
 }
 
 .addPC {
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-    line-height: 36px;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	line-height: 36px;
+	 background: #FF9900; color: #fff;
 }
 
-.AnswerBox .box {
-    background: #fff;
-    margin-bottom: 10px;
-}
+.AnswerBox .box{  background: #fff;margin-bottom: 10px;}
+	.AnswerBox .title{  border-bottom: 1px solid #ccc; font-size: 15px; padding-bottom: 5px;}
+	.AnswerBox .radioBox{  min-height: 50px; border-bottom: 1px solid #ccc; border-right: 1px solid #ccc;}
+	.AnswerBox  .mui-radio{   width: 20%; border-left: 1px solid #ccc; position: relative;}
+	.AnswerBox  .mui-radio label{ width: 100%; display: block; padding: 0;  text-align: center; font-size: 13px;
+	 position: absolute;bottom: 2px;}
+.AnswerBox .Pradio{ border-radius: 50%; width: 20px; height: 20px; border:1px solid #666; cursor: pointer; display: block; margin: 0 auto;margin-top: 5px;}
+.AnswerBox .Pradio p{ width: 10px; height: 10px; background: #666; border-radius: 50%; margin: 4px auto;}
+.AnswerBox .Pradio.act{ border:1px solid #1676ef; }
+.AnswerBox .Pradio.act p{ width: 10px; height: 10px; background: #1676ef; border-radius: 50%; margin: 4px auto;}
 
-.AnswerBox .title {
-    border-bottom: 1px solid #ccc;
-    font-size: 15px;
-    padding-bottom: 5px;
-}
+.tijiaoBox{}
+		.tijiaoBox input{width: 80%;margin-top: 10px; font-size: 15px;}
+		.tijiaoBox button{margin: 0;}
 
-.AnswerBox .radioBox {
-    min-height: 50px;
-    border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-}
 
-.AnswerBox .mui-radio {
-    width: 20%;
-    border-left: 1px solid #ccc;
-    position: relative;
-}
 
-.AnswerBox .mui-radio label {
-    width: 100%;
-    display: block;
-    padding: 0;
-    text-align: center;
-    font-size: 13px;
-    position: absolute;
-    bottom: 2px;
-}
 
-.AnswerBox .Pradio {
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    border: 1px solid #666;
-    cursor: pointer;
-    display: block;
-    margin: 0 auto;
-    margin-top: 5px;
-}
-
-.AnswerBox .Pradio p {
-    width: 10px;
-    height: 10px;
-    background: #666;
-    border-radius: 50%;
-    margin: 4px auto;
-}
-
-.AnswerBox .Pradio.act {
-    border: 1px solid #1676ef;
-}
-
-.AnswerBox .Pradio.act p {
-    width: 10px;
-    height: 10px;
-    background: #1676ef;
-    border-radius: 50%;
-    margin: 4px auto;
-}

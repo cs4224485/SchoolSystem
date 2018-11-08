@@ -21,27 +21,32 @@
     <h3 class="component-title">教师信息</h3>
     <ul class="mui-table-view">
         <li class="mui-table-view-cell">姓名
-            <span class="mui-badge ">{{ teacher_obj.last_name }}{{ teacher_obj.first_name }}</span>
+            <span class="mui-badge ">{{  request.session.teacher_info.name }}</span>
         </li>
-        <li class="mui-table-view-cell">{{ teacher_obj.teachers.first.stu_class}}
-            <span class="mui-badge ">{{ teacher_obj.identity }}</span>
+        <li class="mui-table-view-cell">{{ stu_class }}
+            <span class="mui-badge ">{{ request.session.teacher_info.identity }}</span>
         </li>
     </ul>
     <h3 class="component-title">功能列表</h3>
     <ul class="mui-table-view">
+        {% if request.session.teacher_info.identity == '班主任' %}
         <li class="mui-table-view-cell">
-            <a href="/mental/record_list/">记录个别教育档案</a>
-            <span class="mui-badge mui-badge-primary">11</span>
+            <a href="/mental/student_list/">记录个别教育档案</a>
+{#            <span class="mui-badge mui-badge-primary">11</span>#}
         </li>
-        <li class="mui-table-view-cell">预约心理老师
-            <span class="mui-badge mui-badge-success">22</span>
+        <li class="mui-table-view-cell">
+            <a href="/mental//appointment/">预约心理老师</a>
+{#            <span class="mui-badge mui-badge-success">22</span>#}
         </li>
+        {% endif %}
         <li class="mui-table-view-cell">查阅心理档案
-            <span class="mui-badge mui-badge-warning">33</span>
+{#            <span class="mui-badge mui-badge-warning">33</span>#}
         </li>
+        {% if request.session.teacher_info.identity == '心理老师' %}
         <li class="mui-table-view-cell">预约管理
             <span class="mui-badge mui-badge-danger">44</span>
         </li>
+        {% endif %}
     </ul>
     <!--。-->
 </div>

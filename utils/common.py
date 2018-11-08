@@ -48,6 +48,13 @@ def calculate_age(born):
 
 
 def calculate_day_age(y, m, d):
+    '''
+    计算日龄
+    :param y:
+    :param m:
+    :param d:
+    :return:
+    '''
     d1 = datetime.date(y, m, d)
     timestamp = time.mktime(d1.timetuple())
     return (int((int(time.time() - timestamp)) / 86400))
@@ -71,6 +78,11 @@ def calculate_period(grade):
 
 
 def get_en_name(name):
+    '''
+    获取英文名字
+    :param name:
+    :return:
+    '''
     pinyin_name = lazy_pinyin(name)
     last_name = pinyin_name[0]
     first_name_list = pinyin_name[1:]
@@ -81,3 +93,42 @@ def get_en_name(name):
     en_name = en_name.title().lstrip()
 
     return en_name
+
+
+def school_calendar():
+    '''
+    获取校历
+    :return:
+    '''
+    current_year = str(datetime.datetime.now().year)
+    current_month = datetime.datetime.now().month
+    if current_month >= 9:
+        them = '第一学期'
+        start_time = datetime.datetime.strptime('%s-9-1' % current_year, '%Y-%m-%d')
+    else:
+        them = '第二学期'
+        start_time = datetime.datetime.strptime('%s-2-19' % current_year, '%Y-%m-%d')
+    time_range = []
+    for i in range(1, 23):
+        time_range.append(start_time)
+        start_time = start_time + datetime.timedelta(weeks=1)
+
+    return time_range, them
+
+
+def current_week(current_date):
+    '''
+    根据当前时间获取周次
+    :param current_date:
+    :return:
+    '''
+    time_range, them = school_calendar()
+    for index, time in enumerate(time_range, start=1):
+        try:
+            if current_date >= time_range[index] and current_date <= time_range[index + 1]:
+                return index + 1, them
+            else:
+                continue
+        except Exception as e:
+            print(e)
+            return len(time_range), them

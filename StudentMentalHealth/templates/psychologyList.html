@@ -1,90 +1,126 @@
-<!DOCTYPE html>
-<html class="ui-page-login">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>学生心理档案记录</title>
-		<link href="css/mui.min.css" rel="stylesheet" />		
-		<link href="css/mui.picker.min.css" rel="stylesheet" />
-		<link href="css/mui.poppicker.css" rel="stylesheet" />
-		<link href="css/app.css" rel="stylesheet" />    
-	</head>
+{% extends 'base.html' %}
+{% load static %}
+{% load mental_tag %}
 
-<body>
-	<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">学生心理档案记录</h1>
-	</header>
-	<div class="mui-content">
-		<div class="public_logo flex">
-			<img src="images/logo.jpg" alt="" />
-			<div class="text">
-				<p class="p1"><b>王明</b> <span>一年级(2班)</span></p>
-				<p class="p2">WangMing</p>
-			</div>
-		</div>
-		<div class="archives_title">
-			<p>学生心理档案</p><p>Student psychological files</p>
-		</div>
-		<div class="archives_zixun">请各位教师务必遵守我校《心理咨询隐私保密制度》</div>		
-		
-			<ul class="mui-table-view slassessList">
-				<li class="flex_between">
-					<span>2018.09.11  14:20（已预约）</span>
-					<span class="mui-badge mui-badge-success">还有3天</span>
-				</li>							
-			</ul>		
-			<ul class="mui-table-view slassessList">
-				<li class="flex_between">
-					<span>2018.08.11（第4次）</span>				
-					<span class="fot">记录教师：蒋韫慧</span>
-				</li>
-				<li class="flex_between">
-					<span>2018.08.11（第3次）</span>				
-					<span class="fot">记录教师：蒋韫慧</span>
-				</li>
-				<li class="flex_between">
-					<span>2018.08.11（第2次）</span>				
-					<span class="fot">记录教师：蒋韫慧</span>
-				</li>
-				<li class="flex_between">
-					<span>2018.08.11（第1次）</span>				
-					<span class="fot">记录教师：蒋韫慧</span>
-				</li>
-						
-			</ul>
-			<div class="addPC">
-				+添加新的咨询记录
-			</div>
-			<div class="flex_between erweima">
-				<div class="logos">
-					<div class="public_logo flex">
-						<img src="images/logo.jpg" alt="">
-						<div class="text">
-							<p class="p1">曹光彪小学</p>
-							<p class="p2">Cao Guangbiao primary school</p>
-						</div>
-					</div>
-					<div class="taptext">长按识别二维码导出文件</div>
-				</div>
-				<img src="images/u941.png" alt=""  class="ewm"/>
-			</div>
-		
-		<!--。-->
-	</div>
-	<style>
-		.erweima{ margin-top: 10px;}
-		.erweima .public_logo .text{margin-top: 10px; margin-left: 5px;margin-right: 5px;}
-		.erweima .public_logo img,
-		.erweima .ewm{ width: 60px; height: 60px;}
-		.erweima .taptext{ background: #FF9900; color: #fff; text-indent: 20px; line-height: 30px; border-radius: 10px; text-align: center;}
-	</style>
+{% block title %}
+    学生心理档案记录
+{% endblock %}
 
-		<script type="text/javascript" src="js/jQuery1.9.js" ></script>
-		<script type="text/javascript" src="js/ajaxUrl.js" ></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
+{% block css %}
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+{% endblock %}
 
-		<script>
-			
-		</script>
-</body>
-</html>
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">学生心理档案记录</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+            {% head_stu_info student %}
+        </div>
+        <div class="archives_title">
+            <p>学生心理档案</p>
+            <p>Student psychological files</p>
+        </div>
+        <div class="archives_zixun">请各位教师务必遵守我校《心理咨询隐私保密制度》</div>
+        {% if request.session.teacher_info.identity == '班主任' %}
+            <div class="show_box1">
+            <h3 class="component-title">记录教师</h3>
+            <ul class="mui-table-view slassessList">
+                <li class="flex_between">
+                    <span>班主任</span>
+                    <span class="mui-badge mui-badge-success">{{ request.session.teacher_info.name }}</span>
+                </li>
+            </ul>
+            <h3 class="component-title">记录时间</h3>
+            <ul class="mui-table-view slassessList">
+                <li class="flex_between">
+                    <span>今天是   {{ current_time|date:"Y-m-d" }}</span>
+                    <span class="mui-badge mui-badge-success">{{ school_week.1 }} 第{{ school_week.0 }}周</span>
+                </li>
+            </ul>
+        </div>
+        {% elif request.session.teacher_info.identity == '心理老师' %}
+              <div class="show_box2">
+            <h3 class="component-title">心理症状</h3>
+            <ul class="mui-table-view slassessList">
+                <li class="flex_between">
+                    阿斯伯格综合征 Asperger syndrome
+                </li>
+                <li class="tijiaoBox flex_between">
+                    <input type="text" class="mui-input-clear" placeholder="请选择心理症状" id="BloodType" readonly="readonly">
+                    <button type="button" class="mui-btn mui-btn-primary">增加</button>
+                </li>
+            </ul>
+
+        </div>
+        {% endif %}
+
+
+        <div class="addPC">
+            {% if is_filled %}
+            本周已记录
+            {% else %}
+            <a href="/mental/add_record/{{ student.pk }}/">+添加新的咨询记录</a>
+            {% endif %}
+        </div>
+        <h3 class="component-title">往期记录</h3>
+        <ul class="mui-table-view slassessList">
+            {% for record in record_list %}
+                <li class="flex_between">
+                   <a href="/mental/stu_record/{{ record.id }}/"><span>{{ record.record_time|date:"Y.m.d" }} <i>个别教育档案</i></span></a>
+                    <span class="fot">记录教师：{{ record.teacher }}</span>
+                 </li>
+            {% endfor %}
+
+        </ul>
+
+        <!--。-->
+    </div>
+{% endblock %}
+
+
+{% block js %}
+     <script type="text/javascript" src="{% static 'pub/js/mui.picker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+    <script>
+
+    (function ($, doc) {
+        $.init();
+        $.ready(function () {
+            //心理症状
+            var userPicker = new $.PopPicker();
+            userPicker.setData([{
+                value: '1',
+                text: '心理症状1'
+            }, {
+                value: '2',
+                text: '心理症状2'
+            }, {
+                value: '3',
+                text: '心理症状3'
+            }, {
+                value: '4',
+                text: '心理症状4'
+            }, {
+                value: '5',
+                text: '暂不清楚'
+            }]);
+            var BloodTypeButton = doc.getElementById('BloodType');
+            if (BloodTypeButton){
+                BloodTypeButton.addEventListener('tap', function (event) {
+                    userPicker.show(function (items) {
+                        BloodTypeButton.value = items[0].text;
+                        console.log(items[0].value)
+
+                    });
+                }, false);
+            }
+
+        });
+    })(mui, document);
+    </script>
+{% endblock %}
+
+
