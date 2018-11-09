@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'z90mwnm$m7@2zbr8*37w7lk0e$7%ka3cdo4_i@j#hs2jo)_su7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -188,7 +188,7 @@ CORS_ALLOW_HEADERS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-DOMAIN_NAME = 'http://dc.junji.vip:8080'
+DOMAIN_NAME = 'http://dc.junji.vip:80'
 
 # ################## 默认文件上传配置 ########################
 
