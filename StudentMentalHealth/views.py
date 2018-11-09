@@ -12,8 +12,8 @@ import datetime
 import json
 
 
-# Create your views here.
 
+# Create your views here.
 
 def login_required(func):
     '''
@@ -217,4 +217,48 @@ class AppointmentTeacher(views.View):
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        return render(request, 'appointment.html')
+        class_id = request.session.get('teacher_info').get('stu_class')
+        stu_class = sch_models.StuClass.objects.filter(id=class_id).first()
+        return render(request, 'about.html', {'class_id': class_id, 'stu_class':stu_class})
+
+    def post(self, request, *args, **kwargs):
+        message = {
+            'state': False,
+            'data': '',
+            'msg': ''
+        }
+        teacher_id = request.POST.get('teacher_id')
+        date = request.POST.get('date')
+        time_id = request.POST.get('time_id')
+        student_id = request.POST.get('student_id')
+
+        if datetime.datetime.strptime(date, '%Y-%m-%d') < (datetime.datetime.now() - datetime.timedelta(days=1)):
+            message['msg'] = '预约时间有误'
+            return JsonResponse(message)
+
+        appointment_obj = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date=date,
+                                                                         time_id=time_id).first()
+        if appointment_obj:
+            message['msg'] = '该时段已被预约'
+            return JsonResponse(message)
+        try:
+            mental_models.AppointmentManage.objects.create(teacher_id=teacher_id, date=date,
+                                                           time_id=time_id, student_id=student_id)
+            message['state'] = True
+            message['msg'] = '预约成功'
+        except Exception as e:
+            print(e)
+            message['msg'] = '预约失败'
+        return JsonResponse(message)
+
+
+class AppointmentManage(views.View):
+    '''
+    预约管理
+    '''
+
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        teacher_id = request.session.get('teacher_info').get('id')
+        appointment_queryset = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id)
+        return render(request, 'aboutList.html', {'appointment_info': appointment_queryset})

@@ -5,56 +5,59 @@
     教师页面
 {% endblock %}
 
-{% block  content%}
+{% block  content %}
 
-<header class="mui-bar mui-bar-nav">
-    <h1 class="mui-title">教师</h1>
-</header>
-<div class="mui-content">
-    <div class="public_logo flex">
-        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
-        <div class="text">
-            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
-            <p class="p2">Cao Guangbiao primary school</p>
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">教师</h1>
+    </header>
+    <div class="mui-content">
+        <div class="public_logo flex">
+            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
+            <div class="text">
+                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
+                <p class="p2">Cao Guangbiao primary school</p>
+            </div>
         </div>
+        <h3 class="component-title">教师信息</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">姓名
+                <span class="mui-badge ">{{ request.session.teacher_info.name }}</span>
+            </li>
+            <li class="mui-table-view-cell">{% if  stu_class %}{{ stu_class }} {% else %} 身份
+            {% endif %}
+                <span class="mui-badge ">{{ request.session.teacher_info.identity }}</span>
+            </li>
+        </ul>
+        <h3 class="component-title">功能列表</h3>
+        <ul class="mui-table-view">
+            {% if request.session.teacher_info.identity == '班主任' %}
+                <li class="mui-table-view-cell">
+                    <a href="/mental/student_list/">记录个别教育档案</a>
+                    {#            <span class="mui-badge mui-badge-primary">11</span>#}
+                </li>
+                <li class="mui-table-view-cell">
+                    <a href="/mental/appointment/">预约心理老师</a>
+                    {#            <span class="mui-badge mui-badge-success">22</span>#}
+                </li>
+            {% endif %}
+
+            {% if request.session.teacher_info.identity == '心理老师' %}
+                <li class="mui-table-view-cell"><a href="/mental/appointment_manage/">预约管理</a>
+{#                    <span class="mui-badge mui-badge-danger">44</span>#}
+                </li>
+
+                <li class="mui-table-view-cell">查阅心理档案
+                    {#            <span class="mui-badge mui-badge-warning">33</span>#}
+                </li>
+            {% endif %}
+        </ul>
+        <!--。-->
     </div>
-    <h3 class="component-title">教师信息</h3>
-    <ul class="mui-table-view">
-        <li class="mui-table-view-cell">姓名
-            <span class="mui-badge ">{{  request.session.teacher_info.name }}</span>
-        </li>
-        <li class="mui-table-view-cell">{{ stu_class }}
-            <span class="mui-badge ">{{ request.session.teacher_info.identity }}</span>
-        </li>
-    </ul>
-    <h3 class="component-title">功能列表</h3>
-    <ul class="mui-table-view">
-        {% if request.session.teacher_info.identity == '班主任' %}
-        <li class="mui-table-view-cell">
-            <a href="/mental/student_list/">记录个别教育档案</a>
-{#            <span class="mui-badge mui-badge-primary">11</span>#}
-        </li>
-        <li class="mui-table-view-cell">
-            <a href="/mental//appointment/">预约心理老师</a>
-{#            <span class="mui-badge mui-badge-success">22</span>#}
-        </li>
-        {% endif %}
-        <li class="mui-table-view-cell">查阅心理档案
-{#            <span class="mui-badge mui-badge-warning">33</span>#}
-        </li>
-        {% if request.session.teacher_info.identity == '心理老师' %}
-        <li class="mui-table-view-cell">预约管理
-            <span class="mui-badge mui-badge-danger">44</span>
-        </li>
-        {% endif %}
-    </ul>
-    <!--。-->
-</div>
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="{% static 'MentalHealth/js/landing.js' %}"></script>
-<script>
+    <script type="text/javascript" src="{% static 'MentalHealth/js/landing.js' %}"></script>
+    <script>
 
-</script>
+    </script>
 {% endblock %}

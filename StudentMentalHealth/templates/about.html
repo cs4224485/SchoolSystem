@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    预约心理老师
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <style>
+        .Submission{ color: #fff;}
+		.Submission:hover{ background: #4cd964; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">预约心理老师</h1>
+    </header>
+    <div class="mui-content" id="muiContent">
+        <div class="public_logo flex">
+            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
+            <div class="text">
+                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
+                <p class="p2">Cao Guangbiao primary school</p>
+            </div>
+        </div>
+
+        <h3 class="component-title">选择学生</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">
+                <span>{{ stu_class }}</span>
+                <span class="mui-badge mui-badge-success" id="Student"></span>
+
+            </li>
+        </ul>
+        <h3 class="component-title">选择心理老师</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">
+                <span> &nbsp;</span>
+                <span class="mui-badge " id="Teacher"></span>
+            </li>
+        </ul>
+        <h3 class="component-title">选择预约时间</h3>
+        <ul class="mui-table-view slassessList">
+            <li class="flex_between">
+					<span id='result' class="Birthday"
+                          data-options='{"type":"date","beginYear":"2018","endYear":""}'
+                          placeholder="请选择日期"></span>
+                <span id="time" data-id="1">AM 9:00- AM 10:00</span>
+
+            </li>
+            <li class="flex_center Submission">+预约</li>
+        </ul>
+
+        <!--。-->
+    </div>
+    <div id="class_id" class_id="{{ class_id }}"></div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript" src="{% static 'pub/js/mui.picker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'MentalHealth/js/about.js' %}"></script>
+    <script>
+
+    </script>
+{% endblock %}

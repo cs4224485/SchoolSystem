@@ -10,3 +10,4 @@ var ajaxUrl = "http://dc.junji.vip:8081";
  })(jQuery);
 
 
+
