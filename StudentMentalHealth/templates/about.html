@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load mental_tag %}
 
 {% block title %}
     预约心理老师
@@ -20,14 +21,14 @@
         <h1 class="mui-title">预约心理老师</h1>
     </header>
     <div class="mui-content" id="muiContent">
-        <div class="public_logo flex">
-            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
-            <div class="text">
-                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
-                <p class="p2">Cao Guangbiao primary school</p>
-            </div>
-        </div>
-
+{#        <div class="public_logo flex">#}
+{#            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
+{#            <div class="text">#}
+{#                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
+{#                <p class="p2">Cao Guangbiao primary school</p>#}
+{#            </div>#}
+{#        </div>#}
+        {% get_school_head school_id %}
         <h3 class="component-title">选择学生</h3>
         <ul class="mui-table-view">
             <li class="mui-table-view-cell">

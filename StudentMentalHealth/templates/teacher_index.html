@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% load mental_tag %}
+
 {% block title %}
     教师页面
 {% endblock %}
@@ -11,21 +13,22 @@
         <h1 class="mui-title">教师</h1>
     </header>
     <div class="mui-content">
-        <div class="public_logo flex">
-            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
-            <div class="text">
-                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
-                <p class="p2">Cao Guangbiao primary school</p>
-            </div>
-        </div>
+
+{#        <div class="public_logo flex">#}
+{#            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
+{#            <div class="text">#}
+{#                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
+{#                <p class="p2">Cao Guangbiao primary school</p>#}
+{#            </div>#}
+{#        </div>#}
+        {% get_school_head school_id %}
         <h3 class="component-title">教师信息</h3>
         <ul class="mui-table-view">
             <li class="mui-table-view-cell">姓名
                 <span class="mui-badge ">{{ request.session.teacher_info.name }}</span>
             </li>
-            <li class="mui-table-view-cell">{% if  stu_class %}{{ stu_class }} {% else %} 身份
-            {% endif %}
-                <span class="mui-badge ">{{ request.session.teacher_info.identity }}</span>
+            <li class="mui-table-view-cell">身份
+                <span class="mui-badge ">{{ request.session.teacher_info.identity }}{% if  stu_class %}({{ stu_class }}){% endif %}</span>
             </li>
         </ul>
         <h3 class="component-title">功能列表</h3>
@@ -46,7 +49,7 @@
 {#                    <span class="mui-badge mui-badge-danger">44</span>#}
                 </li>
 
-                <li class="mui-table-view-cell">查阅心理档案
+                <li class="mui-table-view-cell"><a href="/mental/student_list/">查阅心理档案</a>
                     {#            <span class="mui-badge mui-badge-warning">33</span>#}
                 </li>
             {% endif %}

@@ -1,3 +1,5 @@
+import datetime
+import json
 from django.shortcuts import render, redirect
 from django import views
 from django.shortcuts import HttpResponse
@@ -8,12 +10,10 @@ from StudentMentalHealth import models as mental_models
 from django.http import JsonResponse
 from utils.common import current_week
 from django.utils.decorators import method_decorator
-import datetime
-import json
-
-
+from utils.base_response import BaseResponse
 
 # Create your views here.
+
 
 def login_required(func):
     '''
@@ -39,16 +39,12 @@ class LoinView(views.View):
         return render(request, 'landing.html')
 
     def post(self, request, *args, **kwargs):
-        message = {
-            'state': False,
-            'data': '',
-            'msg': ''
-        }
+        message = BaseResponse()
 
         # 通过姓名和电话号码登陆
         teacher_name = request.POST.get('name')
         if len(teacher_name) <= 1:
-            message['msg'] = '姓名输入有误'
+            message.msg = '姓名输入有误'
             return JsonResponse(message)
         phone = request.POST.get('phoneNumber')
         teacher_obj = th_models.TeacherInfo.objects.filter(last_name=teacher_name[0], first_name=teacher_name[1::],
@@ -67,13 +63,13 @@ class LoinView(views.View):
                 'identity': teacher_obj.get('identity__title'),
                 'id': teacher_obj.get('id')
             }
-            message['state'] = True
-            message['msg'] = '登陆成功'
+            message.state = True
+            message.msg = '登陆成功'
             request.session['teacher_id'] = teacher_obj.get('id')
             request.session['teacher_info'] = teacher_info
         else:
-            message['msg'] = '未匹配到,请核对信息'
-        return JsonResponse(message)
+            message.msg = '未匹配到,请核对信息'
+        return JsonResponse(message.get_dict)
 
 
 class TeacherIndexView(views.View):
@@ -85,23 +81,20 @@ class TeacherIndexView(views.View):
     def get(self, request, *args, **kwargs):
         teacher_info = request.session.get('teacher_info')
         stu_class = sch_models.StuClass.objects.filter(id=teacher_info.get('stu_class')).first()
-        return render(request, 'teacher_index.html', {'stu_class': stu_class})
+        school_id = teacher_info.get('school')
+        return render(request, 'teacher_index.html', {'stu_class': stu_class, 'school_id':school_id})
 
 
 class RecordStudentListView(views.View):
     '''
-    记录个别教育学生列表
+    个别教育学生列表
     '''
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         teacher_info = request.session.get('teacher_info')
-        # 过滤出教师当前管理班级的学生
-        grade = teacher_info.get('grade')
-        stu_class = sch_models.StuClass.objects.filter(grade=grade, id=teacher_info.get('stu_class'),
-                                                       school=teacher_info.get('school')).first()
-        student_list = stu_models.StudentInfo.objects.filter(stu_class=stu_class)
-        return render(request, 'record_student_list.html', {'class': stu_class, 'student_List': student_list})
+        school_id = teacher_info.get('school')
+        return render(request, 'record_student_list.html', {'teacher_id':teacher_info.get('id'), 'school_id':school_id})
 
 
 class RecordList(views.View):
@@ -116,6 +109,10 @@ class RecordList(views.View):
         teacher_info = request.session.get('teacher_info')
         student_obj = stu_models.StudentInfo.objects.filter(id=student_id, school=teacher_info.get('school'),
                                                             stu_class=teacher_info.get('stu_class')).first()
+
+        if teacher_info.get('identity') == '心理老师':
+            student_obj = stu_models.StudentInfo.objects.filter(id=student_id,
+                                                                school=teacher_info.get('school')).first()
 
         if student_obj:
             record_list = mental_models.IndividualStudentRecord.objects.filter(student_id=student_id)
@@ -140,12 +137,6 @@ class AddRecord(views.View):
     添加一条学生档案记录
     '''
 
-    message = {
-        'state': False,
-        'data': '',
-        'msg': ''
-    }
-
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         student_id = kwargs.get('student_id')
@@ -162,7 +153,7 @@ class AddRecord(views.View):
         return HttpResponse('该学生不存在')
 
     def post(self, request, *args, **kwargs):
-
+        message = BaseResponse()
         try:
             data = json.loads(request.POST.get('info'))
             teacher_id = request.session.get('teacher_info').get('id')
@@ -177,12 +168,12 @@ class AddRecord(views.View):
                     item['scale_stu'] = scale_obj
                     stu_models.ScaleValue.objects.create(**item)
             else:
-                self.message['msg'] = '创建成功'
-                self.message['state'] = True
+                message.msg = '创建成功'
+                message.state = True
         except Exception as e:
             print(e)
-            self.message['msg'] = '创建失败'
-        return JsonResponse(self.message)
+            message.msg = '创建失败'
+        return JsonResponse(message.get_dict)
 
 
 class RecordsOfStudents(views.View):
@@ -193,19 +184,18 @@ class RecordsOfStudents(views.View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         record_id = kwargs.get('record_id')
-        teacher_id = request.session.get('teacher_info').get('id')
+        teacher_info = request.session.get('teacher_info')
+        teacher_id = teacher_info.get('id')
         record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id, teacher_id=teacher_id).first()
+        if teacher_info.get('identity') == '心理老师':
+            record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id).first()
+
         if record_obj:
             student_obj = record_obj.student
             # 量表信息
             scale = stu_models.ScaleValue.objects.filter(scale_stu=record_obj.scale_table)
-            current_time = datetime.date.today()
-            # 校历
-            school_week = current_week(datetime.datetime.now())
-
             return render(request, 'show_record.html',
-                          {'student': student_obj, 'current_time': current_time, 'scale_item': scale,
-                           'school_week': school_week})
+                          {'student': student_obj, 'scale_item': scale,  'record': record_obj})
         else:
             return HttpResponse('该记录不存在')
 
@@ -218,38 +208,35 @@ class AppointmentTeacher(views.View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         class_id = request.session.get('teacher_info').get('stu_class')
+        school_id = request.session.get('teacher_info').get('school')
         stu_class = sch_models.StuClass.objects.filter(id=class_id).first()
-        return render(request, 'about.html', {'class_id': class_id, 'stu_class':stu_class})
+        return render(request, 'about.html', {'class_id': class_id, 'stu_class': stu_class, 'school_id': school_id})
 
     def post(self, request, *args, **kwargs):
-        message = {
-            'state': False,
-            'data': '',
-            'msg': ''
-        }
+        message = BaseResponse()
         teacher_id = request.POST.get('teacher_id')
         date = request.POST.get('date')
         time_id = request.POST.get('time_id')
         student_id = request.POST.get('student_id')
 
         if datetime.datetime.strptime(date, '%Y-%m-%d') < (datetime.datetime.now() - datetime.timedelta(days=1)):
-            message['msg'] = '预约时间有误'
-            return JsonResponse(message)
+            message.msg = '预约时间有误'
+            return JsonResponse(message.get_dict)
 
         appointment_obj = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date=date,
                                                                          time_id=time_id).first()
         if appointment_obj:
-            message['msg'] = '该时段已被预约'
-            return JsonResponse(message)
+            message.msg = '该时段已被预约'
+            return JsonResponse(message.get_dict)
         try:
             mental_models.AppointmentManage.objects.create(teacher_id=teacher_id, date=date,
                                                            time_id=time_id, student_id=student_id)
-            message['state'] = True
-            message['msg'] = '预约成功'
+            message.state = True
+            message.msg = '预约成功'
         except Exception as e:
             print(e)
-            message['msg'] = '预约失败'
-        return JsonResponse(message)
+            message.msg = '预约失败'
+        return JsonResponse(message.get_dict)
 
 
 class AppointmentManage(views.View):
@@ -260,5 +247,7 @@ class AppointmentManage(views.View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         teacher_id = request.session.get('teacher_info').get('id')
-        appointment_queryset = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id)
-        return render(request, 'aboutList.html', {'appointment_info': appointment_queryset})
+        school_id = request.session.get('teacher_info').get('school')
+        current_day = datetime.date.today()
+        appointment_queryset = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date__gte=current_day)
+        return render(request, 'aboutList.html', {'appointment_info': appointment_queryset, 'school_id':school_id})
