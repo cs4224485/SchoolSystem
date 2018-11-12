@@ -21,6 +21,7 @@
 
 {% block content %}
     <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
         <h1 class="mui-title">个别教育档案</h1>
     </header>
     <div class="mui-content">
@@ -31,7 +32,7 @@
             <p>学生个别教育档案</p>
             <p>Individual educational records of students</p>
         </div>
-        <div class="archives_zixun">标题:{{ scale.title }}</div>
+        <div class="archives_zixun">{{ scale.title }}</div>
 
         <div class="AnswerBox" id="AnswerBox" scale_pk= {{ scale.pk }}>
             {% for line_title in scale.line_title.all %}

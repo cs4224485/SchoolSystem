@@ -39,16 +39,16 @@ class AppointmentManage(models.Model):
 
     teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='对应的心理老师', on_delete=models.CASCADE,
                                 limit_choices_to={"id__in": [2]})
-    data = models.DateField(verbose_name='日期')
+    date = models.DateField(verbose_name='日期')
     student = models.ForeignKey(to='students.StudentInfo', verbose_name='对应学生', on_delete=models.CASCADE)
-    tine = models.ForeignKey(to='AvailableTime', verbose_name='对应时段', on_delete=models.CASCADE)
+    time = models.ForeignKey(to='AvailableTime', verbose_name='对应时段', on_delete=models.CASCADE)
 
 
 class AvailableTime(models.Model):
     '''
     可预约的时段
     '''
-    time_choice = ((1, 'AM9:00'), (2, 'AM10:00'), (3, 'AM11:00'), (4, 'PM2:30'), (5, 'PM3:30'), (6, 'PM4:30'))
+    time_choice = ((1, 'AM 9:00 - AM 10:00'), (2, 'PM15:30 - PM16:30'))
     time = models.IntegerField(choices=time_choice)
 
 

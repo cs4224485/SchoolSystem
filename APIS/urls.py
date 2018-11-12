@@ -17,6 +17,8 @@ Including another URLconf
 from django.urls import path, re_path, include
 from APIS.views.entrance import *
 from rest_framework import routers
+from APIS.views.mental import *
+
 routers = routers.DefaultRouter()
 routers.register(r'student', StudentInfoViewSet)
 routers.register(r'health', HealthInfoViewSet)
@@ -29,7 +31,9 @@ routers.register(r'family', FamilyInfoViewSet,)
 routers.register(r'parents', StudentParentsViewSet,)
 routers.register(r'stuclass', StuClassViewSet)
 routers.register(r'customization', CustomizationQuestionViewSet)
+
 urlpatterns = [
    # re_path(r"(?P<version>[v1]+)/student/", StudentInfoViewSet.as_view({"get": "list", "post": "create"}), name='student')
+   re_path(r"(?P<version>[v1]+)/mental_info/", AppointmentInfoViewSet.as_view({"get": "list"}), name='mental_info'),
    re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls))
 ]
