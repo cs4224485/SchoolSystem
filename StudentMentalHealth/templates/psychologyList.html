@@ -41,13 +41,17 @@
                         <span class="mui-badge mui-badge-success">{{ school_week.1 }} 第{{ school_week.0 }}周</span>
                     </li>
                 </ul>
-                <div class="addPC">
-                    {% if is_filled %}
+
+
+                {% if is_filled %}
+                    <div class="addPC" style="background-color: gray">
                         本周已记录
-                    {% else %}
+                    </div>
+                {% else %}
+                    <div class="addPC">
                         <a href="/mental/add_record/{{ student.pk }}/">+添加本周个别教育档案</a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
         {% elif request.session.teacher_info.identity == '心理老师' %}
             <div class="show_box2">
@@ -62,6 +66,10 @@
                         <button type="button" class="mui-btn mui-btn-primary">增加</button>
                     </li>
                 </ul>
+
+                <div class="addPC" style="background-color: gray" >
+                    <a href="#" style="color: white">+添加心理咨询记录(暂未开通)</a>
+                </div>
 
             </div>
         {% endif %}

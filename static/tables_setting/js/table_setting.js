@@ -430,8 +430,6 @@ function choicedSchool() {
 function  deleteSelectedSchool() {
     // 删除已选中的学习
     $('.choiced-school').on('click', '.selectedSchool', function () {
-        console.log($(this).attr('value'));
-        console.log( $(this).parent().prevAll().eq(1).find('input'));
         var selectedId = $(this).attr('value');
         $(this).parent().prevAll().eq(1).find('input').each(function () {
             if(selectedId == $(this).attr('value')){

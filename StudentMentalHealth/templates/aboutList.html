@@ -23,14 +23,14 @@
     <h1 class="mui-title">预约管理</h1>
 </header>
 <div class="mui-content">
-    <div class="public_logo flex">
-        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>
-        <div class="text">
-            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>
-            <p class="p2">Cao Guangbiao primary school</p>
-        </div>
-    </div>
-
+{#    <div class="public_logo flex">#}
+{#        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
+{#        <div class="text">#}
+{#            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
+{#            <p class="p2">Cao Guangbiao primary school</p>#}
+{#        </div>#}
+{#    </div>#}
+    {% get_school_head school_id %}
     <h3 class="component-title">我的预约</h3>
     <ul class="mui-table-view" id="aboutList">
         {% for item in appointment_info %}
