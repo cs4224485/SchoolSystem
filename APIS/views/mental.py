@@ -47,9 +47,8 @@ class GetPerClassStudent(ViewSetMixin, APIView):
                 stu_class = sch_models.StuClass.objects.filter(school=teacher_info.get('school'))
             data_list = []
             for item in stu_class:
-
                 class_name = '%s%s' % (item.grade.get_grade_name_display(), item.name)
-                student_queryset = stu_models.StudentInfo.objects.filter(stu_class=item).values('id', 'full_name')
+                student_queryset = stu_models.StudentInfo.objects.filter(stu_class=item, school=teacher_info.get('school')).values('id', 'full_name')
                 if student_queryset:
                     student_dict = {class_name:[]}
                     for student in student_queryset:
