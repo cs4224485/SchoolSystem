@@ -1,4 +1,4 @@
-
+;
 $(function () {
     moveUpDownDelete();
     choiceField();
@@ -16,9 +16,9 @@ function choiceField() {
         console.log(field_type);
         if (IsInArray(selectField, field)) {
             alert('该字段已被选择中无法重复选择');
-        }else if (field_type === "customization"){
-            if (field === "矩阵量表"){
-                var stringTag=`
+        } else if (field_type === "customization") {
+            if (field === "矩阵量表") {
+                var stringTag = `
                     <div class="div_question scale-table choice-wrap item">
                         <div>
                             <h3>标题</h3>
@@ -185,8 +185,113 @@ function choiceField() {
 
                     </div>
                 `
+            } else if (field === "单选多选") {
+                let choiceTableCounter = $('.customization').find('.choice-table').length;
+                var stringTag = `
+               <div class="div_question choice-table choice-wrap item">
+                        <div>
+                            <h3>标题</h3>
+                        </div>
+                        <div class="div_table_par">
+                            <div class="div_table_radio_question">
+                                <div class="div_table_par">
+                                    <ul>
+                                        <li style="width: 99%" class="op-des">
+                                        </li>
+                                        <li style="width: 99%" class="op-des">
+                                            <a href="###" class="jqRadio" style="position: static"></a>
+                                            <label style="vertical-align:middle;padding-left:2px;" >选项1</label>
+                                        </li>
+                                        <li style="width: 99%"  class="op-des">
+                                            <a href="###" class="jqRadio" style="position: static"></a>
+                                            <label style="vertical-align:middle;padding-left:2px;" >选项2</label>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="div_title_attr_question">
+                            <div class="div_title_attr_question_triangle"></div>
+                            <div>
+                                <input type="text" class="form-control scale-title" value="请输入标题">
+                            </div>
+                            <div class="tb_container">
+                                <div style="padding-top: 10px;"></div>
+                                <div style="">
+                                    <div class="selScrrol" style="text-align: center">
+                                        <table class="tableoption" cellspacing="0" cellpadding="0" width="98%">
+                                            <tbody>
+                                            <tr>
+                                                <td style="width: 340px; padding: 3px 5px">
+                                                            <span>
+                                                                <a type="交换选项文字" href="javascript:;"
+                                                                   style="color: rgb(34,34,34); margin-left: 7px">选项文字</a>
+                                                            </span>
+                                                </td>
+                                                <td align="center" style="padding: 3px 5px 3px 15px;">
+                                                    <span>移动</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 340px">
+                                                    <input type="text" class="choicetxt" tabindex="1"
+                                                           style="width: 265px" value="选项1">
+                                                    <span title="在此选项下面插入一个新的选项"
+                                                          class="choiceimg design-icon design-add"
+                                                          style="cursor: pointer; margin-left: 3px;"></span>
+                                                    <span title="删除当前选项（最少保留2个选项）"
+                                                          class="choiceimg design-icon design-minus"></span>
+                                                </td>
+                                                <td align="center" style="padding-left: 15px;">
+                                                    <span title="将当前选项上移一个位置" class="choiceimg design-icon design-cup"
+                                                          style="cursor: pointer;" type="choice"></span>
+                                                    <span title="将当前选项下移一个位置" class="choiceimg design-icon design-cdown"
+                                                          style="cursor: pointer;" type="choice"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 340px">
+                                                    <input type="text" class="choicetxt" tabindex="1"
+                                                           style="width: 265px" value="选项2">
+                                                    <span title="在此选项下面插入一个新的选项"
+                                                          class="choiceimg design-icon design-add"
+                                                          style="cursor: pointer; margin-left: 3px;"></span>
+                                                    <span title="删除当前选项（最少保留2个选项）"
+                                                          class="choiceimg design-icon design-minus"></span>
+                                                </td>
+                                                <td align="center" style="padding-left: 15px;">
+                                                    <span title="将当前选项上移一个位置" class="choiceimg design-icon design-cup"
+                                                          style="cursor: pointer;" type="choice"></span>
+                                                    <span title="将当前选项下移一个位置" class="choiceimg design-icon design-cdown"
+                                                          style="cursor: pointer;" type="choice"></span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div style="margin-left: 30px; margin-top: 30px" class="choice-type">
+                                    <label for="single">单选</label>
+                                    <input type="radio" name="tb-type${choiceTableCounter + 1}" value="1" id="single" checked="checked">
+                                    <label for="multi">多选</label>
+                                    <input type="radio" name="tb-type${choiceTableCounter + 1}" value="2" id="multi">
+                                </div>
+                            </div>
+                            <div style="margin: 14px 50px 20px">
+                                <input type="button" value="完成编辑" class="submitbutton" style="width: 100%">
+                            </div>
+                        </div>
+                        <div class="edit-bar">
+                            <a class="move-up">上移</a>
+                            <a class="move-down">下移</a>
+                            <a class="remove">删除</a>
+                        </div>
+
+                    </div>
+                `
             }
-        }else {
+        } else {
             var stringTag = `
                      <div class="choice-wrap item">
                           <p class="is_choice"><span name='${field}' id='${fieldId}'>${ field }</span></p>
@@ -196,7 +301,7 @@ function choiceField() {
                                 <a class="remove">删除</a>
                             </div>
                      </div>`;
-           // $('.' + field_type).append(stringTag);
+            // $('.' + field_type).append(stringTag);
             selectField.push(field);
             if (field == '身份证') {
                 $('#1,#4').removeClass('field').addClass('disabled')
@@ -248,62 +353,86 @@ function createDate() {
 
     var range = [];
     var choiceId = [];
-    var fieldName = [];
     var school = [];
-    var scaleTable=[];
+    var scaleTable = [];
+    var choiceTable = [];
 
     $(".scale-table").each(function () {
-         var scaleObj = {
+        // 获取量表相关信息
+        var scaleObj = {};
 
-         };
+        var scaleTitle = $(this).find('h3').text();
+        var scaleDes = [];
+        $($(this).find('.des')).each(function () {
+            // 获取量表选项信息
+            if ($(this).text()) {
+                scaleDes.push({id: $(this).attr('optins-id'), text: $(this).text()})
+            }
+        });
 
-         var scaleTitle = $(this).find('h3').text();
-         var scaleDes = [];
-         $($(this).find('.des')).each(function () {
-             if($(this).text()){
-                 scaleDes.push($(this).text())
-             }
-         });
-
-         var lineTitle = [];
-         $($(this).find('.div_table_radio_question').find('th')).each(function (index) {
-             if (index != 0){
-                 lineTitle.push($(this).text())
-             }
-         });
-         scaleObj.scaleTitle = scaleTitle;
-         scaleObj.scaleDes = scaleDes;
-         scaleObj.lineTitle = lineTitle;
-         scaleTable.push(scaleObj);
+        var lineTitle = [];
+        $($(this).find('.div_table_radio_question').find('th')).each(function (index) {
+            // 获取量表行标题
+            if (index != 0) {
+                lineTitle.push({id: $(this).attr('line-title-id'), text: $(this).text()})
+            }
+        });
+        scaleObj.id = $(this).attr('scale_id');
+        scaleObj.scaleTitle = scaleTitle;
+        scaleObj.scaleDes = scaleDes;
+        scaleObj.lineTitle = lineTitle;
+        scaleTable.push(scaleObj);
 
     });
 
     $('.content-area span').each(function (index) {
+        // 获取选中的字段信息
         var id = parseInt($(this).attr('id'));
         if (id) {
             choiceId.push($(this).attr('id'));
-            fieldName.push($(this).html());
         }
     });
 
     $('.range input').each(function () {
+        // 填表范围
         if ($(this).prop("checked")) {
             var val = $(this).val();
             range.push(val)
         }
     });
 
+    $('.choice-table').each(function () {
+        // 单选和多选信息
+        var choiceObj = {};
+
+        var title = $(this).find('h3').text();
+        var optionDes = [];
+        $($(this).find('.op-des').each(function () {
+            if ($(this).find('label').text()) {
+                var id = $(this).find('label').attr('option-id');
+                var content = $(this).find('label').text();
+                optionDes.push({id: id, contents: content})
+            }
+        }));
+        var choiceType = $(this).find('.choice-type').find('input[type=radio]:checked').val();
+        choiceObj.id = $(this).attr('choice-id');
+        choiceObj.title = title;
+        choiceObj.optionDes = optionDes;
+        choiceObj.type = choiceType;
+        choiceTable.push(choiceObj)
+    });
+
     $('.choiced-school a').each(function () {
+        // 选中的学校
         var val = $(this).attr('value');
         school.push(val)
     });
 
-
+    data.choiceTable = choiceTable;
     data.scaleTable = scaleTable;
     data.school = school;
     data.range = range;
     data.choiceFieldId = choiceId;
-    data.fieldName = fieldName;
     return data
 }
 
@@ -355,12 +484,18 @@ function sendData(data) {
     $.ajax({
         url: '',
         type: 'post',
-        data: {'data': JSON.stringify(data)},
+        contentType: 'json',
+        data: JSON.stringify({'data': data}),
         success: function (data) {
-            alert('保存成功');
-            console.log(data);
-            var nid = data.setting_obj_id;
-            location.href = '/school/release/' + nid + '/'
+            if (data.state) {
+                alert('保存成功');
+                console.log(data);
+                var nid = data.setting_obj_id;
+                location.href = '/school/release/' + nid + '/'
+            }else {
+                alert('请求出错');
+            }
+
         }
     })
 
@@ -374,7 +509,6 @@ function filterSchool() {
         var city = $('#city').val();
         var region = $('#region').val();
         var layer = $('#layer').val();
-        console.log(layer);
         if (province && city && region) {
             console.log(province, city, region);
             $.ajax({
@@ -426,13 +560,12 @@ function choicedSchool() {
 }
 
 
-
-function  deleteSelectedSchool() {
-    // 删除已选中的学习
+function deleteSelectedSchool() {
+    // 删除已选中的学校
     $('.choiced-school').on('click', '.selectedSchool', function () {
         var selectedId = $(this).attr('value');
         $(this).parent().prevAll().eq(1).find('input').each(function () {
-            if(selectedId == $(this).attr('value')){
+            if (selectedId == $(this).attr('value')) {
                 $(this).prop('checked', '')
             }
         });

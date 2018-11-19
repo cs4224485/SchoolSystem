@@ -73,7 +73,6 @@ class StudentInfo(views.View):
                 self.message['msg'] = '填表已结束'
                 return JsonResponse(self.message)
 
-
     def start_page(self, request, setting_obj):
         school_obj = setting_obj.school_range.first()
         return render(request, 'entrance/landing.html', {'setting_obj': setting_obj, 'school_obj': school_obj})
@@ -123,8 +122,9 @@ class StudentInfo(views.View):
         return self.question_page(request, setting_obj)
 
     def question_page(self, request, setting_obj):
-        # 矩阵表信息
+        # 自定制问题页面, 如矩阵列表,单选多选
         scale_list = setting_obj.scale.all()
+        choice_list = setting_obj.choice.all()
         if scale_list:
             return render(request, 'entrance/questions.html', {'scale_list': scale_list, 'pk': setting_obj.pk})
         return self.finish_page(request, setting_obj)

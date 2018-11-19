@@ -223,16 +223,20 @@ class AppointmentTeacher(views.View):
             message.msg = '预约时间有误'
             return JsonResponse(message.get_dict)
 
-        appointment_obj = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date=date,
-                                                                         time_id=time_id).first()
-        if appointment_obj:
-            message.msg = '该时段已被预约'
-            return JsonResponse(message.get_dict)
         try:
-            mental_models.AppointmentManage.objects.create(teacher_id=teacher_id, date=date,
-                                                           time_id=time_id, student_id=student_id)
-            message.state = True
-            message.msg = '预约成功'
+            # 预约创建前先加锁
+            from django.db import transaction
+            with transaction.atomic():
+                appointment_obj = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date=date,
+                                                                                 time_id=time_id).select_for_update()
+                if appointment_obj:
+                    message.msg = '该时段已被预约'
+                    return JsonResponse(message.get_dict)
+
+                mental_models.AppointmentManage.objects.create(teacher_id=teacher_id, date=date,
+                                                               time_id=time_id, student_id=student_id)
+                message.state = True
+                message.msg = '预约成功'
         except Exception as e:
             print(e)
             message.msg = '预约失败'

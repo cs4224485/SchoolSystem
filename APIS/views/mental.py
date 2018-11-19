@@ -50,7 +50,7 @@ class GetPerClassStudent(ViewSetMixin, APIView):
                 class_name = '%s%s' % (item.grade.get_grade_name_display(), item.name)
                 student_queryset = stu_models.StudentInfo.objects.filter(stu_class=item, school=teacher_info.get('school')).values('id', 'full_name')
                 if student_queryset:
-                    student_dict = {class_name:[]}
+                    student_dict = {class_name: []}
                     for student in student_queryset:
                         student_dict[class_name].append(student)
                     data_list.append(student_dict)
