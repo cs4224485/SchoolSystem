@@ -19,6 +19,9 @@ class TeacherInfo(models.Model):
     def __str__(self):
         return self.last_name + self.first_name
 
+    class Meta:
+        unique_together = (("first_name", "last_name", 'birthday', 'telephone', ),)
+
 
 class Course(models.Model):
     title = models.CharField(verbose_name='科目名称', max_length=32)

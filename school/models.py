@@ -69,6 +69,9 @@ class StuClass(models.Model):
     def __str__(self):
         return "%s%s" % (self.grade, self.name)
 
+    class Meta:
+        unique_together = (("grade", "school", 'name'),)
+
 
 class Community(models.Model):
     '''
@@ -235,6 +238,9 @@ class TableSettings(models.Model):
 
 
 class SettingToField(models.Model):
+    '''
+    表单选中的字段
+    '''
     setting = models.ForeignKey(verbose_name='设置信息', to='TableSettings', on_delete=models.CASCADE)
     fields = models.ForeignKey(verbose_name='字段', to='ChoiceField', on_delete=models.CASCADE)
     order = models.IntegerField(verbose_name='排序')
@@ -258,6 +264,9 @@ class ScaleOptionDes(models.Model):
 
 
 class ScaleLineTitle(models.Model):
+    '''
+    量表行标题信息
+    '''
     scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE, related_name='line_title')
     des = models.CharField(verbose_name='量表行标题', max_length=32)
 
@@ -266,6 +275,7 @@ class ScopeOfFilling(models.Model):
     '''
     填表范围
     '''
+
     range_choice = ((1, '老师'), (2, '家长'), (3, '学生'))
     name = models.IntegerField(verbose_name='填表范围', choices=range_choice)
 
