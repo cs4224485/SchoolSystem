@@ -233,3 +233,11 @@ class ScaleValue(models.Model):
     scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE, related_name='scale_value')
 
 
+class ChoiceQuestion(models.Model):
+    '''
+    学生填写选择表的信息
+    '''
+
+    student = models.ForeignKey(verbose_name='对应学生', to=StudentInfo, on_delete=models.CASCADE)
+    choice_table = models.ForeignKey(verbose_name='对应的选项表', to='school.ChoiceTable', on_delete=models.CASCADE)
+    values = models.ManyToManyField(verbose_name='对应选择的值', to='school.ChoiceOptionsDes')

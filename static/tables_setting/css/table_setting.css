@@ -3,6 +3,9 @@
     padding: 10px;
     width: 15%;
 }
+ul,li{
+    list-style: none;
+}
 
 tr {
     /* height: 26px; */
@@ -103,7 +106,7 @@ a {
 .div_table_radio_question {
     clear: both;
     padding-top: 5px;
-    padding-left: 24px;
+    /*padding-left: 24px;*/
     padding-bottom: 2px;
     font-size: 15px;
     color: #333333;
@@ -150,6 +153,13 @@ a {
     color: #333333;
     height: 32px;
     background-color: #e8e8e8;
+}
+.tableoption {
+    position: relative;
+    width: 100%;
+    *width: 98%;
+    padding: 0px;
+    background: none;
 }
 
 .choicetxt {
@@ -208,4 +218,12 @@ input.submitbutton {
     border-radius: 4px;
     padding: 0 15px;
     overflow: visible;
+}
+
+
+.selScrrol {
+    padding-bottom: 2px;
+    max-height: 335px;
+    overflow: auto;
+    height: auto;
 }

@@ -149,11 +149,16 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = '/static/'
 
+
+# RestFramework配置
 REST_FRAMEWORK = {
     'DEFAULT_VERSION': 'v1',  # 默认版本
     'ALLOWED_VERSIONS': ['v1', 'v2'],  # 允许的
     'VERSION_PARAM': 'version'  # URL中获取值的key
+
 }
+
+
 # 跨域添加忽略
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True

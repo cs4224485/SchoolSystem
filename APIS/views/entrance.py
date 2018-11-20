@@ -53,12 +53,12 @@ class BaseViewSet(viewsets.ModelViewSet):
         :param serializer_class: 序列化的类
         :return:
         '''
-        if queryset:
+        try:
             data = serializer_class(queryset, many=True)
             self.message['data'] = data.data
             self.message['state'] = True
 
-        else:
+        except Exception as e:
             self.message['msg'] = '获取失败'
 
         return Response(self.message)
@@ -219,6 +219,9 @@ class GraduateInstitutionsViewSet(BaseViewSet):
 
 
 class AllGraduateInstitutionsViewSet(BaseViewSet):
+    '''
+    获取所有毕业园校接口
+    '''
     queryset = sc_models.SchoolInfo.objects.all()
     serializer_class = SchoolListSerializer
 
@@ -369,6 +372,7 @@ class CustomizationQuestionViewSet(BaseViewSet):
         import json
         request_data = json.loads(request_data)
         # print(request_data)
+        # 填入量表所填写的信息
         for scale_item in request_data.get('scaleInfo'):
             for scale_pk, des_info in scale_item.items():
                 save_data = {'student': request_data.get('studentId'), 'scale': scale_pk}

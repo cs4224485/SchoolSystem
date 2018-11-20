@@ -1,4 +1,6 @@
 from django.db import models
+
+
 # from students.models import StudentInfo
 
 # Create your models here.
@@ -51,8 +53,9 @@ class SchoolInfo(models.Model):
 
 
 class Grade(models.Model):
-    grade_choice = ((1, '一年级'), (2, '二年级'), (3, '三年级'), (4, '四年级'), (5, '五年级'), (6, '六年级'), (7, '初一'), (8, '初二'))
-    grade_name = models.IntegerField(choices=grade_choice)
+    grade_choice = ((1, '一年级'), (2, '二年级'), (3, '三年级'), (4, '四年级'), (5, '五年级'), (6, '六年级'), (7, '初一'), (8, '初二')
+                    , (9, '初三'), (10, '高一'), (11, '高二'), (12, '高三'), (13, '小班'), (14, '中班'), (15, '大班'))
+    grade_name = models.IntegerField(choices=grade_choice, unique=True)
 
     def __str__(self):
         return self.get_grade_name_display()
@@ -197,6 +200,8 @@ class SchoolHistory(models.Model):
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
 
 
+# ------------------------- 表单设置相关表  ---------------------------------
+
 class ChoiceField(models.Model):
     '''
     可选择的填表字段
@@ -245,13 +250,17 @@ class SettingToField(models.Model):
     fields = models.ForeignKey(verbose_name='字段', to='ChoiceField', on_delete=models.CASCADE)
     order = models.IntegerField(verbose_name='排序')
 
+    class Meta:
+        unique_together = (('setting', 'fields'), )
+
 
 class ScaleSetting(models.Model):
     '''
     量表设置相关
     '''
     title = models.CharField(verbose_name='量表标题', max_length=64)
-    setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE, related_name='scale')
+    setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
+                                      related_name='scale')
 
 
 class ScaleOptionDes(models.Model):
@@ -259,7 +268,8 @@ class ScaleOptionDes(models.Model):
     量表每个分值的描述信息
     '''
 
-    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE, related_name='options')
+    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE,
+                                    related_name='options')
     des = models.CharField(verbose_name='分值描述信息', max_length=64)
 
 
@@ -267,8 +277,26 @@ class ScaleLineTitle(models.Model):
     '''
     量表行标题信息
     '''
-    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE, related_name='line_title')
-    des = models.CharField(verbose_name='量表行标题', max_length=32)
+    scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE,
+                                    related_name='line_title')
+    des = models.CharField(verbose_name='量表行标题', max_length=64)
+
+
+class ChoiceTable(models.Model):
+    '''
+    单选和多选类型设置信息
+    '''
+    title = models.CharField(verbose_name='标题', max_length=64)
+    setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
+                                      related_name='choice')
+    choice_type_choice = ((1, '单选'), (2, '多选'))
+    choice_type = models.PositiveIntegerField(verbose_name='单选或多选', choices=choice_type_choice)
+
+
+class ChoiceOptionsDes(models.Model):
+    des = models.CharField(verbose_name='每个选项的描述', max_length=64)
+    choice_table = models.ForeignKey(to='ChoiceTable', verbose_name='对应的选择表', on_delete=models.CASCADE,
+                                     related_name='opdes')
 
 
 class ScopeOfFilling(models.Model):
@@ -287,7 +315,9 @@ class TableInfo(models.Model):
     '''
     填表后的相关信息
     '''
-    table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE, related_name='table_info')
+    table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
+                              related_name='table_info')
     finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
-    student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CharField, related_name='for_student')
+    student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CharField,
+                                related_name='for_student')
     # teacher = models.ForeignKey(to='TeacherInfo', verbose_name='填表老师', on_delete=models.CharField)

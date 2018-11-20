@@ -2,7 +2,10 @@
 {% load tags %}
 {% load staticfiles %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'tables_setting/css/table_setting.css' %}">
+    <link rel="stylesheet" href="{% static 'tables_setting/css/table_setting.css' %}">
+    <style>
+
+    </style>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -136,7 +139,7 @@
                     </h3>
                 </div>
                 <div class="panel-body body customization" id="" style="margin-top: 20px">
-               
+
                 </div>
             </div>
         </div>
@@ -156,10 +159,10 @@
 {% block js %}
     <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
     <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
-    <script src="{% static 'tables_setting/js/scale_table.js' %}"></script>
+    <script src="{% static 'tables_setting/js/edit_table.js' %}"></script>
     <script>
         let selectField = ['姓名', '国籍'];
-
+        addDeleteOption();
 
 
     </script>

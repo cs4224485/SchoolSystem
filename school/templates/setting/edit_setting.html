@@ -193,7 +193,7 @@
                 </div>
                 <div class="panel-body body customization" id="" style="margin-top: 20px">
                     {% for item in tb_info.scale %}
-                        <div class="div_question scale-table choice-wrap item">
+                        <div class="div_question scale-table choice-wrap item" scale_id="{{ item.pk }}">
                             <div>
                                 <h3>{{ item.title }}</h3>
                             </div>
@@ -204,7 +204,7 @@
                                         <tr>
                                             <td class="des"></td>
                                             {% for option_des in item.options.all %}
-                                                <td align="center" class="des">{{ option_des.des }}</td>
+                                                <td align="center" class="des" optins-id="{{ option_des.pk }}">{{ option_des.des }}</td>
                                             {% endfor %}
 
                                         </tr>
@@ -221,7 +221,7 @@
                                         {% for titel in item.line_title.all %}
                                             <tr>
                                                 <th align="left"
-                                                    style="border-bottom: 1px solid #efefef">{{ titel.des }}</th>
+                                                    style="border-bottom: 1px solid #efefef" line-title-id="{{ titel.pk }}">{{ titel.des }}</th>
                                                 <td style="border-bottom: 1px solid #efefef" align="center">
                                                     <a href="###" class="jqRadio" style="position:static;"></a>
                                                     <input style="display: none" type="radio">
@@ -318,7 +318,101 @@
 
                         </div>
                     {% endfor %}
+                    {% for item in tb_info.choice_tb %}
+                        <div class="div_question choice-table choice-wrap item" choice-id="{{ item.pk }}">
+                            <div>
+                                <h3>{{ item.title }}</h3>
+                            </div>
+                            <div class="div_table_par">
+                                <div class="div_table_radio_question">
+                                    <div class="div_table_par">
+                                        <ul>
+                                            <li style="width: 99%" class="op-des">
+                                            </li>
+                                            {% for des in item.opdes.all %}
+                                                <li style="width: 99%" class="op-des">
+                                                    <a href="###" class="jqRadio" style="position: static"></a>
+                                                    <label style="vertical-align:middle;padding-left:2px;" option-id="{{ des.pk }}">{{ des.des }}</label>
+                                                </li>
+                                            {% endfor %}
 
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="div_title_attr_question">
+                                <div class="div_title_attr_question_triangle"></div>
+                                <div>
+                                    <input type="text" class="form-control scale-title" value="{{ item.title }}">
+                                </div>
+                                <div class="tb_container">
+                                    <div style="padding-top: 10px;"></div>
+                                    <div style="">
+                                        <div class="selScrrol" style="text-align: center">
+                                            <table class="tableoption" cellspacing="0" cellpadding="0" width="98%">
+                                                <tbody>
+                                                <tr>
+                                                    <td style="width: 340px; padding: 3px 5px">
+                                                            <span>
+                                                                <a type="交换选项文字" href="javascript:;"
+                                                                   style="color: rgb(34,34,34); margin-left: 7px">选项文字</a>
+                                                            </span>
+                                                    </td>
+                                                    <td align="center" style="padding: 3px 5px 3px 15px;">
+                                                        <span>移动</span>
+                                                    </td>
+                                                </tr>
+                                                {% for des in item.opdes.all %}
+                                                    <tr>
+                                                        <td style="width: 340px">
+                                                            <input type="text" class="choicetxt" tabindex="1"
+                                                                   style="width: 265px" value="{{ des.des }}">
+                                                            <span title="在此选项下面插入一个新的选项"
+                                                                  class="choiceimg design-icon design-add"
+                                                                  style="cursor: pointer; margin-left: 3px;"></span>
+                                                            <span title="删除当前选项（最少保留2个选项）"
+                                                                  class="choiceimg design-icon design-minus"></span>
+                                                        </td>
+                                                        <td align="center" style="padding-left: 15px;">
+                                                    <span title="将当前选项上移一个位置" class="choiceimg design-icon design-cup"
+                                                          style="cursor: pointer;" type="choice"></span>
+                                                            <span title="将当前选项下移一个位置"
+                                                                  class="choiceimg design-icon design-cdown"
+                                                                  style="cursor: pointer;" type="choice"></span>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div style="margin-left: 30px; margin-top: 30px" class="choice-type">
+                                        {% for checkbox in item.choice_type_choice %}
+                                            {% if item.choice_type == checkbox.0 %}
+                                                <label for="single">{{ checkbox.1 }}</label>
+                                                <input type="radio" name="{{ item.pk }}{{ item.title }}" value="{{ checkbox.0 }}"
+                                                       checked="checked">
+                                            {% else %}
+                                                <label for="single">{{ checkbox.1 }}</label>
+                                                <input type="radio" name="{{ item.pk }}{{ item.title }}"  value="{{ checkbox.0 }}" >
+                                            {% endif %}
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                                <div style="margin: 14px 50px 20px">
+                                    <input type="button" value="完成编辑" class="submitbutton" style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="edit-bar">
+                                <a class="move-up">上移</a>
+                                <a class="move-down">下移</a>
+                                <a class="remove">删除</a>
+                            </div>
+
+                        </div>
+                    {% endfor %}
 
                 </div>
             </div>
@@ -338,9 +432,10 @@
 {% block js %}
     <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
     <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
-    <script src="{% static 'tables_setting/js/scale_table.js' %}"></script>
+    <script src="{% static 'tables_setting/js/edit_table.js' %}"></script>
     <script>
         let selectField = ['姓名', '国籍'];
+
         function setSelectField() {
             var selected = JSON.parse($('#selected_fields').attr('value'));
             for (var item in selected) {
@@ -348,12 +443,12 @@
             }
         }
 
-        function lineTitleToText(){
+        function lineTitleToText() {
             // 把行标题中的值放到textarea
             $('.div_table_radio_question').each(function () {
                 var valueArry = [];
                 $(this).find('th').each(function (index) {
-                    if(index != '0'){
+                    if (index != '0') {
                         var lineTitleValue = $(this).text();
                         valueArry.push(lineTitleValue)
                     }
