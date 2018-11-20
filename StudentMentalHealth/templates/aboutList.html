@@ -9,67 +9,74 @@
     <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
     <style>
-    #aboutList .banji {
-        color: #999;
-        padding-top: 5px;
-    }
-</style>
+        #aboutList .banji {
+            color: #999;
+            padding-top: 5px;
+        }
+    </style>
 {% endblock %}
 
 
 {% block content %}
-<header class="mui-bar mui-bar-nav">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">预约管理</h1>
-</header>
-<div class="mui-content">
-{#    <div class="public_logo flex">#}
-{#        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
-{#        <div class="text">#}
-{#            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
-{#            <p class="p2">Cao Guangbiao primary school</p>#}
-{#        </div>#}
-{#    </div>#}
-    {% get_school_head school_id %}
-    <h3 class="component-title">我的预约</h3>
-    <ul class="mui-table-view" id="aboutList">
-        {% for item in appointment_info %}
-            <li class="mui-table-view-cell">
-                <div class="flex_between">
-                    <span>{{ item.date|date:"Y-m-d" }}（{% trance_week item.date %}） {{ item.time.get_time_display }}</span>
-                    <span class="mui-badge mui-badge-success">{{ item.student.full_name }}</span>
-                </div>
-                <div class="flex_between banji">
-                    <span>{% get_school_week item.date %}</span>
-                    <span>{{ item.student.stu_class }}</span>
-                </div>
+    <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">预约管理</h1>
+    </header>
+    <div class="mui-content">
+        {#    <div class="public_logo flex">#}
+        {#        <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
+        {#        <div class="text">#}
+        {#            <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
+        {#            <p class="p2">Cao Guangbiao primary school</p>#}
+        {#        </div>#}
+        {#    </div>#}
+        {% get_school_head school_id %}
+        <h3 class="component-title">我的预约</h3>
+        <ul class="mui-table-view" id="aboutList">
+            {% for item in appointment_info %}
+                <li class="mui-table-view-cell" itemid="{{ item.pk }}">
+                    <div>
+                        <span id='result' class=""
+                              data-options='{"type":"date","beginYear":"{{ item.date }}","endYear":""}'>
+                            {{ item.date|date:"Y-m-d" }}</span>
+                        <span>（{% trance_week item.date %}）</span>
+                        <span class="span_color" id="_ties">{{ item.time.get_time_display }}</span>
+
+                    </div>
+                    <div>
+                        <span>{{ item.student.full_name }}</span>
+                        <span class="span_color">{{ item.student.stu_class }}</span>
+                    </div>
+                    <button type="button" class="mui-btn mui-btn-primary Birthday">修改</button>
+
+                </li>
+            {% endfor %}
+
+
+        </ul>
+
+        <h3 class="component-title">可预约时段</h3>
+        <ul class="mui-table-view slassessList">
+            <li class="flex_between">
+                <span>工作日 AM09:00~AM10:00</span>
+                {#            <span class="mui-badge mui-badge-primary">编辑</span>#}
             </li>
-        {% endfor %}
+            <li class="flex_between">
+                <span>工作日 AM15:30~AM16:30</span>
+                {#            <span class="mui-badge mui-badge-primary">编辑</span>#}
+            </li>
 
+        </ul>
 
-
-    </ul>
-
-    <h3 class="component-title">可预约时段</h3>
-    <ul class="mui-table-view slassessList">
-        <li class="flex_between">
-            <span>工作日 AM09:00~AM10:00</span>
-{#            <span class="mui-badge mui-badge-primary">编辑</span>#}
-        </li>
-        <li class="flex_between">
-            <span>工作日 AM15:30~AM16:30</span>
-{#            <span class="mui-badge mui-badge-primary">编辑</span>#}
-        </li>
-
-    </ul>
-
-    <!--。-->
-</div>
+        <!--。-->
+    </div>
 {% endblock %}
 
 {% block js %}
+    <script type="text/javascript" src="{% static 'pub/js/mui.picker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'MentalHealth/js/aboutList.js' %}"></script>
+    <script>
 
-<script>
-
-</script>
+    </script>
 {% endblock %}

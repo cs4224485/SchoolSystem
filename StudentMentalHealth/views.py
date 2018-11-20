@@ -12,6 +12,7 @@ from utils.common import current_week
 from django.utils.decorators import method_decorator
 from utils.base_response import BaseResponse
 
+
 # Create your views here.
 
 
@@ -82,7 +83,7 @@ class TeacherIndexView(views.View):
         teacher_info = request.session.get('teacher_info')
         stu_class = sch_models.StuClass.objects.filter(id=teacher_info.get('stu_class')).first()
         school_id = teacher_info.get('school')
-        return render(request, 'teacher_index.html', {'stu_class': stu_class, 'school_id':school_id})
+        return render(request, 'teacher_index.html', {'stu_class': stu_class, 'school_id': school_id})
 
 
 class RecordStudentListView(views.View):
@@ -93,8 +94,10 @@ class RecordStudentListView(views.View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         teacher_info = request.session.get('teacher_info')
+        teacher_id = teacher_info.get('id')
         school_id = teacher_info.get('school')
-        return render(request, 'record_student_list.html', {'teacher_id':teacher_info.get('id'), 'school_id':school_id})
+
+        return render(request, 'record_student_list.html', {'teacher_id': teacher_id, 'school_id': school_id})
 
 
 class RecordList(views.View):
@@ -171,7 +174,6 @@ class AddRecord(views.View):
                 message.msg = '创建成功'
                 message.state = True
         except Exception as e:
-            print(e)
             message.msg = '创建失败'
         return JsonResponse(message.get_dict)
 
@@ -195,7 +197,7 @@ class RecordsOfStudents(views.View):
             # 量表信息
             scale = stu_models.ScaleValue.objects.filter(scale_stu=record_obj.scale_table)
             return render(request, 'show_record.html',
-                          {'student': student_obj, 'scale_item': scale,  'record': record_obj})
+                          {'student': student_obj, 'scale_item': scale, 'record': record_obj})
         else:
             return HttpResponse('该记录不存在')
 
@@ -207,10 +209,18 @@ class AppointmentTeacher(views.View):
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        class_id = request.session.get('teacher_info').get('stu_class')
-        school_id = request.session.get('teacher_info').get('school')
+        teacher_info = request.session.get('teacher_info')
+        class_id = teacher_info.get('stu_class')
+        school_id = teacher_info.get('school')
         stu_class = sch_models.StuClass.objects.filter(id=class_id).first()
-        return render(request, 'about.html', {'class_id': class_id, 'stu_class': stu_class, 'school_id': school_id})
+        current_day = datetime.date.today()
+        student_queryset = stu_models.StudentInfo.objects.filter(stu_class=stu_class, school_id=school_id).only('id')
+        student_ids = [obj.id for obj in student_queryset]
+        appointment_queryset = mental_models.AppointmentManage.objects.filter(
+                                                                              date__gte=current_day,
+                                                                              student_id__in=student_ids)
+        return render(request, 'about.html', {'class_id': class_id, 'stu_class': stu_class, 'school_id': school_id,
+                                              'appointment_info': appointment_queryset})
 
     def post(self, request, *args, **kwargs):
         message = BaseResponse()
@@ -242,6 +252,25 @@ class AppointmentTeacher(views.View):
             message.msg = '预约失败'
         return JsonResponse(message.get_dict)
 
+    def delete(self, request, *args, **kwargs):
+        '''
+        根据ID 删除一条预约
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+        message = BaseResponse()
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            appointment_id = data.get('appointmentId')
+            mental_models.AppointmentManage.objects.filter(id=appointment_id).delete()
+            message.state = True
+            message.msg = '删除成功'
+        except Exception as e:
+            message.msg = '删除失败'
+        return JsonResponse(message.get_dict)
+
 
 class AppointmentManage(views.View):
     '''
@@ -253,5 +282,24 @@ class AppointmentManage(views.View):
         teacher_id = request.session.get('teacher_info').get('id')
         school_id = request.session.get('teacher_info').get('school')
         current_day = datetime.date.today()
-        appointment_queryset = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id, date__gte=current_day)
-        return render(request, 'aboutList.html', {'appointment_info': appointment_queryset, 'school_id':school_id})
+        appointment_queryset = mental_models.AppointmentManage.objects.filter(teacher_id=teacher_id,
+                                                                              date__gte=current_day)
+        return render(request, 'aboutList.html', {'appointment_info': appointment_queryset, 'school_id': school_id})
+
+    def post(self, request, *args, **kwargs):
+
+        '''
+        心理老师可修改预约时间
+        :return:
+        '''
+        message = BaseResponse()
+        try:
+            date = request.POST.get('date')
+            appointment_id = request.POST.get('appointmentId')
+            mental_models.AppointmentManage.objects.filter(id=appointment_id).update(date=date)
+            message.state = True
+            message.msg = '修改成功'
+        except Exception as e:
+            print(e)
+            message.msg = '修改失败'
+        return JsonResponse(message.get_dict)

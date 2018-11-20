@@ -8,6 +8,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from utils.common import *
 from utils.checkinfo import *
 from school import models as sc_models
+from students import models as stu_models
 import copy
 
 
@@ -359,6 +360,9 @@ class StudentParentsViewSet(BaseViewSet):
 
 
 class CustomizationQuestionViewSet(BaseViewSet):
+    '''
+    入学调查自定制问题保存接口 如矩阵列表单选多选题
+    '''
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = ScaleQuestion.objects.all()
     serializer_class = ScaleQuestionSerializers
@@ -367,22 +371,33 @@ class CustomizationQuestionViewSet(BaseViewSet):
         request_data = copy.deepcopy(request.data.get('info'))
         import json
         request_data = json.loads(request_data)
-        # print(request_data)
-        # 填入量表所填写的信息
-        for scale_item in request_data.get('scaleInfo'):
-            for scale_pk, des_info in scale_item.items():
-                save_data = {'student': request_data.get('studentId'), 'scale': scale_pk}
-                scale_serialize = ScaleQuestionSerializers(data=save_data)
-                if scale_serialize.is_valid():
-                    scale_obj = scale_serialize.save()
-                    for item in des_info:
-                        for key, value in item.items():
-                            ScaleValue.objects.create(title_id=key, value_id=value, scale_stu=scale_obj)
-
-                else:
-                    self.response_error(scale_serialize.errors)
-                    return Response(self.message)
-        else:
+        try:
+            scale_info = request_data.get('scaleInfo')
+            student_id = request_data.get('studentId')
+            choice_table = request_data.get('choiceInfo')
+            # print(request_data)
+            # 保存所填写的量表信息
+            for scale_item in scale_info:
+                for scale_pk, des_info in scale_item.items():
+                    save_data = {'student': student_id, 'scale': scale_pk}
+                    scale_serialize = ScaleQuestionSerializers(data=save_data)
+                    if scale_serialize.is_valid():
+                        scale_obj = scale_serialize.save()
+                        # 保存量表描述信息
+                        for item in des_info:
+                            for key, value in item.items():
+                                ScaleValue.objects.create(title_id=key, value_id=value, scale_stu=scale_obj)
+                    else:
+                        self.response_error(scale_serialize.errors)
+                        return Response(self.message)
+            # 添加单选多选信息
+            for choice_item in choice_table:
+                obj = stu_models.ChoiceQuestion.objects.create(student_id=student_id,
+                                                               choice_table=choice_item.get('choice_id'))
+                obj.values.add(*choice_item.get('options'))
             self.message['state'] = True
             self.message['msg'] = '创建成功'
+            return Response(self.message)
+        except Exception as e:
+            self.message['msg'] = '创建失败'
             return Response(self.message)

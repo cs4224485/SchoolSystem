@@ -40,7 +40,8 @@ class AppointmentManage(models.Model):
     teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='对应的心理老师', on_delete=models.CASCADE,
                                 limit_choices_to={"id__in": [2]})
     date = models.DateField(verbose_name='日期')
-    student = models.ForeignKey(to='students.StudentInfo', verbose_name='对应学生', on_delete=models.CASCADE)
+    student = models.ForeignKey(to='students.StudentInfo', verbose_name='对应学生', on_delete=models.CASCADE,
+                                related_name='stu_appointment')
     time = models.ForeignKey(to='AvailableTime', verbose_name='对应时段', on_delete=models.CASCADE)
 
 
@@ -59,4 +60,3 @@ class TeacherEditTime(models.Model):
 
     teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='对应的心理老师', on_delete=models.CASCADE,
                                 limit_choices_to={"id__in": [2]})
-

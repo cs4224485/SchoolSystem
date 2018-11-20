@@ -18,10 +18,13 @@
             position: relative;
             right: 80px;
         }
-        a:hover{
+
+        a:hover {
             cursor: pointer;
             text-decoration: none;
         }
+
+
     </style>
 
 {% endblock %}
@@ -118,17 +121,27 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group"  style="display: none">
                 <label>年级:</label>
-                <div class="checkbox range">
+                <div class="checkbox range" id="classes">
                     <ul class="grade">
 
                     </ul>
-                    <div class="col-xs-4">
-                        <input type="text" class="form-control " placeholder="1班">
-                        <a onclick="pop('{{ item.url }}')"  style="position: absolute; right: -15px; bottom: -4px">
-                            <span style="font-size: 32px">+</span>
-                        </a>
+                    <div class="row" style="margin: 10px 20px">
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control " placeholder="请输入班级名称" value="1班">
+                            <a style="position: absolute; right: -15px; bottom: -4px">
+                                <span class="add-class" style="font-size: 32px">+</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row"  style="margin: 10px 20px">
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control " placeholder="请输入班级名称" value="1班">
+                            <a style="position: absolute; right: -15px; bottom: -4px">
+                                <span class="add-class" style="font-size: 32px">+</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,7 +186,8 @@
 
             bindChangePicture("id_logo");
             bindChangePicture("id_pattern");
-            choiceGrade()
+            choiceGrade();
+            addClasses()
         });
 
 
@@ -194,6 +208,7 @@
             $('.school_layer input').click(function () {
                 let schoolLayer = $(this).val();
                 for (let key in stuClass) {
+                    $('#clasees').css('display', 'block');
                     if (schoolLayer == key) {
                         $('.grade').find('li').remove();
                         for (let i = 0; i < stuClass[key].length; i++) {
@@ -212,5 +227,22 @@
             })
         }
 
+        function addClasses() {
+            $('#classes').on('click', '.add-class', function () {
+                var classesCount = $('#classes').find('div').length;
+                console.log(classesCount);
+                var HtmlStr = `
+                    <div class="row"  style="margin: 10px 20px">
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control " placeholder="请输入班级名称" value="1班">
+                            <a style="position: absolute; right: -15px; bottom: -4px">
+                                <span class="add-class" style="font-size: 32px">+</span>
+                            </a>
+                        </div>
+                    </div>
+
+                `
+            })
+        }
     </script>
 {% endblock %}
