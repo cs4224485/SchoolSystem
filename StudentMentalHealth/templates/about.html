@@ -10,8 +10,13 @@
     <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
     <style>
-        .Submission{ color: #fff;}
-		.Submission:hover{ background: #4cd964; }
+        .Submission {
+            color: #fff;
+        }
+
+        .Submission:hover {
+            background: #4cd964;
+        }
     </style>
 {% endblock %}
 
@@ -21,13 +26,13 @@
         <h1 class="mui-title">预约心理老师</h1>
     </header>
     <div class="mui-content" id="muiContent">
-{#        <div class="public_logo flex">#}
-{#            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
-{#            <div class="text">#}
-{#                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
-{#                <p class="p2">Cao Guangbiao primary school</p>#}
-{#            </div>#}
-{#        </div>#}
+        {#        <div class="public_logo flex">#}
+        {#            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
+        {#            <div class="text">#}
+        {#                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
+        {#                <p class="p2">Cao Guangbiao primary school</p>#}
+        {#            </div>#}
+        {#        </div>#}
         {% get_school_head school_id %}
         <h3 class="component-title">选择学生</h3>
         <ul class="mui-table-view">
@@ -57,14 +62,33 @@
         </ul>
 
         <!--。-->
+        <ul class="mui-table-view" id="aboutList">
+            {% for item in appointment_info %}
+                <li class="mui-table-view-cell" itemid="{{ item.pk }}">
+                    <div>
+                        <span>{{ item.date|date:"Y-m-d" }}</span>
+                        <span>（{% trance_week item.date %}）</span>
+                        <span class="span_color">{{ item.time.get_time_display }}</span>
+
+                    </div>
+                    <div>
+                        <span>{{ item.student.full_name }}</span>
+                        <span class="span_color">{{ item.student.stu_class }}</span>
+                    </div>
+                     <button type="button" class="mui-btn mui-btn-primary delete">删除</button>
+                </li>
+            {% endfor %}
+        </ul>
+
     </div>
+
     <div id="class_id" class_id="{{ class_id }}"></div>
 {% endblock %}
 
 
 {% block js %}
-<script type="text/javascript" src="{% static 'pub/js/mui.picker.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pub/js/mui.picker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'MentalHealth/js/about.js' %}"></script>
     <script>
 

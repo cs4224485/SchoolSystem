@@ -24,6 +24,7 @@ mui("#input_information").on('tap', '.Submission', function () {
             scaleInfo: []
         };
         $(".AnswerBox").each(function (index) {
+            // 构建矩阵类别数据
             let scaleTableOjb = {};
             let scaleTableID = $(this).attr('scale_pk');
             scaleTableOjb[scaleTableID] = [];
