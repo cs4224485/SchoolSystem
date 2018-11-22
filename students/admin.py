@@ -13,7 +13,8 @@ admin.site.register(FamilyStatus)
 admin.site.register(FamilyInfo)
 admin.site.register(StudentParents)
 admin.site.register(StudentToParents)
-
+admin.site.register(ScaleQuestion)
+admin.site.register(ChoiceQuestion)
 
 
 

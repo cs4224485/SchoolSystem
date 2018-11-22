@@ -3,32 +3,63 @@ var studentId = $.getUrlParam('student_id');
 mui("#input_information").on('tap', '.mui-radio', function () {
     $(this).find(".Pradio").addClass("act").parent(".mui-radio").siblings().find(".Pradio").removeClass("act");
 });
+
+//选中单选
+mui("#dan_input_information").on('tap','.mui-radio',function(){
+
+	$(this).find(".Pradio").addClass("act").parent(".mui-radio").siblings().find(".Pradio").removeClass("act");
+});
+
+//选中 多选
+mui("#Many_input_information").on('tap','.mui-radio',function(){
+	var that = $(this);
+	 if( that.find(".Pradio").hasClass("act")){
+         that.find(".Pradio").removeClass("act");
+    }else{
+         that.find(".Pradio").addClass("act");
+    }
+});
+
 //			下一步
-mui("#input_information").on('tap', '.Submission', function () {
-
-    let radioBox = $("#input_information").find(".radioBox");
-    let check;
-
-    radioBox.each(function (e) {
-        if (!$(this).find(".Pradio").is('.act')) {
-            let tx = $(this).parents(".box").find(".title").text();
-            mui.alert("请选择:" + tx);
-            check = false;
-            return false
-        }
-        check = true;
-    });
-    if (check) {
+mui(".mui-content").on('tap','.btnPrimary',function(){
+	let radioBox = $(".mui-content").find(".radioBox");
+	let check;
+	 radioBox.each(function(e,h,){
+	 	if($(this).attr("data-type")=="1"){
+	 		if(!$(this).find(".Pradio").is('.act')){
+		 		let tx = $(this).parents(".box").find(".title").text();
+		 		mui.alert("请选择:"+tx);
+		 		check = false;
+		 		return false
+		 	}
+	 	}else if($(this).attr("data-type")=="2"){
+		 	if(!$(this).find(".Pradio").is('.act')){
+		 		let tx = $(this).parents(".ManyAnswerBox").find(".component-title").text();
+		 		mui.alert("请选择:"+tx);
+		 		check = false;
+		 		return false
+		 	}
+	 	}else{
+	 		if(!$(this).find(".Pradio").is('.act')){
+		 		let tx = $(this).parents(".ManyAnswerBox").find(".component-title").text();
+		 		mui.alert("请选择:"+tx);
+		 		check = false;
+		 		return false
+		 	}
+	 	}
+	 	check = true;
+	 });
+     if (check) {
         let dataObj = {
             studentId: studentId,
-            scaleInfo: []
+            scaleInfo: [],
+            choiceInfo:[]
         };
-        $(".AnswerBox").each(function (index) {
+        $(".ScaleTable").each(function (index) {
             // 构建矩阵类别数据
             let scaleTableOjb = {};
             let scaleTableID = $(this).attr('scale_pk');
             scaleTableOjb[scaleTableID] = [];
-            console.log($(this).find('radioBox'));
             $(this).find('.Pradio').each(function () {
                 if ($(this).hasClass('act')) {
                     let obj = {};
@@ -39,8 +70,23 @@ mui("#input_information").on('tap', '.Submission', function () {
                 }
             });
             dataObj.scaleInfo.push(scaleTableOjb);
-
         });
+
+        $(".SingleChoice,.MultiChoice").each(function () {
+            // 构建选择题数据
+            var choiceTableId = $(this).attr('choice-id');
+            let options_id = [];
+            $(this).find('.Pradio').each(function () {
+                if ($(this).hasClass('act')){
+                    let optionId = $(this).attr('op-id');
+                    options_id.push(optionId)
+            }
+            });
+            dataObj.choiceInfo.push({choice_id:choiceTableId, options:options_id})
+        });
+
+        console.log(dataObj);
+
         $.ajax({
             url: ajaxUrl + '/api/v1/customization/',
             type: 'post',
@@ -66,7 +112,6 @@ mui("#input_information").on('tap', '.Submission', function () {
                 console.log(errorThrown);
             }
         })
-
 
     }
 

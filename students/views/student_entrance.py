@@ -3,7 +3,7 @@ import json
 import xlrd
 from utils.common import *
 from utils.checkinfo import *
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 from django import views
 from school import models as sc_models
@@ -20,7 +20,9 @@ class StudentInfo(views.View):
     def get(self, request, nid, *args, **kwargs):
         step = request.GET.get('step', 'start_page')
         setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
-        self.check(setting_obj)
+        result = self.check(setting_obj)
+        if result:
+            return result
         self.start_time.append(time.time())
         if hasattr(self, step):
             func = getattr(self, step)
@@ -53,25 +55,17 @@ class StudentInfo(views.View):
             self.message['student_id'] = stu_obj.pk
             return JsonResponse(self.message)
 
-    def check(self, setting_obj ):
-        self.message = {
-            'state': False,
-            'msg': '',
-            'data': []
-        }
+    def check(self, setting_obj):
         if not setting_obj:
-            self.message['msg'] = '该表单不存在或已过期'
-            return JsonResponse(self.message)
+            return HttpResponse('该表单不存在或已过期')
         start_time = setting_obj.stat_time
         end_time = setting_obj.end_time
         current_time = datetime.date.today()
         if current_time < start_time:
-            self.message['msg'] = '填表时间还未开始'
-            return JsonResponse(self.message)
+            return HttpResponse('填表时间还未开始')
         if end_time:
             if current_time > end_time:
-                self.message['msg'] = '填表已结束'
-                return JsonResponse(self.message)
+                return HttpResponse('填表已结束')
 
     def start_page(self, request, setting_obj):
         school_obj = setting_obj.school_range.first()
@@ -83,7 +77,8 @@ class StudentInfo(views.View):
             self.message['msg'] = '您好，请先填写登陆页面'
             return JsonResponse(self.message)
         student_obj = stu_models.StudentInfo.objects.filter(id=student_id).first()
-        stu_field_list = sc_models.SettingToField.objects.order_by('order').filter(setting=setting_obj, fields__field_type=1).values(
+        stu_field_list = sc_models.SettingToField.objects.order_by('order').filter(setting=setting_obj,
+                                                                                   fields__field_type=1).values(
             'fields__fieldName', 'fields__pk')
         if stu_field_list:
             return render(request, 'entrance/student_info.html',
@@ -104,7 +99,8 @@ class StudentInfo(views.View):
         if fam_field_list:
             school_district = setting_obj.school_range.values('province', 'city', 'region').first()
             return render(request, 'entrance/family_info.html',
-                          {'fam_field_list': fam_field_list, 'pk': setting_obj.pk, 'school_district': json.dumps(school_district)})
+                          {'fam_field_list': fam_field_list, 'pk': setting_obj.pk,
+                           'school_district': json.dumps(school_district)})
         return self.parents_page(request, setting_obj)
 
     def parents_page(self, request, setting_obj):
@@ -124,9 +120,13 @@ class StudentInfo(views.View):
     def question_page(self, request, setting_obj):
         # 自定制问题页面, 如矩阵列表,单选多选
         scale_list = setting_obj.scale.all()
-        choice_list = setting_obj.choice.all()
-        if scale_list:
-            return render(request, 'entrance/questions.html', {'scale_list': scale_list, 'pk': setting_obj.pk})
+        single_choice_list = setting_obj.choice.filter(choice_type=1)
+        multi_choice_list = setting_obj.choice.filter(choice_type=2)
+
+        if scale_list or single_choice_list:
+            return render(request, 'entrance/questions.html', {'scale_list': scale_list, 'pk': setting_obj.pk,
+                                                               'single_choice_list': single_choice_list,
+                                                               'multi_choice_list': multi_choice_list})
         return self.finish_page(request, setting_obj)
 
     def finish_page(self, request, setting_obj):
@@ -147,12 +147,12 @@ class ImportStudent(views.View):
     def post(self, request, school_id, *args, **kwargs):
         context = {'status': True, 'msg': '导入成功'}
         try:
-            customer_excel = request.FILES.get('customer_excel')
+            student_excel = request.FILES.get('student_excel')
             """
             打开上传的Excel文件，并读取内容
             注：打开本地文件时，可以使用：workbook = xlrd.open_workbook(filename='本地文件路径.xlsx')
             """
-            workbook = xlrd.open_workbook(file_contents=customer_excel.file.read())
+            workbook = xlrd.open_workbook(file_contents=student_excel.file.read())
 
             # sheet = workbook.sheet_by_name('工作表1')
             sheet = workbook.sheet_by_index(0)

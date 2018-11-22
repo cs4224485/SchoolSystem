@@ -212,7 +212,7 @@ mui("#input_information").on('tap', '.Submission', function () {
             data: {'parents': JSON.stringify(obj)},
             dataType: 'json',
             success: function (data) {
-                console.log(data)
+                console.log(data);
                 if (data.state) {
                     mui.alert(data.msg)
 
@@ -223,7 +223,7 @@ mui("#input_information").on('tap', '.Submission', function () {
 
             },
             error: function (xhr, type, errorThrown) {
-                mui.alert("亲，请求出错了")
+                mui.alert("亲，请求出错了");
                 console.log(xhr);
                 console.log(type);
                 console.log(errorThrown);
