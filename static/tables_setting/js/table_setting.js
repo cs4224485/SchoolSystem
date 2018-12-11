@@ -448,7 +448,7 @@ function operation() {
             }
 
         } else if (action == '预览') {
-            var url = '/school/preview/?data=' + JSON.stringify(data);
+            var url = '/stark/school/tablesettings/preview/?data=' + JSON.stringify(data);
             window.open(url)
         }
 
@@ -491,7 +491,7 @@ function sendData(data) {
                 alert('保存成功');
                 console.log(data);
                 var nid = data.setting_obj_id;
-                location.href = '/school/release/' + nid + '/'
+                location.href = '/stark/school/tablesettings/release/' + nid + '/'
             }else {
                 alert('请求出错');
             }

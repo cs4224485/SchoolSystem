@@ -1,0 +1,103 @@
+#header {
+    border-width: 0px;
+    width: 640px;
+    height: 60px;
+    font-family: '微软雅黑';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    color: #169BD5;
+}
+
+.td-box:hover {
+    cursor: pointer;
+    background-color: orange;
+}
+
+#head_div {
+    position: relative;
+    border-width: 0px;
+    top: 0px;
+    width: 640px;
+    height: 60px;
+    background: inherit;
+    background-color: rgba(255, 255, 255, 0);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(22, 155, 213, 1);
+    border-left: 0px;
+    border-right: 0px;
+    border-radius: 0px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-family: '微软雅黑';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    color: #169BD5;
+}
+
+#head_text {
+    border-width: 0;
+    position: absolute;
+    left: 10px;
+    top: 14px;
+    width: 630px;
+    word-wrap: break-word;
+}
+
+.td-box {
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid rgba(22, 155, 213, 1);
+    border-radius: 2px;
+}
+
+.tb-head, th {
+    box-shadow: none;
+    font-family: '微软雅黑';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 17px;
+    color: #169BD5;
+}
+
+.tb-head {
+    background: inherit;
+    background-color: rgba(255, 255, 255, 0);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(22, 155, 213, 1);
+    border-left: 0px;
+    border-right: 0px;
+    border-radius: 0px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+tbody {
+    border-top: 2px solid rgba(22, 155, 213, 1) !important;
+    border-bottom: 2px solid rgba(22, 155, 213, 1) !important;
+}
+
+.active {
+    color: #2559a4 !important;
+}
+
+.modal-hide {
+    display: none;
+}
+
+.dateinput {
+    width: 240px;
+    line-height: 20px;
+    border: 1px #ddd solid;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #fff;
+    float: left;
+    font-size: 14px;
+}

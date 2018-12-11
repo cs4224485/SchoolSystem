@@ -1,5 +1,8 @@
+import datetime
 from django import template
 from school import models
+from utils.generate_calender import CalenderHandler
+from utils.common import *
 
 register = template.Library()
 
@@ -19,3 +22,92 @@ def fields():
             }
 
 
+def generate_cal(calender_data, special_day, count=7):
+    '''
+    通过生成器生成日历每周7天
+    :param calender_data:
+    :param count:
+    :return:
+    '''
+
+    calender_obj = CalenderHandler()
+    current_day = datetime.datetime.today().date()
+    for year, month in calender_data.items():
+        for mon, days in month.items():
+            index = 0
+            # 每月第一天是周几
+            first_day_of_mon = calender_obj.get_start_day(year, mon)
+            # 只有在9月和1月时获取年
+            the_year = ''
+            if mon == 9 or mon == 1:
+                the_year = year
+
+            while True:
+                # 每次返回一周的构建一个字典
+                cal_dict = {
+                    'day_list': [],
+                    'is_new_month': False,
+                    'mon': '',
+                    'week': '',
+                    'them': '',
+                    'is_current': False,
+                    'year': the_year,
+
+                }
+
+                # 如果index不是是0表示表示日期是当前月否则是一个新的月
+                if index != 0:
+                    day_list = days[index:index + count]
+                    index += count
+                else:
+                    cal_dict['is_new_month'] = True
+                    cal_dict['mon'] = mon
+                    day_list = days[index:index + (count - first_day_of_mon + 1)]
+                    for black in range(0, first_day_of_mon - 1):
+                        day_list.insert(0, '')
+                    index += index + (count - first_day_of_mon + 1)
+                if not day_list:
+                    break
+
+                if day_list[-1]:
+                    temp_day = datetime.datetime.strptime('%s-%s-%s' % (year, mon, day_list[-1]), '%Y-%m-%d')
+                    school_week = current_week(temp_day)
+                    # 如果是新的一个月并且1号是周一就不显示第X周了
+                    if cal_dict['is_new_month'] and '' in day_list:
+                        cal_dict['week'] = ''
+                    elif school_week:
+                        cal_dict['week'] = school_week[0]
+
+                for day in day_list:
+                    cn_day = ''
+                    day_dict = {}
+                    if day:
+                        tem_day = datetime.datetime.strptime('%s-%s-%s' % (year, mon, day), '%Y-%m-%d')
+                        cn_day = calender_obj.getCnDay(tem_day)
+                        cn_month = calender_obj.getCnMonth(tem_day)
+                        holiday = calender_obj.get_pub_holiday(mon, day) if calender_obj.get_pub_holiday(mon, day) else calender_obj.get_cn_holiday(cn_month, cn_day)
+                        if holiday:
+                            day_dict['holiday'] = holiday
+                        if cn_day == '初一':
+                            cn_day = cn_month
+                        if current_day == tem_day.date():
+                            cal_dict['is_current'] = True
+                        # 处理学校特殊日期
+
+                    day_dict['day'] = day
+                    day_dict['cn_day'] = cn_day
+                    cal_dict['day_list'].append(day_dict)
+
+                yield cal_dict
+
+
+@register.inclusion_tag('school_info/cal_table.html')
+def ger_cal(calender_data, special_day):
+    '''
+    生成日历
+    :param calender_data:
+    :return:
+    '''
+
+    current_day = datetime.datetime.today().day
+    return {'cal': generate_cal(calender_data, special_day), 'today': current_day}

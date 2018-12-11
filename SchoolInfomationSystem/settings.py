@@ -174,6 +174,7 @@ CORS_ALLOW_METHODS = (
     'POST',
     'PUT',
     'VIEW',
+    'UPDATE'
 )
 
 CORS_ALLOW_HEADERS = (
@@ -230,3 +231,8 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 # see https://docs.python.org/3/library/os.html#files-and-directories.
 # 文件夹权限
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
+
+
+# 版本号
+RELEASE_VERSION = '1.05'
+

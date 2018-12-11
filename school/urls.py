@@ -1,10 +1,12 @@
 from django.urls import path, re_path
-from school.views import table_setting
+from school.views import table_setting, school_information
+
+'''
+后台管理类视图URL请到对应表的modelConfig目录文件夹下找extra_urls
+'''
 
 urlpatterns = [
-   path(r"settings/", table_setting.school_setting),
-   path(r"preview/", table_setting.preview),
    path(r"filter/", table_setting.filterSchool),
-   re_path(r"release/(\d+)/$", table_setting.release),
-   re_path(r"setting_edit/(\d+)/$", table_setting.edit_school_setting),
+   # re_path(r"school_info/(?P<school_id>\d+)/$", school_information.ClassManage.as_view()),
+
 ]

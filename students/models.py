@@ -40,7 +40,7 @@ class StudentInfo(models.Model):
     grade = models.ForeignKey(verbose_name='年级', to=Grade, on_delete=models.CASCADE, null=True)
     graduate_institutions = models.ForeignKey(to=SchoolInfo, verbose_name='毕业园校', on_delete=models.CASCADE, null=True, related_name='school')
     school = models.ForeignKey(verbose_name='所在学校', to=SchoolInfo, on_delete=models.CASCADE)
-    stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True)
+    stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True, related_name='student_class')
 
     def __str__(self):
         return self.full_name

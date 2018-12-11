@@ -1,16 +1,27 @@
+import copy
 from stark.service.stark import StarkConfig
-from django.urls import reverse
-from django.shortcuts import render, redirect, HttpResponse
+from django.urls import reverse, re_path
 from django.utils.safestring import mark_safe
 from django import forms
 from school import models
 from django.forms import ValidationError
 from django.forms import fields as Ffields
 from django.forms import widgets as Fwidgets
-import copy
+from school.views import table_setting
+from school.views import school_information
 
 
 class SchoolInfoConfig(StarkConfig):
+
+    def extra_urls(self):
+        temp = []
+        temp.append(re_path(r"class_manage/(?P<school_id>\d+)/$", school_information.ClassManage.as_view(),
+                            name='school_info'))
+        temp.append(re_path(r"school_calender/(?P<school_id>\d+)/$", school_information.SchoolCalender.as_view(),
+                            name='school_calender'))
+        temp.append(re_path(r"school_timetable/(?P<school_id>\d+)/$", school_information.SchoolTimeTable.as_view(),
+                            name='school_timetables'))
+        return temp
 
     def display_school_name(self, row=None, header=False):
         if header:
@@ -42,6 +53,9 @@ class SchoolInfoConfig(StarkConfig):
         edit_school_url = reverse('stark:school_schoolinfo_edit', args=(row.pk,))
         add_student_url = reverse('stark:students_studentinfo_add') + '?school_id=%s' % row.pk
         import_student_url = '/student/import_student/%s/' % row.pk
+        class_manage_url = '/stark/school/schoolinfo/class_manage/%s/' % row.pk
+        calender_url = '/stark/school/schoolinfo/school_calender/%s/' % row.pk
+        cousre_tbale_url = '/stark/school/schoolinfo/school_timetable/%s/' % row.pk
         html = '''
             <div class='op_father'>
                 <span><img src="/static/stark/imgs/op.png" width="18" height="18"></span>  
@@ -49,10 +63,13 @@ class SchoolInfoConfig(StarkConfig):
                     <a href='%s'>编辑学校</a>
                     <a href='%s'>添加学生</a>
                     <a href='%s'>导入学生</a>
+                    <a href='%s'>班级管理</a>
+                    <a href='%s'>学校校历</a>
+                    <a href='%s'>课程表</a>
                     <a>添加老师</a>
                 </div>
             </div>
-        ''' % (edit_school_url, add_student_url, import_student_url)
+        ''' % (edit_school_url, add_student_url, import_student_url, class_manage_url, calender_url, cousre_tbale_url)
         return mark_safe(html)
 
     search_list = ['school_name']
@@ -197,24 +214,32 @@ class ChoiceFieldConfig(StarkConfig):
 class SchoolSettingsConfig(StarkConfig):
 
     def get_add_btn(self):
-        return mark_safe('<a href="/school/settings/" class="btn btn-success">添加</a>')
+        return mark_safe('<a href="%s" class="btn btn-success">添加</a>' % "/stark/school/tablesettings/settings/")
 
     def get_list_display(self):
         val = super().get_list_display()
         val.remove(StarkConfig.display_edit)
         return val
 
+    def extra_urls(self):
+        temp = []
+        temp.append(re_path(r"settings/$", table_setting.school_setting))
+        temp.append(re_path(r"setting_edit/(\d+)/$", table_setting.edit_school_setting))
+        temp.append(re_path(r"release/(\d+)/$", table_setting.release))
+        temp.append(re_path(r"preview/$", table_setting.preview))
+        return temp
+
     def display_release(self, row=None, header=None):
         if header:
             return '设置'
-        url = '/school/release/%s/' % row.pk
+        url = '/stark/school/tablesettings/release/%s/' % row.pk
         tag = '<a href="%s">设置</a>' % url
         return mark_safe(tag)
 
     def display_edit(self, row=None, header=False):
         if header:
             return "编辑"
-        url = '/school/setting_edit/%s/' % row.pk
+        url = '/stark/school/tablesettings/setting_edit/%s/' % row.pk
         return mark_safe(
             '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % url)
 
@@ -222,9 +247,10 @@ class SchoolSettingsConfig(StarkConfig):
         if header:
             return '填表人数'
         return row.table_info.all().count()
-    list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release, display_edit]
+
+    list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release,
+                    display_edit]
 
 
 class SettingToFieldConfig(StarkConfig):
     list_display = ['setting', 'fields', 'order']
-

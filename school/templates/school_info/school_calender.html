@@ -1,0 +1,198 @@
+{% extends 'layout.html' %}
+{% load url_tag %}
+{% load tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/pub.css' %}">
+    <style>
+        #calendar-wrap {
+
+            height: 1000px;
+            width: 1200px;
+            overflow-y: scroll;
+        }
+
+        #tScroll {
+            position: fixed;
+            top: 0;
+            display: none;
+        }
+
+        .week-wrap {
+            position: absolute;
+            right: 10px;
+            width: 51px;
+            height: 17px;
+            background: inherit;
+            background-color: rgba(22, 155, 213, 1);
+            box-sizing: border-box;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgba(22, 155, 213, 1);
+            border-radius: 2px;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-family: '微软雅黑';
+            font-weight: 400;
+            font-style: normal;
+            font-size: 10px;
+            color: #FFFFFF;
+            text-align: left;
+        }
+
+        .year-wrap {
+            border-width: 0;
+            width: 55px;;
+            height: 17px;
+            background: inherit;
+            background-color: rgba(255, 204, 0, 1);
+            border-radius: 2px;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-family: '微软雅黑';
+            font-weight: 400;
+            font-style: normal;
+            font-size: 10px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        #month-wrap {
+            width: 43px;
+            height: 17px;
+            background-color: rgba(22, 155, 213, 1);
+            box-sizing: border-box;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgba(22, 155, 213, 1);
+            border-radius: 2px;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-family: '微软雅黑';
+            font-weight: 400;
+            font-style: normal;
+            font-size: 10px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .current {
+            background-color: rgba(22, 155, 213, 0.0980392156862745)
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="" style="margin-left: 20px">
+            <div id="header" class="ax_default label">
+                <div id="head_div" class="">
+                    <div id="head_text" class="text ">
+                        <p><span>{{ school_obj.school_name }}{{ school_year }}校历</span></p>
+                    </div>
+                </div>
+            </div>
+            <div id="calendar-wrap">
+                {% ger_cal month_day_num special_day %}
+            </div>
+        </div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="cal-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top:250px ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">日程编辑</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="op-des">日程描述:</label>
+                        <select id="op-des" class="form-control">
+                            {% for option in cal_des_options %}
+                                <option cal-des="{{ option.0 }}" value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="star-date" class="form-control" style="display: none">
+                        <label for="end-date">结束日期:</label>
+                        <input type="date" id="end-date" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="submit-data">提交更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var calOps = {
+            init: function () {
+                this.bindModal();
+                this.bindSend()
+            },
+            bindModal: function () {
+                $('.tb-body').on('click', '.cal', function () {
+                    $('#cal-edit').modal('show');
+                    var day = $(this).find('.day').text();
+                    var month = $(this).parents('tr').find('.month').attr('mon');
+                    var year = $(this).parents('tr').find('.year').attr('year');
+                    if (!month) {
+                        month = $(this).parents('tr').prevAll().find('.YM').find('.month').last().attr('mon');
+                    }
+                    if (!year) {
+                        year = $(this).parents('tr').prevAll().find('.YM').find('.year').last().attr('year');
+                    }
+
+                    var startDate = year+'-'+month+'-'+day;
+                    $('#star-date').val(startDate);
+                })
+            },
+            bindSend:function () {
+                $('#submit-data').click(function () {
+                    var startDate = $('#star-date').val();
+                    var endDate = $('#end-date').val();
+                    var desOptions = $('#op-des').val();
+
+                    var data = {
+                        startDate:startDate,
+                        endDate:endDate,
+                        desOptions:desOptions
+                    };
+                    $.ajax({
+                        url:'',
+                        method:'POST',
+                        type:'json',
+                        data:data,
+                        success:function (res) {
+                            if (res.state){
+                                alert('添加成功');
+                                window.location.href = ''
+                            }else {
+                                alert(res.msg)
+                            }
+                        }
+                    })
+                })
+            }
+        };
+
+        $(document).ready(function () {
+            calOps.init()
+        });
+
+
+    </script>
+{% endblock %}
