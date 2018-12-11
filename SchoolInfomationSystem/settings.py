@@ -193,7 +193,7 @@ CORS_ALLOW_HEADERS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-DOMAIN_NAME = 'http://dc.junji.vip:80'
+DOMAIN_NAME = 'https://dc.junji.vip'
 
 # ################## 默认文件上传配置 ########################
 

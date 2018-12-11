@@ -222,6 +222,12 @@ class ScaleQuestion(models.Model):
     scale = models.ForeignKey(verbose_name='对应量表', to=ScaleSetting, on_delete=models.CASCADE)
     # question = models.ForeignKey(verbose_name='对应的自定制问题表', to='CustomizationQuestion', on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = (('student', 'scale'), )
+
+    def __str__(self):
+        return '%s:%s' % (self.student.full_name, self.scale.title)
+
 
 class ScaleValue(models.Model):
     '''
@@ -241,3 +247,9 @@ class ChoiceQuestion(models.Model):
     student = models.ForeignKey(verbose_name='对应学生', to=StudentInfo, on_delete=models.CASCADE)
     choice_table = models.ForeignKey(verbose_name='对应的选项表', to='school.ChoiceTable', on_delete=models.CASCADE)
     values = models.ManyToManyField(verbose_name='对应选择的值', to='school.ChoiceOptionsDes')
+
+    class Meta:
+        unique_together = (('student', 'choice_table'), )
+
+    def __str__(self):
+        return '%s:%s' % (self.student.full_name, self.choice_table.title)

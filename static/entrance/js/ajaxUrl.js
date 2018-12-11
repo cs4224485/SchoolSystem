@@ -1,4 +1,4 @@
-var ajaxUrl = "http://dc.junji.vip";
+var ajaxUrl = "https://dc.junji.vip";
 
 /*获取到Url里面的参数*/
 (function ($) {

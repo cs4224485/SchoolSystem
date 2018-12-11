@@ -262,6 +262,9 @@ class ScaleSetting(models.Model):
     setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
                                       related_name='scale')
 
+    def __str__(self):
+        return self.title
+
 
 class ScaleOptionDes(models.Model):
     '''
@@ -271,6 +274,9 @@ class ScaleOptionDes(models.Model):
     scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE,
                                     related_name='options')
     des = models.CharField(verbose_name='分值描述信息', max_length=64)
+
+    def __str__(self):
+        return self.des
 
 
 class ScaleLineTitle(models.Model):
@@ -292,11 +298,17 @@ class ChoiceTable(models.Model):
     choice_type_choice = ((1, '单选'), (2, '多选'))
     choice_type = models.PositiveIntegerField(verbose_name='单选或多选', choices=choice_type_choice)
 
+    def __str__(self):
+        return self.title
+
 
 class ChoiceOptionsDes(models.Model):
     des = models.CharField(verbose_name='每个选项的描述', max_length=64)
     choice_table = models.ForeignKey(to='ChoiceTable', verbose_name='对应的选择表', on_delete=models.CASCADE,
                                      related_name='opdes')
+
+    def __str__(self):
+        return self.des
 
 
 class ScopeOfFilling(models.Model):

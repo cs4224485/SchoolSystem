@@ -102,7 +102,6 @@ def edit_school_setting(request, nid):
             # 更新设置信息
             models.TableSettings.objects.filter(pk=nid).update(title=data['title'], stat_time=data['statTime'],
                                                                end_time=data['endTime'])
-
             # 更新选中的字段
             new_fields_ids = [int(field_id) for field_id in data.get('choiceFieldId')]
             old_fields = models.SettingToField.objects.filter(setting=setting_obj).all().distinct().order_by('order')
@@ -110,7 +109,6 @@ def edit_school_setting(request, nid):
             temp = []
             for field in new_fields_ids:
                 index = new_fields_ids.index(field)
-
                 if field not in old_fields_ids:
                     obj = models.SettingToField.objects.create(setting=setting_obj, fields_id=int(field), order=index)
                     temp.append(obj)

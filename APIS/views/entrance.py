@@ -397,11 +397,12 @@ class CustomizationQuestionViewSet(BaseViewSet):
             # 添加单选多选信息
             for choice_item in choice_table:
                 obj = stu_models.ChoiceQuestion.objects.create(student_id=student_id,
-                                                               choice_table=choice_item.get('choice_id'))
+                                                               choice_table_id=choice_item.get('choice_id'))
                 obj.values.add(*choice_item.get('options'))
             self.message['state'] = True
             self.message['msg'] = '创建成功'
             return Response(self.message)
         except Exception as e:
+            print(e)
             self.message['msg'] = '创建失败'
             return Response(self.message)
