@@ -200,7 +200,51 @@ class SchoolHistory(models.Model):
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
 
 
+class SchoolCalendar(models.Model):
+    '''
+    学校校历信息
+    '''
+
+    school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
+    des_choice = ((1, '开学'), (2, '寒假'), (4, '暑假'), (3, '校动会'), (5, '期中考试'), (6, '期末考试'), (7, '校庆'), (8, '毕业典礼'))
+    date_des = models.IntegerField(verbose_name='日期描述', choices=des_choice)
+    date = models.DateField(verbose_name='日期')
+    end_date = models.DateField(verbose_name="结束日期", null=True, blank=True)
+
+
+class Course(models.Model):
+    '''
+    课程信息
+    '''
+    course_des = models.CharField(verbose_name='课程名称', max_length=32)
+
+    def __str__(self):
+        return self.course_des
+
+
+class SchoolTimetable(models.Model):
+    '''
+    学校课程表
+    '''
+    stu_class = models.ForeignKey(to='StuClass', verbose_name='班级', on_delete=models.CASCADE, null=True, blank=True)
+    course = models.ForeignKey(to='Course', verbose_name='课程', on_delete=models.CASCADE, blank=True, null=True)
+    teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='代课老师', on_delete=models.CASCADE, blank=True, null=True)
+    week_choice = ((1, '星期一'), (2, '星期二'), (3, '星期三'), (4, '星期四'), (5, '星期五'))
+    week = models.SmallIntegerField(choices=week_choice, verbose_name='星期', blank=True, null=True)
+    time_range = models.TimeField(verbose_name='时间段')
+    single_double_week_choice = ((1, '单'), (2, '双'))
+    single_double_week = models.SmallIntegerField(verbose_name='课程单双周',  choices=single_double_week_choice, null=True, blank=True)
+    other_event_choice = ((1, '课间操'), (2, '午休'))
+    school = models.ForeignKey(to='SchoolInfo', verbose_name='学校', on_delete=models.CASCADE)
+    other_event = models.SmallIntegerField(choices=other_event_choice, verbose_name='学校其他事件', null=True, blank=True)
+    info_type_choice = ((1, '课程'), (2, '其他事件'))
+    info_type = models.SmallIntegerField(choices=info_type_choice, verbose_name='存储的类型', default=1)
+
+    def __str__(self):
+        return '%s:%s:%s' %(self.stu_class.name, self.teacher.last_name+self.teacher.first_name, self.course.course_des)
+
 # ------------------------- 表单设置相关表  ---------------------------------
+
 
 class ChoiceField(models.Model):
     '''
@@ -251,7 +295,7 @@ class SettingToField(models.Model):
     order = models.IntegerField(verbose_name='排序')
 
     class Meta:
-        unique_together = (('setting', 'fields'), )
+        unique_together = (('setting', 'fields'),)
 
 
 class ScaleSetting(models.Model):

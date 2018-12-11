@@ -1,0 +1,124 @@
+<table class="table" id="tMain">
+    <thead class="tb-head">
+    <tr>
+        <th style="width: 200px">学期周次</th>
+        <th style="width: 100px">时间段</th>
+        <th style="text-align: center">周一</th>
+        <th style="text-align: center">周二</th>
+        <th style="text-align: center">周三</th>
+        <th style="text-align: center">周四</th>
+        <th style="text-align: center">周五</th>
+        <th style="text-align: center">周六</th>
+        <th style="text-align: center">周日</th>
+    </tr>
+    </thead>
+
+    <tbody class="tb-body" id="cal-body">
+    {% for cal_dict in cal %}
+        {% if cal_dict.is_current %}
+            <tr class="current">
+            <td>
+                <div style="position: relative">
+
+                    <span>{{ cal_dict.them }}</span>
+                    {% if cal_dict.week and not cal_dict.mon%}
+                    <div class="week-wrap">
+                        <span>第{{ cal_dict.week }}周</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+
+
+            <td style="border-left: #efefef solid 1px; border-right: #efefef solid 1px" class="YM">
+                {% if cal_dict.is_new_month %}
+                    <div id="month-wrap" style="position: relative; left: 17px; top: 10px;">
+                        <span mon="{{ cal_dict.mon }}">{{ cal_dict.year }}年</span>
+                    </div>
+                    <div id="month-wrap" style="position: relative; left: 17px; top: 10px; margin-top: 10px">
+                        <span mon="{{ cal_dict.mon }}">{{ cal_dict.mon  }}月</span>
+                    </div>
+                {% endif %}
+
+            </td>
+            {% for day in cal_dict.day_list%}
+                {% if day.day  %}
+                    <td>
+                        <div class="td-box cal" style="">
+                            <div class="text">
+                                <p style="font-size:14px;text-align:center;"><span
+                                        style="color:#1E1E1E;" class="day">{{ day.day }}</span>
+                                </p>
+                                <p style="font-size:10px;text-align:center;"><span style="color:#999999;">{{ day.cn_day}}</span></p>
+                            </div>
+                        </div>
+                    </td>
+                {% else %}
+                    <td>
+
+                    </td>
+                {% endif %}
+            {% endfor %}
+
+        </tr>
+        {% else %}
+            <tr class="">
+            <td>
+                <div style="position: relative">
+
+                    <span>{{ cal_dict.them }}</span>
+                    {% if cal_dict.week%}
+                    <div class="week-wrap">
+                        <span>第{{ cal_dict.week }}周</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+
+
+            <td style="border-left: #efefef solid 1px; border-right: #efefef solid 1px" class="YM">
+                {% if cal_dict.is_new_month %}
+                    {% if cal_dict.year  %}
+                    <div class="year-wrap" style="position: relative; left: 17px; top: 10px; ">
+                        <span year="{{ cal_dict.year }}" class="year">{{ cal_dict.year }}年</span>
+                    </div>
+                    {% endif %}
+                    <div id="month-wrap" style="position: relative; left: 17px; top: 10px; margin-top: 10px">
+                        <span mon="{{ cal_dict.mon }}" class="month">{{ cal_dict.mon  }}月</span>
+                    </div>
+                {% endif %}
+
+            </td>
+            {% for day in cal_dict.day_list%}
+                {% if day.day  %}
+                    <td>
+                        <div class="td-box cal" style="">
+                            <div class="text">
+                                <p style="font-size:14px;text-align:center;"><span
+                                        style="color:#1E1E1E;" class="day">{{ day.day }}</span>
+                                </p>
+                                {% if day.holiday %}
+                                    <p style="font-size:10px;text-align:center;"><span style="color:#C85C5C">{{ day.holiday }}</span></p>
+                                {% else %}
+                                     <p style="font-size:10px;text-align:center;"><span style="color:#999999;">{{ day.cn_day}}</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                {% else %}
+                    <td>
+
+                    </td>
+                {% endif %}
+            {% endfor %}
+
+        </tr>
+        {% endif %}
+    {% endfor %}
+    <tr>
+
+
+    </tr>
+    </tbody>
+
+</table>

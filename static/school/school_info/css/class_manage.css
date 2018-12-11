@@ -1,0 +1,39 @@
+
+
+.class-item {
+    border: #2b669a;
+    font-family: '微软雅黑';
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+}
+
+.tb-body {
+    border-top: 2px solid #169BD5;
+    border-bottom: 2px solid #169BD5;
+}
+
+.td-box:hover {
+    cursor: pointer;
+    background-color: orange;
+}
+
+.graduated {
+    border-top: 2px solid yellow;
+}
+
+.tb-wrap {
+    width: 1600px;
+    height: 800px;
+    overflow: auto;
+    overflow-x: scroll;
+}
+
+.per-class {
+    height: 60px;
+    width: 90px;
+}
+
+th {
+    width: 30px;
+}

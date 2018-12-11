@@ -1,0 +1,149 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load url_tag %}
+{% block css %}
+    <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/pub.css' %}">
+    <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/timetable.css' %}">
+    <link rel="stylesheet" href="{% build_static_url '/plug/jedate-6.5.0/skin/jedate.css' %}">
+
+{% endblock %}
+
+{% block content %}
+    <input class="dateinput dateicon mr25" id="texthms" type="hidden" placeholder="hh:mm:ss"  readonly>
+    <div class="" style="margin-left: 20px">
+        <div id="header" class="ax_default label">
+            <div id="head_div" class="">
+                <div id="head_text" class="text ">
+                    <p>
+                        <span>{{ head_info.school_name }} {{ head_info.year }} {{ head_info.period }}届（{{ head_info.grade }}）课程表</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-inline" style="margin-bottom: 6px">
+            <label for="choice-grade">选择年级:</label>
+            <select id="choice-grade" class="form-control" style="width: 200px">
+                {% for grade in grad_queryset %}
+                    {% if grade.grade_id  == selected_grade.id %}
+                        <option selected="selected" value="{{ grade.grade_id }}">{{ grade.grade__grade_name }}</option>
+                    {% else %}
+                        <option value="{{ grade.grade_id }}">{{ grade.grade__grade_name }}</option>
+                    {% endif %}
+                {% endfor %}
+
+            </select>
+
+            <div class="pull-right" style="">
+                <button class="btn-primary btn" id="add-row">+添加</button>
+            </div>
+        </div>
+        <div id="wrap" style="width: 1650px; overflow-x: scroll">
+            <table class="table" id="tMain" cellpadding="0" cellspacing="0">
+                <thead class="tb-head">
+                <tr>
+                    <th colspan="1" class="left-border">
+                        <div style="width: 200px;">时间段</div>
+                    </th>
+                    <th style="text-align: left" class="week">周一</th>
+                    <th style="text-align: left" class="week">周二</th>
+                    <th style="text-align: left" class="week">周三</th>
+                    <th style="text-align: left" class="week">周四</th>
+                    <th style="text-align: left" class="week">周五</th>
+                </tr>
+                <tr class="class-th">
+                    <th style="width: 200px;" class="left-border"></th>
+                    {% for i in week_list %}
+                        {% for class in class_list %}
+                            <th class="th-class" week="{{ i }}"
+                                {% if forloop.first %}style="border-left: #efefef solid 1px;" {% elif forloop.last %}
+                                style="border-right: #efefef solid 1px;"
+                                {% endif %}>
+                                <div class="class-box">
+                                    <div class="text class-item" style="margin-top: 8px">
+                                            <span style="color:#1E1E1E;" class="class-name"
+                                                  class-id="{{ class.id }}">{{ class.name }}</span>
+                                    </div>
+                                </div>
+                            </th>
+
+                        {% endfor %}
+                    {% endfor %}
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="course-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top:250px ">
+            <div class="modal-content">
+                <input id="class-info" style="display:none;">
+                <input id="time-info" style="display: none">
+                <input id="course-table-id" style="display: none">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <a class="active edit-tag course-tag" href="javascript:void 0">课程编辑</a>
+                        <a class="edit-tag other-tag">其他编辑</a>
+                    </h4>
+                </div>
+                <div class="modal-body edit-course">
+                    <div class="form-group">
+                        <label for="op-teacher">代课老师:</label>
+                        <select id="op-teacher" class="form-control">
+                            {% for teacher in teacher_list %}
+                                <option value="{{ teacher.pk }}">
+                                    {{ teacher.last_name }}{{ teacher.first_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="op-course">选择课程:</label>
+                        <select id="op-course" class="form-control">
+                            {% for course in course_list %}
+                                <option value="{{ course.pk }}">{{ course.course_des }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <p id="single-double-week">
+                            <label for="single">单周</label>
+                            <input type="radio" name="choice-week"  value="1" id="single">
+                            <label for="double">双周</label>
+                            <input type="radio" name="choice-week" value="2" id="double">
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-body edit-orther modal-hide">
+                    <div class="form-group">
+                        <label for="op-event">选择事件:</label>
+                        <select id="op-event" class="form-control">
+                            {% for event in other_event %}
+                                <option value="{{ event.0 }}">{{ event.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-type=0 id="submit-data">提交更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="display: none" id="table-dict">{{ course_table_dict }}</div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static "/plug/jedate-6.5.0/src/jedate.js" %}"></script>
+    <script src="{% build_static_url '/school/school_info/js/timetable.js' %}"></script>
+{% endblock %}

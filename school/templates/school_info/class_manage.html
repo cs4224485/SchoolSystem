@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load url_tag %}
+{% block css %}
+     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/class_manage.css' %}">
+     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/pub.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="" style="margin-left: 20px">
+        <div id="header" class="ax_default label">
+            <div id="head_div" class="">
+                <div id="head_text" class="text ">
+                    <p><span>{{ school_obj.school_name }}</span></p>
+                </div>
+            </div>
+
+        </div>
+        <div class="tb-wrap">
+            <table class="table table-hover">
+                <thead class="tb-head">
+                <tr>
+                    <th><span style="width: 70px; display: inline-block">届别</span></th>
+                    <th><span style="width: 70px; display: inline-block">年级</span></th>
+                    <th><span style="width: 70px; display:inline-block;">班级</span></th>
+                    <th><span style="width: 70px; display: inline-block">添加班级</span></th>
+                </tr>
+                </thead>
+
+                <tbody class="tb-body">
+                {% for key,value in class_dict.items %}
+                    <tr>
+                    <td>{{ value.peroid }}</td>
+                    <td grade-id="{{ value.grade_id }}">{{ value.grade }}</td>
+                    <td>
+                        <div id="clss_stu_count" class="text ">
+                            <p style="font-size:14px;"><span>共{{ value.total_class }}个班级</span></p>
+                            <p style="font-size:10px;"><span
+                                    style="color:#999999;">{{ value.class_total_student }}人</span>
+                            </p>
+                        </div>
+                    </td>
+
+                    <td class="add">
+                        <div class="text add-class">
+                            <a href="javascript:void 0"><span class="add-btn">+添加</span></a>
+                        </div>
+                    </td>
+                    {% for item in value.children %}
+                        <td class="per-class">
+                            <div class="td-box">
+                                <div class="text class-item">
+                                    <p style="font-size:14px;"><span style="color:#1E1E1E;" class="class-name" class-id="{{ item.class_id }}">{{ item.class_name }}</span>
+                                    </p>
+                                    <p style="font-size:7px;"><span
+                                            style="color:#999999;"><b class="tutor-name" tutor-id="{{ item.tutor_id }}">{{ item.tutor }}</b>，{{ item.per_class_student }}人</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    {% endfor %}
+                {% endfor %}
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="identifier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top:250px ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">编辑班级</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="class-name">班级名称:</label>
+                        <input type="text" id="class-Id" style="display: none">
+                        <input type="text" placeholder="请输入班级名称" id="class-name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="tutor" class="control-label">请选择班主任:</label>
+                        <select class="form-control" id="tutor">
+                            {% for teacher in teacher_list %}
+                                <option teacher-id="{{ teacher.id }}" value="{{ teacher.id }}">{{ teacher.last_name }}{{ teacher.first_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="submit-data">提交更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% build_static_url '/school/school_info/js/class_manage.js' %}"></script>
+    <script type="text/javascript">
+
+    </script>
+{% endblock %}

@@ -3,6 +3,7 @@ import datetime
 import time
 from pypinyin import lazy_pinyin
 
+
 def create_uuid():
     random_id = uuid.uuid4()
     return random_id
@@ -17,8 +18,8 @@ def get_constellation(month, date):
     '''
     dates = (21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22)
     constellations = (
-    (1, "摩羯"), (2, "水瓶"), (3, "双鱼"), (4, "白羊"), (5, "金牛"), (6, "双子"), (7, "巨蟹"), (8, "狮子"), (9, "处女"), (10, "天秤"),
-    (11, "天蝎"), (12, "射手"), (1, "摩羯"))
+        (1, "摩羯"), (2, "水瓶"), (3, "双鱼"), (4, "白羊"), (5, "金牛"), (6, "双子"), (7, "巨蟹"), (8, "狮子"), (9, "处女"), (10, "天秤"),
+        (11, "天蝎"), (12, "射手"), (1, "摩羯"))
     if date < dates[month - 1]:
         return constellations[month - 1]
     else:
@@ -67,7 +68,7 @@ def calculate_period(grade):
     :return:
     '''
     grade_choice = (
-     '一年级',  '二年级',  '三年级',  '四年级',  '五年级',  '六年级',  '初一',  '初二',  '初三', '高一',  '高二',  '高三')
+        '一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三')
     if grade in grade_choice:
         grade_index = grade_choice.index(grade)
         if datetime.date.today().month >= 9:
@@ -95,19 +96,21 @@ def get_en_name(name):
     return en_name
 
 
-def school_calendar():
+def school_calendar(date):
     '''
     获取校历
     :return:
     '''
-    current_year = str(datetime.datetime.now().year)
-    current_month = datetime.datetime.now().month
-    if current_month >= 9:
+    current_year = datetime.datetime.today().year
+    first_them_range = [datetime.datetime.strptime('%s-9-3' % current_year, '%Y-%m-%d'),
+                        datetime.datetime.strptime('%s-2-19' % date.year, '%Y-%m-%d')]
+
+    if date.month >= 9 or date < first_them_range[1]:
         them = '第一学期'
-        start_time = datetime.datetime.strptime('%s-9-1' % current_year, '%Y-%m-%d')
+        start_time = first_them_range[0]
     else:
         them = '第二学期'
-        start_time = datetime.datetime.strptime('%s-2-19' % current_year, '%Y-%m-%d')
+        start_time = first_them_range[1]
     time_range = []
     for i in range(1, 23):
         time_range.append(start_time)
@@ -122,13 +125,15 @@ def current_week(current_date):
     :param current_date:
     :return:
     '''
-    time_range, them = school_calendar()
-    for index, time in enumerate(time_range, start=1):
+
+    time_range, them = school_calendar(current_date)
+    for index, time in enumerate(time_range, start=0):
+        # print(current_date, 'current_date')
         try:
-            if current_date >= time_range[index] and current_date <= time_range[index + 1]:
+            if current_date >= time_range[index] and current_date < time_range[index + 1]:
+
                 return index + 1, them
             else:
                 continue
         except Exception as e:
-            print(e)
-            return len(time_range), them
+            return ''
