@@ -275,7 +275,7 @@ class SchoolTimeTable(views.View):
             # 课程表Id 如果存在表示需要更新不存在则创建
             course_table_id = request.POST.get('courseTableId')
             record_type = int(request.POST.get('type'))
-            course_week = ''
+            course_week = 0
             if not time_info:
                 res.msg = '请先设置时间'
                 return JsonResponse(res.get_dict)
