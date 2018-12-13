@@ -1,6 +1,7 @@
 var imgFiles = {};
 var relation = $.getUrlParam('relation');
 var province = "", city = "", region = "";
+var schoolId = $('#school_pk').attr('pk');
 
 //三级联动
 (function ($, doc) {
@@ -440,7 +441,7 @@ var nationHtml = '';
 for (var i in nationAttr) {
     nationHtml += '<p>' + nationAttr[i].name + '</p>';
 }
-$("#NationData").html(nationHtml)
+$("#NationData").html(nationHtml);
 
 
 //	<input onkeyup="value=value.replace(/[\W]/g,'') "onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
@@ -504,7 +505,7 @@ function school(that) {
 
 function schoolList() {
     $.ajax({
-        url: ajaxUrl + '/api/v1/all_institutions/?school_id=38',
+        url: ajaxUrl + '/api/v1/all_institutions/?school_id=' + schoolId,
         type: 'get',
         dataType: 'json',
         success: function (data) {

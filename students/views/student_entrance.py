@@ -72,6 +72,7 @@ class StudentInfo(views.View):
         return render(request, 'entrance/landing.html', {'setting_obj': setting_obj, 'school_obj': school_obj})
 
     def stu_info_page(self, request, setting_obj):
+        school_obj = setting_obj.school_range.first()
         student_id = request.GET.get('student_id')
         if not student_id:
             self.message['msg'] = '您好，请先填写登陆页面'
@@ -82,7 +83,8 @@ class StudentInfo(views.View):
             'fields__fieldName', 'fields__pk')
         if stu_field_list:
             return render(request, 'entrance/student_info.html',
-                          {'stu_field_list': stu_field_list, 'pk': setting_obj.pk, 'student_obj': student_obj})
+                          {'stu_field_list': stu_field_list, 'pk': setting_obj.pk, 'student_obj': student_obj,
+                           'school_obj': school_obj})
         return self.health_page(request, setting_obj)
 
     def health_page(self, request, setting_obj):

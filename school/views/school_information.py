@@ -2,7 +2,6 @@
 学校相关信息
 '''
 import json
-import datetime
 from django import views
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
@@ -12,7 +11,6 @@ from teacher import models as tea_models
 from utils.common import *
 from utils.base_response import BaseResponse
 from utils.generate_calender import *
-from utils.libs import heapler
 from django.db.models import Q
 
 
@@ -271,11 +269,10 @@ class SchoolTimeTable(views.View):
             time_info = request.POST.get('timeInfo')
             week = request.POST.get('week')
             school_id = kwargs.get('school_id')
-            print(request.POST)
             # 课程表Id 如果存在表示需要更新不存在则创建
             course_table_id = request.POST.get('courseTableId')
             record_type = int(request.POST.get('type'))
-            course_week = ''
+            course_week = 0
             if not time_info:
                 res.msg = '请先设置时间'
                 return JsonResponse(res.get_dict)
@@ -295,6 +292,11 @@ class SchoolTimeTable(views.View):
                 teacher_obj = tea_models.TeacherInfo.objects.filter(id=teacher_id).first()
                 if not teacher_obj:
                     res.msg = '该教师已不存在, 请刷新页面'
+                    return JsonResponse(res.get_dict)
+                course_table_obj = sc_models.SchoolTimetable.objects.filter(week=week, time_range=time_info,
+                                                                            stu_class=class_id)
+                if course_table_obj and not course_week:
+                    res.msg = "该时段课程已存在,请重新核对或选择单双周"
                     return JsonResponse(res.get_dict)
 
                 course_obj = sc_models.Course.objects.filter(id=course_id).first()
