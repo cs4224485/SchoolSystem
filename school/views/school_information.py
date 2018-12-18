@@ -131,13 +131,22 @@ class SchoolCalender(views.View):
         school_year = '%s-%s年度' % (years[0], years[1])
         # 获取校历描述信息
         school_special_day = sc_models.SchoolCalendar.objects.filter(school_id=school_id).all()
-        # special_day_dict = {}
-        # for special in school_special_day:
-        #     school_special_day
 
+        special_day_dict = {}
+        for special in school_special_day:
+            day_des = special.get_date_des_display()
+            node = {'id': special.id,
+                    'des': day_des,
+                    'des_id': special.date_des,
+                    'end_date': ''}
+            if day_des == '开学' or day_des == '寒假' or day_des == '暑假' or not special.end_date:
+                special_day_dict[special.date] = node
+            else:
+                node['end_date'] = special.end_date
+                special_day_dict[special.date] = node
         return render(request, 'school_info/school_calender.html',
                       {'school_obj': school_obj, 'month_day_num': month_day_num, 'cal_des_options': cal_des_options,
-                       'school_year': school_year, 'special_day': school_special_day})
+                       'school_year': school_year, 'special_day': special_day_dict})
 
     def post(self, request, *args, **kwargs):
 
@@ -155,16 +164,30 @@ class SchoolCalender(views.View):
             start_date = request.POST.get('startDate')
             end_data = request.POST.get('endDate')
             des_ops = request.POST.get('desOptions')
-            if datetime.datetime.strptime(start_date, '%Y-%m-%d') > datetime.datetime.strptime(end_data, '%Y-%m-%d'):
-                res.msg = '结束日期要在开始日期之后'
-                return JsonResponse(res.get_dict)
-            sc_models.SchoolCalendar.objects.create(date=start_date, end_date=end_data, date_des=des_ops,
-                                                    school_id=school_id)
-            res.msg = '创建成功'
+            calendar_id = request.POST.get('specialId')
+            save_data = {
+                'date': start_date,
+                'date_des': des_ops,
+                'school_id': school_id
+            }
+            if end_data:
+                if datetime.datetime.strptime(start_date, '%Y-%m-%d') > datetime.datetime.strptime(end_data,
+                                                                                                   '%Y-%m-%d'):
+                    res.msg = '结束日期要在开始日期之后'
+                    return JsonResponse(res.get_dict)
+                save_data['end_date'] = end_data
+            if calendar_id:
+                calendar_obj = sc_models.SchoolCalendar.objects.filter(id=calendar_id)
+                if calendar_obj:
+                    calendar_obj.update(**save_data)
+                    res.msg = '修改成功'
+            else:
+                sc_models.SchoolCalendar.objects.create(**save_data)
+                res.msg = '创建成功'
             res.state = True
         except Exception as e:
-            res.msg = '创建失败'
             print(e)
+            res.msg = '创建失败'
         return JsonResponse(res.get_dict)
 
 
@@ -208,7 +231,6 @@ class SchoolTimeTable(views.View):
         course_table_queryset = sc_models.SchoolTimetable.objects.filter(
             Q(stu_class__grade_id=grade, school=school_obj) | Q(school=school_obj, info_type=2)).order_by('time_range',
                                                                                                           'week')
-
         # 构建课程信息字典
         course_table_dict = {}
         for table_item in course_table_queryset:
@@ -332,7 +354,6 @@ class SchoolTimeTable(views.View):
                     return JsonResponse(res.get_dict)
                 if record_type == 0:
                     obj.update(info_type=1, other_event=None)
-
                 obj.update(**save_dict)
                 res.msg = '修改成功'
             else:

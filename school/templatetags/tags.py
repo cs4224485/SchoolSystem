@@ -69,35 +69,43 @@ def generate_cal(calender_data, special_day, count=7):
                 if not day_list:
                     break
 
-                if day_list[-1]:
-                    temp_day = datetime.datetime.strptime('%s-%s-%s' % (year, mon, day_list[-1]), '%Y-%m-%d')
-                    school_week = current_week(temp_day)
-                    # 如果是新的一个月并且1号是周一就不显示第X周了
-                    if cal_dict['is_new_month'] and '' in day_list:
-                        cal_dict['week'] = ''
-                    elif school_week:
-                        cal_dict['week'] = school_week[0]
-
                 for day in day_list:
+                    # 处理一周日程每一天的情况
                     cn_day = ''
                     day_dict = {}
                     if day:
-                        tem_day = datetime.datetime.strptime('%s-%s-%s' % (year, mon, day), '%Y-%m-%d')
-                        cn_day = calender_obj.getCnDay(tem_day)
-                        cn_month = calender_obj.getCnMonth(tem_day)
+                        temp_day = datetime.datetime.strptime('%s-%s-%s' % (year, mon, day), '%Y-%m-%d')
+                        cn_day = calender_obj.getCnDay(temp_day)
+                        cn_month = calender_obj.getCnMonth(temp_day)
                         holiday = calender_obj.get_pub_holiday(mon, day) if calender_obj.get_pub_holiday(mon, day) else calender_obj.get_cn_holiday(cn_month, cn_day)
                         if holiday:
                             day_dict['holiday'] = holiday
                         if cn_day == '初一':
                             cn_day = cn_month
-                        if current_day == tem_day.date():
+                        if current_day == temp_day.date():
                             cal_dict['is_current'] = True
                         # 处理学校特殊日期
-
+                        if temp_day.date() in special_day:
+                            special_data = special_day[temp_day.date()]
+                            end_date = special_data.get('end_date')
+                            if end_date and temp_day.date() < end_date:
+                                special_day.pop(temp_day.date())
+                                special_day[temp_day.date()+datetime.timedelta(days=1)] = special_data
+                                day_dict['end_date'] = end_date
+                            day_dict['special_day'] = special_data.get('des')
+                            day_dict['special_id'] = special_data.get('id')
+                            day_dict['des_id'] = special_data.get('des_id')
+                        if day == day_list[-1]:
+                            # 用本周的最后一天去判断学校周次
+                            school_week = current_week(temp_day)
+                            # 如果是新的一个月并且1号是周一就不显示第X周了
+                            if cal_dict['is_new_month'] and '' in day_list:
+                                cal_dict['week'] = ''
+                            elif school_week:
+                                cal_dict['week'] = school_week[0]
                     day_dict['day'] = day
                     day_dict['cn_day'] = cn_day
                     cal_dict['day_list'].append(day_dict)
-
                 yield cal_dict
 
 
@@ -106,6 +114,7 @@ def ger_cal(calender_data, special_day):
     '''
     生成日历
     :param calender_data:
+    :param special_day:
     :return:
     '''
 

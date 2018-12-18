@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'school.apps.SchoolConfig',
     'stark.apps.StarkConfig',
     'teacher.apps.TeacherConfig',
-    'StudentMentalHealth'
+    'StudentMentalHealth',
 ]
 
 
@@ -234,5 +234,5 @@ FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
 
 
 # 版本号
-RELEASE_VERSION = '1.05'
+RELEASE_VERSION = '1.07'
 

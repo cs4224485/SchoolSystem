@@ -23,7 +23,6 @@ class TeacherInfo(models.Model):
         unique_together = (("first_name", "last_name", 'birthday', 'telephone', ),)
 
 
-
 class Identity(models.Model):
     title = models.CharField(verbose_name='身份', max_length=32)
 
