@@ -211,6 +211,9 @@ class SchoolCalendar(models.Model):
     date = models.DateField(verbose_name='日期')
     end_date = models.DateField(verbose_name="结束日期", null=True, blank=True)
 
+    def __str__(self):
+        return "%s:%s" % (self.get_date_des_display(), self.date)
+
 
 class Course(models.Model):
     '''

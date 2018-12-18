@@ -46,10 +46,18 @@
                     <td>
                         <div class="td-box cal" style="">
                             <div class="text">
-                                <p style="font-size:14px;text-align:center;"><span
+                                 <p style="font-size:14px;text-align:center;"><span
                                         style="color:#1E1E1E;" class="day">{{ day.day }}</span>
                                 </p>
-                                <p style="font-size:10px;text-align:center;"><span style="color:#999999;">{{ day.cn_day}}</span></p>
+                                {% if day.holiday %}
+                                    <p style="font-size:10px;text-align:center;"><span style="color:#C85C5C">{{ day.holiday }}</span></p>
+                                {% elif day.special_day %}
+                                    <p style="font-size:10px;text-align:center;" class="special_day">
+                                        <span style="color:#C85C5C" end-date="{{ day.end_date|date:"Y-m-d" }}" special-id="{{ day.special_id  }}" des-id="{{ day.des_id }}">{{ day.special_day }}</span>
+                                    </p>
+                                {% else %}
+                                     <p style="font-size:10px;text-align:center;"><span style="color:#999999;">{{ day.cn_day}}</span></p>
+                                {% endif %}
                             </div>
                         </div>
                     </td>
@@ -99,6 +107,10 @@
                                 </p>
                                 {% if day.holiday %}
                                     <p style="font-size:10px;text-align:center;"><span style="color:#C85C5C">{{ day.holiday }}</span></p>
+                                {% elif day.special_day %}
+                                    <p style="font-size:10px;text-align:center;" class="special_day">
+                                        <span style="color:#C85C5C" end-date="{{ day.end_date|date:"Y-m-d" }}" special-id="{{ day.special_id  }}" des-id="{{ day.des_id }}">{{ day.special_day }}</span>
+                                    </p>
                                 {% else %}
                                      <p style="font-size:10px;text-align:center;"><span style="color:#999999;">{{ day.cn_day}}</span></p>
                                 {% endif %}
@@ -112,7 +124,7 @@
                 {% endif %}
             {% endfor %}
 
-        </tr>
+            </tr>
         {% endif %}
     {% endfor %}
     <tr>
