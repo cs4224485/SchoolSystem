@@ -1,19 +1,17 @@
-var schoolTileTable = {
+var schoolTimeTable = {
             init: function () {
                 let classCount = $('.th-class').length / 5;
                 $('.week').each(function () {
                     $(this).prop('colspan', classCount)
                 });
-
                 this.renderCourseTable(classCount);
                 this.bindAddRow(classCount);
-
                 this.editCourse();
                 this.switchTag();
                 this.bindDateEvent();
                 this.bindSubmit();
                 this.bindChangeGrade();
-
+                this.bindChangeTeacher();
             },
             fillTd: function (classCount) {
                 // 填充TD
@@ -128,6 +126,7 @@ var schoolTileTable = {
             },
             editCourse: function () {
                 // 获取班级以及时间信息
+                let that = this;
                 $('tbody').on('click', '.course-td,.other-event', function () {
                     let courseTdIndex = $(this).parents('tr').find('td').index($(this).parents('td'));
                     let classId = $('.class-th').find('th').eq(courseTdIndex).find('.class-name').attr('class-id');
@@ -139,16 +138,20 @@ var schoolTileTable = {
                         if ($(this).hasClass('course-td')) {
                             let teacherId = $(this).find('span').eq(1).attr('teacher-id');
                             let courseId = $(this).find('span').eq(0).attr('course-id');
+                            that.teacherCourseInfo(teacherId);
+
                             $('#op-teacher').find('option').each(function () {
                                 if (teacherId === $(this).val()) {
                                     $(this).prop('selected', 'selected');
                                 }
                             });
-                            $('#op-course').find('option').each(function () {
+
+                            setTimeout(function () {
+                                $('#op-course').find('option').each(function () {
                                 if (courseId === $(this).val()) {
                                     $(this).prop('selected', 'selected');
                                 }
-                            });
+                            })}, 100);
 
                             // 获取单双周信息
                             if ($(this).hasClass('single-week')){
@@ -224,6 +227,7 @@ var schoolTileTable = {
                                             <p style="font-size:7px;"><span style="color:#1E1E1E;" event-id="${courseTbItem.event_id}">${courseTbItem.other_event}</span></p>
                                      </div>
                               `;
+
                             $(trEle).find('td').eq(1).html(tdHtml).attr("colspan", classCount * 5);
                             $(trEle).find('td:gt(1)').remove();
                             continue
@@ -251,21 +255,49 @@ var schoolTileTable = {
                             $(elePosition).find("div").eq(courseTbItem.week_info ).find('.teacher').attr('teacher-id', courseTbItem.teacher_id).text(courseTbItem.teacher);
                             continue
                         }
-
-
                         $(trEle).find('td').eq(courseTbItem.position).html(tdHtml);
                     }
-
-
                 }
+            },
+            teacherCourseInfo: function (teacherId) {
+                // 根据选择的老师过滤该老师所代课程
+                $("#op-course").children().remove();
+                $.ajax({
+                    url:ajaxUrl + '/api/v1/teacher_to_course/?teacherId=' + teacherId,
+                    method: "get",
+                    type:"json",
+                    success:function (res) {
+                        if(res.code === 200){
+                            $("#op-course").children().remove();
+                            for (let i=0; i < res.data.length; i++){
+                               let optionHtml = `<option value="${res.data[i].course_id}">${res.data[i].course_des}</option>`;
+                               $('#op-course').append(optionHtml)
+                            }
+                        }else {
+                            alert(res.msg)
+                        }
+
+                    }
+                })
+
+            },
+            bindChangeTeacher:function () {
+                let that = this;
+                $('#op-teacher').change(function () {
+                    let teacherId = $(this).val();
+                    if (parseInt(teacherId) !== 0){
+                        that.teacherCourseInfo(teacherId)
+                    }
+
+                })
             }
 
         };
 
         $(document).ready(function () {
-            schoolTileTable.init();
+            schoolTimeTable.init();
             //点击显示 时分（hh:mm）格式
             jeDate(".dateinput", {
                     format: "hh:mm"
             });
-        })
+        });

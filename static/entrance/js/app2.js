@@ -230,7 +230,6 @@ mui("#input_information").on('tap', '.Submission', function () {
             disability: parseInt(personalState.disability) || "",
             student: urlId,
         }
-        console.log(data)
 
         mui.ajax({
             url: ajaxUrl + '/api/v1/health/',
