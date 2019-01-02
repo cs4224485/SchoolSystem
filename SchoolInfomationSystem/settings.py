@@ -238,10 +238,7 @@ FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
 RELEASE_VERSION = '1.05'
 
 # 小程序配置
-MINA_APP = {
-    'appid': 'wx5890469c770b17ee',
-    'appkey': '2915f485aa7e0a7a109cde709fa03767',
-}
+
 
 # 小程序对应的学校
 SCHOOL_ID = 280
