@@ -1,5 +1,8 @@
 from django.db import models
-from school.models import SchoolInfo, Grade,  StuClass, ScaleSetting, ScaleLineTitle, ScaleOptionDes
+from school.models import SchoolInfo, Grade, StuClass, ScaleSetting, ScaleLineTitle, ScaleOptionDes
+from django.contrib.contenttypes.fields import GenericRelation
+
+
 # Create your models here.
 
 
@@ -38,9 +41,11 @@ class StudentInfo(models.Model):
     create_time = models.DateField(verbose_name='创建日期', auto_now=True)
     period = models.IntegerField(verbose_name='届别', null=True, blank=True)
     grade = models.ForeignKey(verbose_name='年级', to=Grade, on_delete=models.CASCADE, null=True, blank=True)
-    graduate_institutions = models.ForeignKey(to=SchoolInfo, verbose_name='毕业园校', on_delete=models.CASCADE, null=True, related_name='school', blank=True)
+    graduate_institutions = models.ForeignKey(to=SchoolInfo, verbose_name='毕业园校', on_delete=models.CASCADE, null=True,
+                                              related_name='school', blank=True)
     school = models.ForeignKey(verbose_name='所在学校', to=SchoolInfo, on_delete=models.CASCADE)
-    stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True, related_name='student_class')
+    stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True,
+                                  related_name='student_class')
 
     def __str__(self):
         return self.full_name
@@ -103,7 +108,7 @@ class HealthInfo(models.Model):
     InheritedDisease = models.ForeignKey('InheritedDisease', verbose_name='遗传病', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.student.first_name+"健康信息"
+        return self.student.first_name + "健康信息"
 
 
 class Allergy(models.Model):
@@ -158,7 +163,7 @@ class FamilyStatus(models.Model):
     '''
     家庭状况表
     '''
-    status_choice = ((1, '再婚'), (2, '离异'), (3, '留守'), (4,'领养'), (5, '单亲'), (6, '其他') )
+    status_choice = ((1, '再婚'), (2, '离异'), (3, '留守'), (4, '领养'), (5, '单亲'), (6, '其他'))
     status = models.IntegerField(verbose_name='家庭状况', choices=status_choice)
 
     def __str__(self):
@@ -190,28 +195,31 @@ class StudentParents(models.Model):
     company = models.CharField(verbose_name='工作单位', max_length=64, null=True, blank=True)
     job = models.CharField(verbose_name='职位', max_length=32, null=True, blank=True)
     wechat = models.CharField(verbose_name='微信', max_length=32, null=True, blank=True)
-    wechat_open_id = models.ForeignKey(verbose_name='openID', to='students.WechatOpenID', null=True, on_delete=models.CASCADE)
+    wx_info = GenericRelation(to='weixinApp.WechatUserInfo')
 
     def __str__(self):
-        return self.first_name+self.last_name
-
-
-class WechatOpenID(models.Model):
-    openid = models.CharField(verbose_name='微信openID', max_length=32)
+        return self.first_name + self.last_name
 
 
 class StudentToParents(models.Model):
     '''
     学生与家长关系映射表
     '''
+
     student = models.ForeignKey(verbose_name='学生ID', to='StudentInfo', on_delete=models.CASCADE, related_name='student')
-    parents = models.ForeignKey(verbose_name='家长ID', to='StudentParents', on_delete=models.CASCADE)
-    relation_choice = ((1, '父亲'), (2, '母亲'), (3, '爷爷'), (4, '奶奶'), (5, '外公'), (6, '外婆'), )
+    parents_wxinfo = models.ForeignKey(verbose_name='家长的微信信息', to='weixinApp.WechatUserInfo', on_delete=models.CASCADE,
+                                       null=True, blank=True)
+    parents = models.ForeignKey(verbose_name='家长ID', to='StudentParents', on_delete=models.CASCADE, null=True,
+                                blank=True)
+    relation_choice = ((1, '父亲'), (2, '母亲'), (3, '爷爷'), (4, '奶奶'), (5, '外公'), (6, '外婆'), (7, '其他长辈'), (8, '其他平辈'))
     relation = models.IntegerField(verbose_name='与学生关系', choices=relation_choice)
-    is_main_contact = models.BooleanField(verbose_name='是否为主要接送人')
+    is_main_contact = models.BooleanField(verbose_name='是否为主要接送人', null=True, blank=True)
 
     def __str__(self):
-        return "学生：%s 家长：%s" %(self.student.full_name, self.parents.last_name+self.parents.first_name)
+        if self.parents:
+            return "学生：%s 家长：%s" % (self.student.full_name, self.parents.last_name + self.parents.first_name)
+        else:
+            return "学生：%s 家长微信：%s" % (self.student.full_name, self.parents_wxinfo)
 
 
 class ScaleQuestion(models.Model):
@@ -220,10 +228,11 @@ class ScaleQuestion(models.Model):
     '''
     student = models.ForeignKey(verbose_name='对应学生', to=StudentInfo, on_delete=models.CASCADE)
     scale = models.ForeignKey(verbose_name='对应量表', to=ScaleSetting, on_delete=models.CASCADE)
+
     # question = models.ForeignKey(verbose_name='对应的自定制问题表', to='CustomizationQuestion', on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (('student', 'scale'), )
+        unique_together = (('student', 'scale'),)
 
     def __str__(self):
         return '%s:%s' % (self.student.full_name, self.scale.title)
@@ -236,7 +245,8 @@ class ScaleValue(models.Model):
     title = models.ForeignKey(verbose_name='对应的行标题', to=ScaleLineTitle, on_delete=models.CASCADE)
     value = models.ForeignKey(verbose_name='对应的值', to=ScaleOptionDes, on_delete=models.CASCADE)
     # score = models.IntegerField(verbose_name='分数')
-    scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE, related_name='scale_value')
+    scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE,
+                                  related_name='scale_value')
 
 
 class ChoiceQuestion(models.Model):
@@ -249,7 +259,7 @@ class ChoiceQuestion(models.Model):
     values = models.ManyToManyField(verbose_name='对应选择的值', to='school.ChoiceOptionsDes')
 
     class Meta:
-        unique_together = (('student', 'choice_table'), )
+        unique_together = (('student', 'choice_table'),)
 
     def __str__(self):
         return '%s:%s' % (self.student.full_name, self.choice_table.title)

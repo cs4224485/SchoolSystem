@@ -6,12 +6,11 @@ from django import views
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from school import models as sc_models
-from students import models as stu_models
 from teacher import models as tea_models
-from utils.common import *
 from utils.base_response import BaseResponse
 from utils.generate_calender import *
 from django.db.models import Q
+from utils.common import get_academic_year
 
 
 class ClassManage(views.View):
@@ -29,7 +28,6 @@ class ClassManage(views.View):
             grade_id = item.grade_id
             per_class_student = item.student_class.all().count()
             class_name = item.name
-
             tutor = tea_models.ClassToTeacher.objects.filter(stu_class_id=item.id).order_by('-create_date',
                                                                                             '-id').first()
             children_dict = {
@@ -210,12 +208,7 @@ class SchoolTimeTable(views.View):
         grade_display = grade_obj.get_grade_name_display()
         period = calculate_period(grade_display)
         them = current_week(datetime.datetime.today())[1]
-        if them == '第一学期':
-            year = [datetime.datetime.today().year, datetime.datetime.today().year + 1]
-        else:
-            year = [datetime.datetime.today().year - 1, datetime.datetime.today().year]
-
-        table_year = '%s-%s年度' % (year[0], year[1])
+        table_year = get_academic_year(them)
         class_queryset = sc_models.StuClass.objects.filter(grade_id=grade, school_id=school_id).order_by('name')
         course_queryset = sc_models.Course.objects.all()
         teacher_queryset = tea_models.TeacherInfo.objects.filter(school_id=school_id)
@@ -250,7 +243,7 @@ class SchoolTimeTable(views.View):
                         'teacher': table_item.teacher.last_name + table_item.teacher.first_name,
                         'week': table_item.week,
                         'class_id': table_item.stu_class_id,
-                        'position': self.calculate_position(table_item.week, table_item.stu_class.name),
+                        'position': table_item.position,
                         'is_event': False,
                         }
                 if table_item.single_double_week:
@@ -264,18 +257,6 @@ class SchoolTimeTable(views.View):
                        'teacher_list': teacher_queryset, 'other_event': sc_models.SchoolTimetable.other_event_choice,
                        'head_info': head_info_dict, 'grad_queryset': grad_queryset, 'selected_grade': selected_grade,
                        'course_table_dict': json.dumps(course_table_dict)})
-
-    def calculate_position(self, week, stu_class):
-        '''
-        计算出课程所对应的班级和星期的位置
-        :param week:
-        :param stu_class:
-        :return:
-        '''
-        class_name = stu_class.split('班')[0]
-        if class_name.isdigit():
-            return (week - 1) * 5 + int(class_name)
-        return class_name
 
     def post(self, request, *args, **kwargs):
         '''
@@ -301,6 +282,7 @@ class SchoolTimeTable(views.View):
 
             # 代表添加的是普通的课程
             if record_type == 0:
+                position = request.POST.get('position')
                 teacher_id = request.POST.get('teacherId')
                 course_id = request.POST.get('courseId')
                 class_id = request.POST.get('classId')
@@ -317,7 +299,7 @@ class SchoolTimeTable(views.View):
                     return JsonResponse(res.get_dict)
                 course_table_obj = sc_models.SchoolTimetable.objects.filter(week=week, time_range=time_info,
                                                                             stu_class=class_id)
-                if course_table_obj and not course_week:
+                if course_table_obj and not course_week and not course_table_id:
                     res.msg = "该时段课程已存在,请重新核对或选择单双周"
                     return JsonResponse(res.get_dict)
 
@@ -331,7 +313,8 @@ class SchoolTimeTable(views.View):
                     'week': week,
                     'school_id': school_id,
                     'time_range': time_info,
-                    'teacher': teacher_obj
+                    'teacher': teacher_obj,
+                    'position': position
                 }
                 if course_week:
                     save_dict['single_double_week'] = course_week

@@ -69,12 +69,13 @@ def calculate_period(grade):
     '''
     grade_choice = (
         '一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三', '高一', '高二', '高三')
+
     if grade in grade_choice:
         grade_index = grade_choice.index(grade)
         if datetime.date.today().month >= 9:
             period = datetime.date.today().year - grade_index
         else:
-            period = datetime.date.today().year - grade_index + 1
+            period = datetime.date.today().year - grade_index - 1
         return period
 
 
@@ -96,14 +97,19 @@ def get_en_name(name):
     return en_name
 
 
-def school_calendar(date):
+def school_calendar(date, starting_date=None):
     '''
     获取校历
     :return:
     '''
     current_year = datetime.datetime.today().year
-    first_them_range = [datetime.datetime.strptime('%s-9-3' % current_year, '%Y-%m-%d'),
-                        datetime.datetime.strptime('%s-2-19' % date.year, '%Y-%m-%d')]
+    special_mon = (1, 2)
+    year = date.year
+    if date.month in special_mon:
+        year = int(date.year - 1)
+        date = date - datetime.timedelta(days=365)
+    first_them_range = [datetime.datetime.strptime('%s-9-3' % year, '%Y-%m-%d'),
+                        datetime.datetime.strptime('%s-2-19' % year, '%Y-%m-%d')]
 
     if date.month >= 9 or date < first_them_range[1]:
         them = '第一学期'
@@ -111,6 +117,10 @@ def school_calendar(date):
     else:
         them = '第二学期'
         start_time = first_them_range[1]
+
+    if starting_date:
+        start_time = starting_date
+
     time_range = []
     for i in range(1, 23):
         time_range.append(start_time)
@@ -119,21 +129,65 @@ def school_calendar(date):
     return time_range, them
 
 
-def current_week(current_date):
+def current_week(current_date, starting_date=None):
     '''
     根据当前时间获取周次
-    :param current_date:
+    :param current_date:  当前日期
+    :param starting_date: 开学日期
     :return:
     '''
-
-    time_range, them = school_calendar(current_date)
+    time_range, them = school_calendar(current_date, starting_date)
     for index, time in enumerate(time_range, start=0):
         # print(current_date, 'current_date')
         try:
             if current_date >= time_range[index] and current_date < time_range[index + 1]:
-
                 return index + 1, them
             else:
                 continue
         except Exception as e:
-            return ''
+            return '', ''
+
+
+def get_academic_year(them):
+    '''
+    获取学年信息
+    :param them:
+    :return:
+    '''
+    if them == '第一学期':
+        special_mon = (1, 2)
+        current_mon = datetime.datetime.now().month
+        if current_mon in special_mon:
+            year = [datetime.datetime.today().year - 1, datetime.datetime.today().year]
+        else:
+            year = [datetime.datetime.today().year, datetime.datetime.today().year + 1]
+    else:
+        year = [datetime.datetime.today().year - 1, datetime.datetime.today().year]
+
+    academic_year = '%s-%s年度' % (year[0], year[1])
+
+    return academic_year
+
+
+def date_to_datetime(date, date_format='%Y-%m-%d'):
+    '''
+    date对象转成datetime
+    :param date:
+    :param date_format:
+    :return:
+    '''
+
+    datetime_obj = datetime.datetime.strptime(str(date), date_format)
+    return datetime_obj
+
+
+def get_week_day(date, date_format='%Y-%m-%d'):
+    '''
+    根据日期判断周几
+    :param date:
+    :param date_format:
+    :return:
+    '''
+    week = datetime.datetime.strptime(date, date_format).weekday() + 1
+    return week
+

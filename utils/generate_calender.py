@@ -4,7 +4,7 @@ from utils.common import *
 # 使用中国阴历计算的节日
 CN_HOLIDAY = (('八月十五', '中秋节'), ('腊月三十', '除夕'), ('正月初一', '春节'), ('五月初五', '端午节'))
 # 使用公历计算的节日
-PUB_HOLIDAY = (('9-10', '教师节'), ('10-1', '国庆节'), ('1-1', '元旦'), ('4-5', '清明节'), ('5-1', '劳动节') )
+PUB_HOLIDAY = (('9-10', '教师节'), ('10-1', '国庆节'), ('1-1', '元旦'), ('4-5', '清明节'), ('5-1', '劳动节'))
 
 
 class CalenderHandler(object):
@@ -35,44 +35,22 @@ class CalenderHandler(object):
             return 29
         return 28
 
-    def generate_school_calender(self):
-        month_list = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7]
-        years = [datetime.datetime.today().year, datetime.datetime.today().year+1]
-        year = years[0]
-        calender_dict = {}
-        for month in month_list:
-            if month <= 7:
-                year = years[1]
-            month_day_num = self.get_num_of_days_in_month(year, month)
-            for day in range(1, month_day_num + 1):
-                date = '%s-%s-%s' % (str(year), str(month), str(day))
-                school_week = current_week(datetime.datetime.strptime(date, '%Y-%m-%d'))
-                if school_week:
-                    week = school_week[0]
-                    print(month, 'mon')
-                    print(week, 'week')
-                    print(day, 'day')
-                    print('---------------------')
-                    if month not in calender_dict:
-                        calender_dict[month] = {week: [day]}
-                    else:
-                        if week not in calender_dict[month]:
-                            print(day, 'day1')
-                            calender_dict[month][week] = [day]
-                        else:
-                            calender_dict[month][week].append(day)
-
     def get_per_month_day(self):
+        '''
+        获取每月的日历
+        :return:
+        '''
         month_list = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8]
-        years = [datetime.datetime.today().year, datetime.datetime.today().year + 1]
         current_month = datetime.datetime.today().month
+        if current_month <= 8:
+            years = [datetime.datetime.today().year - 1, datetime.datetime.today().year]
+        else:
+            years = [datetime.datetime.today().year, datetime.datetime.today().year + 1]
         year = years[0]
         calender_dict = {}
         for month in month_list:
             if month <= 8:
                 year = years[1]
-            if current_month <= 8:
-                year = years[1]-1
             month_day_num = self.get_num_of_days_in_month(year, month)
             for day in range(1, month_day_num + 1):
                 if year not in calender_dict:
@@ -294,7 +272,6 @@ class CalenderHandler(object):
             _day += (_month_days + _span_days)  # 从月份总数中倒扣 得到天数
             return _year, _month, _day
 
-
     def getCnMonth(self, _date):
         """ 获取农历月份
             Args:
@@ -314,6 +291,3 @@ class CalenderHandler(object):
         """
         _day = self._getNumCnDate(_date)[2]
         return "%s" % self._cnDay(_day)
-
-
-

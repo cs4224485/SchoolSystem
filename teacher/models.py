@@ -1,6 +1,6 @@
 from django.db import models
-
-# Create your models here.
+from django.contrib.contenttypes.fields import  GenericRelation
+# Create your models here
 
 
 class TeacherInfo(models.Model):
@@ -11,10 +11,10 @@ class TeacherInfo(models.Model):
     birthday = models.DateField(verbose_name='老师生日', null=True, blank=True)
     telephone = models.CharField(verbose_name='电话号码', max_length=32, null=True, blank=True)
     wechat = models.CharField(verbose_name='微信', max_length=32, null=True, blank=True)
-    wechat_open_id = models.ForeignKey(verbose_name='openID', to='students.WechatOpenID', null=True, on_delete=models.CASCADE, blank=True, related_name='teacher_open_id')
     course = models.ManyToManyField(to='school.Course', verbose_name='老师所带科目', null=True, blank=True)
     identity = models.ForeignKey(to='Identity', verbose_name='老师的身份', on_delete=models.CASCADE, null=True)
     school = models.ForeignKey(to='school.SchoolInfo', verbose_name='老师所在学校', on_delete=models.CASCADE)
+    wx_info = GenericRelation(to='weixinApp.WechatUserInfo')
 
     def __str__(self):
         return self.last_name + self.first_name
