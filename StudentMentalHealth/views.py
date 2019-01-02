@@ -116,7 +116,6 @@ class RecordList(views.View):
         if teacher_info.get('identity') == '心理老师':
             student_obj = stu_models.StudentInfo.objects.filter(id=student_id,
                                                                 school=teacher_info.get('school')).first()
-
         if student_obj:
             record_list = mental_models.IndividualStudentRecord.objects.filter(student_id=student_id)
             # 如果本周已经填写那么无法继续再填

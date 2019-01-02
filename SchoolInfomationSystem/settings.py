@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'stark.apps.StarkConfig',
     'teacher.apps.TeacherConfig',
     'StudentMentalHealth',
+    'weixinApp'
 ]
 
 
