@@ -231,20 +231,28 @@ class SchoolTimetable(models.Model):
     '''
     stu_class = models.ForeignKey(to='StuClass', verbose_name='班级', on_delete=models.CASCADE, null=True, blank=True)
     course = models.ForeignKey(to='Course', verbose_name='课程', on_delete=models.CASCADE, blank=True, null=True)
-    teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='代课老师', on_delete=models.CASCADE, blank=True, null=True)
+    teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='代课老师', on_delete=models.CASCADE, blank=True,
+                                null=True)
     week_choice = ((1, '星期一'), (2, '星期二'), (3, '星期三'), (4, '星期四'), (5, '星期五'))
     week = models.SmallIntegerField(choices=week_choice, verbose_name='星期', blank=True, null=True)
     time_range = models.TimeField(verbose_name='时间段')
     single_double_week_choice = ((1, '单'), (2, '双'))
-    single_double_week = models.SmallIntegerField(verbose_name='课程单双周',  choices=single_double_week_choice, null=True, blank=True)
+    single_double_week = models.SmallIntegerField(verbose_name='课程单双周', choices=single_double_week_choice, null=True,
+                                                  blank=True)
     other_event_choice = ((1, '课间操'), (2, '午休'))
     school = models.ForeignKey(to='SchoolInfo', verbose_name='学校', on_delete=models.CASCADE)
     other_event = models.SmallIntegerField(choices=other_event_choice, verbose_name='学校其他事件', null=True, blank=True)
     info_type_choice = ((1, '课程'), (2, '其他事件'))
     info_type = models.SmallIntegerField(choices=info_type_choice, verbose_name='存储的类型', default=1)
+    position = models.SmallIntegerField(verbose_name='前端展示的位置', null=True, blank=True)
 
     def __str__(self):
-        return '%s:%s:%s' %(self.stu_class.name, self.teacher.last_name+self.teacher.first_name, self.course.course_des)
+        if self.stu_class:
+            return '%s:%s:%s' % (
+                self.stu_class.grade.get_grade_name_display() + self.stu_class.name,
+                self.teacher.last_name + self.teacher.first_name, self.course.course_des)
+        else:
+            return '%s' % self.get_other_event_display()
 
 # ------------------------- 表单设置相关表  ---------------------------------
 
@@ -283,7 +291,6 @@ class TableSettings(models.Model):
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
     fill_range = models.ManyToManyField('ScopeOfFilling', verbose_name='填表范围')
 
-    # choice_field = models.ManyToManyField(to='ChoiceField', verbose_name='选中字段')
 
     def __str__(self):
         return self.title
