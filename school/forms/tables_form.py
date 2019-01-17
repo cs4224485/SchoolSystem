@@ -129,12 +129,12 @@ class StudentModelForm(forms.ModelForm):
 class TeacherModelForm(forms.ModelForm):
     birthday = Ffields.DateField(required=False, label='生日', widget=Fwidgets.DateInput(
         attrs={'class': 'form-control', 'type': 'date', 'style': 'width: 600px'}))
-    gender = Ffields.ChoiceField(required=False, choices=((1, '男'), (2, '女')), label='性别', widget=Fwidgets.RadioSelect())
     identity = form_models.ModelChoiceField(required=False, empty_label=None, label='身份',
                                             queryset=teamodels.Identity.objects.all(),
                                             widget=Fwidgets.RadioSelect())
+    gender = Ffields.ChoiceField(widget=Fwidgets.RadioSelect(), choices=((1, '男'), (2, '女')), label='性别', required=False)
     course = form_models.ModelMultipleChoiceField(required=False, label='所带课程', queryset=scmodels.Course.objects.all(),
-                                                   widget=Fwidgets.CheckboxSelectMultiple())
+                                                  widget=Fwidgets.CheckboxSelectMultiple())
 
     def __init__(self, *args, **kwargs):
         school_id = kwargs.pop('school_id')
@@ -160,9 +160,7 @@ class TeacherModelForm(forms.ModelForm):
         error_messages = {
             "last_name": {"required": "请输入老师姓"},
             "first_name": {"required": "请输入老师名"},
-            "gender": {"required": "请选择性别"},
         }
-
         labels = {
             'last_name': '老师姓(必填)',
             'first_name': '老师名(必填)',
