@@ -91,7 +91,7 @@ class SchoolEditModelForm(SchoolBaseForm):
 
 
 class StudentModelForm(forms.ModelForm):
-    gender = Ffields.ChoiceField(required=True, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
+    gender = Ffields.ChoiceField(required=False, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
     birthday = Ffields.DateField(required=False, widget=Fwidgets.DateInput(
         attrs={'class': 'form-control', 'type': 'date', 'style': 'width: 600px'}))
 
@@ -132,9 +132,9 @@ class TeacherModelForm(forms.ModelForm):
     identity = form_models.ModelChoiceField(required=False, empty_label=None, label='身份',
                                             queryset=teamodels.Identity.objects.all(),
                                             widget=Fwidgets.RadioSelect())
-    gender = Ffields.ChoiceField(widget=Fwidgets.RadioSelect(), choices=((1, '男'), (2, '女')), label='性别', required=False)
     course = form_models.ModelMultipleChoiceField(required=False, label='所带课程', queryset=scmodels.Course.objects.all(),
                                                   widget=Fwidgets.CheckboxSelectMultiple())
+    gender = Ffields.ChoiceField(required=False, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
 
     def __init__(self, *args, **kwargs):
         school_id = kwargs.pop('school_id')
@@ -156,12 +156,21 @@ class TeacherModelForm(forms.ModelForm):
             "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             'wechat': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
+            # "gender": Fwidgets.RadioSelect()
         }
         error_messages = {
             "last_name": {"required": "请输入老师姓"},
             "first_name": {"required": "请输入老师名"},
+            "gender": {"required": "请选择性别"},
         }
         labels = {
             'last_name': '老师姓(必填)',
             'first_name': '老师名(必填)',
+
         }
+
+
+class GenderField(Ffields.ChoiceField):
+
+    def __init__(self):
+        super(GenderField, self).__init__()
