@@ -1,13 +1,13 @@
 from django.db import models
-from django.contrib.contenttypes.fields import  GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation
 # Create your models here
 
 
 class TeacherInfo(models.Model):
     last_name = models.CharField(verbose_name='老师姓', max_length=128)
     first_name = models.CharField(verbose_name='老师名', max_length=128)
-    gender_choice = ((1, '男'), (2, '女'))
-    gender = models.IntegerField(choices=gender_choice, verbose_name='性别', null=True, blank=True)
+    gender_choice = [(1, '男'), (2, '女')]
+    gender = models.SmallIntegerField(choices=gender_choice, verbose_name='性别', default=None, blank=True, null=True)
     birthday = models.DateField(verbose_name='老师生日', null=True, blank=True)
     telephone = models.CharField(verbose_name='电话号码', unique=True, max_length=32, null=True, blank=True)
     wechat = models.CharField(verbose_name='微信',  max_length=32, null=True, blank=True)

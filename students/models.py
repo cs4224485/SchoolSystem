@@ -15,7 +15,7 @@ class StudentInfo(models.Model):
     last_name = models.CharField(verbose_name='学生姓', max_length=128)
     full_name = models.CharField(verbose_name='学生全名', db_index=True, max_length=256)
     gender_choice = ((1, '男'), (2, '女'))
-    gender = models.IntegerField(choices=gender_choice, verbose_name='性别', null=True, blank=True)
+    gender = models.IntegerField(choices=gender_choice, verbose_name='性别', default=None, null=True, blank=True)
     country = models.ForeignKey('Country', verbose_name='国籍', on_delete=models.CASCADE, default=1)
     nation = models.CharField(verbose_name='民族', max_length=32, null=True, default='汉族')
     residence_province = models.CharField(verbose_name='户籍省', max_length=16, null=True, blank=True)
