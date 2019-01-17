@@ -6,6 +6,9 @@ from weixinApp import models
 from school import models as scmodels
 from weixinApp.auth.auth import WeiXinAuth
 from students import models as stumodels
+from weixinApp.service.decorator import *
+from django.utils.decorators import method_decorator
+from weixinApp.serialize.person_center import StudentSerialize
 
 
 class BindUser(APIView):
@@ -22,7 +25,6 @@ class BindUser(APIView):
                 res.msg = '未能获取到code值'
                 return Response(res.get_dict)
             open_id = UserService.getWeChatOpenId(code)
-            print(open_id, 'openid')
             if not open_id:
                 res.code = -1
                 res.msg = '获取openid失败'
@@ -45,7 +47,6 @@ class BindUser(APIView):
             else:
                 raise Exception
         except Exception as e:
-            print(e)
             res.code = -1
             res.msg = '绑定失败'
         return Response(res.get_dict)
@@ -103,7 +104,6 @@ class BindChildren(APIView):
                                                                               defaults={'bind_info': bind_info,
                                                                                         'nickname': nickname,
                                                                                         'avatar': avatar})
-            print(user_info)
             parent_to_children_obj = stumodels.StudentToParents.objects.filter(student=student_obj,
                                                                                relation=relation).first()
             # 判断之前的绑定信息是否存在
@@ -166,4 +166,38 @@ class FilterClass(APIView):
             print(e)
             res.code = -1
             res.msg = '获取到班级信息失败'
+        return Response(res.get_dict)
+
+
+class PersonCenter(APIView):
+    '''
+    个人中心接口
+    '''
+    authentication_classes = [WeiXinAuth]
+
+    @method_decorator(get_user_obj)
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        try:
+            obj = kwargs.get('obj')
+            if not obj:
+                res.code = -1
+                res.msg = '获取身份信息异常'
+                return Response(res.get_dict)
+            data_info = None
+            if isinstance(obj, stumodels.StudentToParents):
+                student_obj = obj.student
+                data_info = StudentSerialize(student_obj)
+
+            if not data_info:
+                res.code = -1
+                res.msg = '获取信息失败'
+                return Response(res.get_dict)
+
+            res.data = {'info': data_info.data}
+            res.code = 200
+            res.state = True
+        except Exception as e:
+            res.code = -1
+            res.msg = '获取信息失败'
         return Response(res.get_dict)

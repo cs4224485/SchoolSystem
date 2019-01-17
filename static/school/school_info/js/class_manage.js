@@ -3,7 +3,6 @@ $(function () {
     fillTd();
     addClass();
     editClass();
-    orderByClass();
     sendClassData()
 });
 
@@ -36,12 +35,13 @@ function fillTd() {
         if (tdCount < maxClasses) {
             let addTdCount = maxClasses - tdCount;
             for (let i = 0; i < addTdCount; i++) {
-                let thHtml = `<td></td>`;
+                let thHtml = `<td><div class="td-box" style="display: none"></div></td>`;
                 $(this).append(thHtml)
             }
         }
     })
 }
+
 
 function orderByClass() {
     $('.tb-body').find('tr').each(function () {
@@ -70,11 +70,20 @@ function addClass() {
     // 添加一个班级
     $('.add').on('click', '.add-btn', function () {
         var content = $(this).parents('tr').find('.per-class').last().find('span').html();
-        var classNumber = parseInt(/\d+/.exec(content)[0]) + 1;
+        var matchClassNumber = /\d+/.exec(content);
+        console.log(matchClassNumber, 'match');
+        var className = '';
+        if (matchClassNumber){
+            className = parseInt(matchClassNumber[0]) + 1;
+        }else {
+            className =  parseInt($(this).parents('tr').find('.per-class').length) + 1
+            console.log(className, '1222')
+        }
+
         var grade = $(this).parents('tr').find('td').eq(1).attr('grade-id');
         var data = {
             grade: grade,
-            className: classNumber + '班'
+            className: className + '班'
         };
         var that = this;
         $.ajax({
@@ -86,12 +95,11 @@ function addClass() {
             success: function (data) {
                 if (data.state) {
                     alert(data.msg);
-                    console.log(data.data);
                     let classHtml = `
                               <td class="per-class">
                                     <div class="td-box">
                                         <div class="text class-item">
-                                            <p style="font-size:14px;"><span style="color:#1E1E1E;" class-id="${data.data.class_id}">${classNumber}班</span>
+                                            <p style="font-size:14px;"><span style="color:#1E1E1E;" class-id="${data.data.class_id}">${className}班</span>
                                             </p>
                                             <p style="font-size:7px;"><span
                                                     style="color:#999999;">Non，0人</span>

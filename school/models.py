@@ -254,6 +254,7 @@ class SchoolTimetable(models.Model):
         else:
             return '%s' % self.get_other_event_display()
 
+
 # ------------------------- 表单设置相关表  ---------------------------------
 
 
@@ -290,7 +291,6 @@ class TableSettings(models.Model):
     school_range = models.ManyToManyField('SchoolInfo', verbose_name='学校范围', related_name='setting')
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
     fill_range = models.ManyToManyField('ScopeOfFilling', verbose_name='填表范围')
-
 
     def __str__(self):
         return self.title
@@ -384,6 +384,18 @@ class TableInfo(models.Model):
     table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
                               related_name='table_info')
     finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
-    student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CharField,
+    student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CASCADE,
                                 related_name='for_student')
     # teacher = models.ForeignKey(to='TeacherInfo', verbose_name='填表老师', on_delete=models.CharField)
+
+
+class WXappSettings(models.Model):
+    '''
+    学校微信小程序配置信息
+    '''
+
+    school = models.ForeignKey(to='SchoolInfo', verbose_name='所对应的学校', on_delete=models.CASCADE,
+                               related_name='wx_setting')
+    background_img = models.FileField(upload_to='school/wx/background/')
+    status_choice = ((1, '正常'), (2, '关闭'))
+    status = models.SmallIntegerField(verbose_name='小程序状态', choices=status_choice, default=1)

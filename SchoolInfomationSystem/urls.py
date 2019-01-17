@@ -20,6 +20,8 @@ from SchoolInfomationSystem import settings
 from APIS.views.entrance import *
 from stark.service.stark import site
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^student/', include('students.urls')),
@@ -31,3 +33,8 @@ urlpatterns = [
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]
 
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

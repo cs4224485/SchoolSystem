@@ -1,3 +1,4 @@
+;
 var schoolTimeTable = {
         init: function () {
             let classCount = $('.th-class').length / 5;
@@ -10,7 +11,6 @@ var schoolTimeTable = {
             this.switchTag();
             this.bindDateEvent();
             this.bindSubmit();
-            this.bindChangeGrade();
             this.bindChangeTeacher();
         },
         fillTd: function (classCount) {
@@ -193,13 +193,6 @@ var schoolTimeTable = {
                 let tagIndex = $(this).parent().find('.edit-tag').index($(this));
                 $('.modal-body').eq(tagIndex).removeClass('modal-hide').siblings('.modal-body').addClass('modal-hide');
                 $('#submit-data').attr('data-type', tagIndex)
-            })
-        },
-        bindChangeGrade: function () {
-            // 切换年级
-            $('#choice-grade').change(function () {
-                let gradeId = $(this).val();
-                window.location = '' + '?gradeId=' + gradeId
             })
         },
         renderCourseTable: function (classCount) {

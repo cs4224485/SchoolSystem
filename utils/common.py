@@ -1,6 +1,7 @@
 import uuid
 import datetime
 import time
+import re
 from pypinyin import lazy_pinyin
 
 
@@ -59,6 +60,25 @@ def calculate_day_age(y, m, d):
     d1 = datetime.date(y, m, d)
     timestamp = time.mktime(d1.timetuple())
     return (int((int(time.time() - timestamp)) / 86400))
+
+
+def calculate_info(birthday):
+    '''
+    根据生日计算信息
+    :param birthday:
+    :return:
+    '''
+    try:
+        if birthday:
+            y, m, d = birthday.split('-')
+            constellations = get_constellation(int(m), int(d))
+            ChineseZodiac = get_ChineseZodiac(int(y))
+            age = calculate_age(int(y))
+            day_age = calculate_day_age(int(y), int(m), int(d))
+            return {'constellations': constellations[0], 'ChineseZodiac': ChineseZodiac[0], 'age': age,
+                    'day_age': day_age}
+    except Exception:
+        return None
 
 
 def calculate_period(grade):
@@ -191,3 +211,36 @@ def get_week_day(date, date_format='%Y-%m-%d'):
     week = datetime.datetime.strptime(date, date_format).weekday() + 1
     return week
 
+
+def shadow_name(first_name, last_name):
+    '''
+    处理姓名加*号显示
+    :param first_name:
+    :param last_name:
+    :return:
+    '''
+    if len(first_name) > 1:
+        first_name = first_name[-1]
+        mark = '*'
+        mark *= len(first_name) - 1
+        return first_name, last_name, mark
+    return first_name, last_name, ''
+
+
+def order_by_class(class_list):
+    '''
+    对班级名称进行排列，使用冒泡算法
+    :param class_list:
+    :return:
+    '''
+    regx = '\d+'
+    for i in range(0, len(class_list)):
+        for j in range(0, len(class_list) - i - 1):
+            match_class_num = re.search(regx, class_list[j].name)
+            match_next_class_num = re.search(regx, class_list[j + 1].name)
+            if match_class_num and match_next_class_num:
+                this_class_num = int(match_class_num.group())
+                next_class_num = int(match_next_class_num.group())
+                if this_class_num > next_class_num:
+                    class_list[j], class_list[j + 1] = class_list[j + 1], class_list[j]
+    return class_list

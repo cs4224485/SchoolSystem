@@ -13,9 +13,10 @@
     border-bottom: 2px solid #169BD5;
 }
 
-.td-box:hover {
-    cursor: pointer;
-    background-color: orange;
+.td-box{
+    width: 65px !important;
+    height: 90px;
+    vertical-align: center !important;
 }
 
 .graduated {
@@ -23,16 +24,15 @@
 }
 
 .tb-wrap {
-    width: 1600px;
-    height: 800px;
+    /*width: 1600px;*/
+    /*height: 800px;*/
     overflow: auto;
     overflow-x: scroll;
 }
-
-.per-class {
-    height: 60px;
-    width: 90px;
+.class-name{
+    width: 20px;
 }
+
 
 th {
     width: 30px;

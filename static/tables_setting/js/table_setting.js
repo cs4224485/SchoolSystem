@@ -13,7 +13,6 @@ function choiceField() {
         var field = $(this).html();
         var fieldId = $(this).attr('id');
         var field_type = $(this).prop('type');
-        console.log(field_type);
         if (IsInArray(selectField, field)) {
             alert('该字段已被选择中无法重复选择');
         } else if (field_type === "customization") {

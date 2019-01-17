@@ -52,14 +52,12 @@
                 <label>所在班级:</label>
                 {{ form.grade }}
                 {{ form.stu_class }}
-
                  <span class="pull-right error">{{ form.errors.stu_class.0 }}</span>
             </div>
 
             <div class="pull-right" style="margin-top: 10px">
                 <button class="btn btn-primary">提交</button>
             </div>
-
         </form>
 
     </div>
@@ -70,24 +68,20 @@
         $(function () {
             // 根据年级过滤班级
             $('#class option').remove();
-            schoolId = getQueryString("school_id");
             $('#grade').change(function () {
                 let grade = $('#grade').val();
-                console.log( $('#class')[0]);
                 $('#class option').remove();
                 if(grade !=0){
                     $.ajax({
-                        url:"students/stu_class/",
+                        url:"/stark/students/studentinfo/filter_class/",
                         type:"get",
-                        data:{"school_id":schoolId, 'grade':grade},
+                        data:{"school_id":{{ school_id }}, 'grade':grade},
                         success:function (data) {
                             data = JSON.parse(data.stu_class);
                             console.log(data);
                             for(let i =0; i < data.length; i++){
                                 var item = {text:data[i].fields.name, value:data[i].pk, $order:i+1};
-                                console.log(item);
                                 var opHtml = `<option value="${ item.value}">${ item.text }</option>`;
-                                console.log(opHtml);
                                 $('#class').append(opHtml)
                             }
                         }
