@@ -21,7 +21,7 @@ class ClassManage(views.View):
     def get(self, request, *args, **kwargs):
         school_id = kwargs.get('school_id')
         school_obj = sc_models.SchoolInfo.objects.filter(id=school_id).only('school_name').first()
-        class_queryset = sc_models.StuClass.objects.filter(school=school_obj)
+        class_queryset = order_by_class(list(sc_models.StuClass.objects.filter(school=school_obj)))
         teacher_list = tea_models.TeacherInfo.objects.filter(school=school_obj, identity=1)
         class_dict = {}
         for item in class_queryset:
@@ -209,7 +209,7 @@ class SchoolTimeTable(views.View):
         period = calculate_period(grade_display)
         them = current_week(datetime.datetime.today())[1]
         table_year = get_academic_year(them)
-        class_queryset = sc_models.StuClass.objects.filter(grade_id=grade, school_id=school_id).order_by('name')
+        class_queryset = order_by_class(list(sc_models.StuClass.objects.filter(grade_id=grade, school_id=school_id)))
         course_queryset = sc_models.Course.objects.all()
         teacher_queryset = tea_models.TeacherInfo.objects.filter(school_id=school_id)
         week_list = [1, 2, 3, 4, 5]

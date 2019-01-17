@@ -164,7 +164,7 @@ class ChangeList(object):
 
     def gen_list_filter_row(self):
         for option in self.list_filter:
-            #判断是不是一对一的情况如果是的化需要跨表
+            # 判断是不是一对一的情况如果是的化需要跨表
             # 如果 field = 表自己的字段    查本表的数据
             # 如果 field = ForeignKey   查关联表的字段
             if option.is_OneToOne:
@@ -373,6 +373,7 @@ class StarkConfig(object):
         if not obj:
             return HttpResponse('数据不存在')
         EditModelForm = self.get_edit_model_form_class()
+
         if request.method == "GET":
             form = EditModelForm(instance=obj)
             return render(request, template, {'form': form})
@@ -500,7 +501,6 @@ class StarkConfig(object):
     def get_edit_model_form_class(self):
         return self.get_model_form_class()
 
-
     def get_action_list(self):
         val = []
         val.extend(self.action_list)
@@ -530,8 +530,8 @@ class StarkConfig(object):
         '''
         pk_list = request.POST.getlist('pk')
         self.model_class.objects.filter(pk__in=pk_list).delete()
-        return HttpResponse('删除成功')
 
+        return HttpResponse('删除成功')
     multi_delete.text = '批量删除'
 
     def multi_init(self, request):

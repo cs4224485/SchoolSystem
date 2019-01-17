@@ -5,11 +5,16 @@
     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/pub.css' %}">
     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/timetable.css' %}">
     <link rel="stylesheet" href="{% build_static_url '/plug/jedate-6.5.0/skin/jedate.css' %}">
-
+    <style>
+        .dateinput {
+            margin-top: 10px;
+            width: 110px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <input class="dateinput dateicon mr25" id="texthms" type="hidden" placeholder="hh:mm:ss"  readonly>
+    <input class="dateinput dateicon mr25" id="texthms" type="hidden" placeholder="hh:mm:ss" readonly>
     <div class="" style="margin-left: 20px">
         <div id="header" class="ax_default label">
             <div id="head_div" class="">
@@ -23,27 +28,20 @@
         </div>
         <div class="form-inline" style="margin-bottom: 6px">
             <label for="choice-grade">选择年级:</label>
-            <select id="choice-grade" class="form-control" style="width: 200px">
-                {% for grade in grad_queryset %}
-                    {% if grade.grade_id  == selected_grade.id %}
-                        <option selected="selected" value="{{ grade.grade_id }}">{{ grade.grade__grade_name }}</option>
-                    {% else %}
-                        <option value="{{ grade.grade_id }}">{{ grade.grade__grade_name }}</option>
-                    {% endif %}
-                {% endfor %}
+            {% for grade in grad_queryset %}
+                {% if grade.grade_id  == selected_grade.id %}
+                {% endif %}
+                <a class="btn-success btn btn-outline {% if grade.grade_id  == selected_grade.id %} active {% endif %}"
+                   href="?gradeId={{ grade.grade_id }}">{{ grade.grade__grade_name }}</a>
+            {% endfor %}
 
-            </select>
-
-            <div class="pull-right" style="">
-                <button class="btn-primary btn" id="add-row">+添加</button>
-            </div>
         </div>
-        <div id="wrap" style="width: 1650px; overflow-x: scroll">
+        <div id="wrap" style="overflow-x: scroll">
             <table class="table" id="tMain" cellpadding="0" cellspacing="0">
                 <thead class="tb-head">
                 <tr>
-                    <th colspan="1" class="left-border">
-                        <div style="width: 200px;">时间段</div>
+                    <th style="width: 100px" colspan="1" class="left-border">
+                        <div>时间段</div>
                     </th>
                     <th style="text-align: left" class="week">周一</th>
                     <th style="text-align: left" class="week">周二</th>
@@ -52,7 +50,11 @@
                     <th style="text-align: left" class="week">周五</th>
                 </tr>
                 <tr class="class-th">
-                    <th style="width: 200px;" class="left-border"></th>
+                    <th class="left-border">
+                        <div class="" style="">
+                            <button class="btn-primary btn" id="add-row">+添加</button>
+                        </div>
+                    </th>
                     {% for i in week_list %}
                         {% for class in class_list %}
                             <th class="th-class" week="{{ i }}"
@@ -116,7 +118,7 @@
                     <div class="form-group">
                         <p id="single-double-week">
                             <label for="single">单周</label>
-                            <input type="radio" name="choice-week"  value="1" id="single">
+                            <input type="radio" name="choice-week" value="1" id="single">
                             <label for="double">双周</label>
                             <input type="radio" name="choice-week" value="2" id="double">
                         </p>
@@ -144,7 +146,7 @@
 
 
 {% block js %}
-     <script src="{% static "/plug/jedate-6.5.0/src/jedate.js" %}"></script>
-     <script src="{% build_static_url '/pub/js/ajaxUrl.js' %}"></script>
-     <script src="{% build_static_url '/school/school_info/js/timetable.js' %}"></script>
+    <script src="{% build_static_url "/plug/jedate-6.5.0/src/jedate.js" %}"></script>
+    <script src="{% build_static_url '/pub/js/ajaxUrl.js' %}"></script>
+    <script src="{% build_static_url '/school/school_info/js/timetable.js' %}"></script>
 {% endblock %}
