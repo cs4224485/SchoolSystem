@@ -1,4 +1,3 @@
-from school import models as sch_models
 from students import models as stu_models
 from rest_framework import serializers
 from teacher import models as tea_models

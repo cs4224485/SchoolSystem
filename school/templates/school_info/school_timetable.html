@@ -4,17 +4,121 @@
 {% block css %}
     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/pub.css' %}">
     <link rel="stylesheet" href="{% build_static_url '/school/school_info/css/timetable.css' %}">
-    <link rel="stylesheet" href="{% build_static_url '/plug/jedate-6.5.0/skin/jedate.css' %}">
+
     <style>
-        .dateinput {
+        .set-time {
             margin-top: 10px;
             width: 110px;
+        }
+
+        .left-border {
+            position: relative;
+        }
+
+        .time_box {
+            overflow: hidden;
+            text-align: center;
+            border: 1px solid #e2e2e2;
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+            position: absolute;
+            z-index: 999;
+            background: #fff;
+            animation: fadeInUp .3s ease-out, opacity .3s;
+            -webkit-animation: fadeInUp .3s ease-out, opacity .3s;
+        }
+
+        .time_box .title {
+            padding-bottom: 10px
+        }
+
+        .time_box .box-l, .time_box .box-r {
+            float: left;
+            width: 48.8%;
+            border: 1px solid #e2e2e2;
+        }
+
+        .time_box .box-l div, .time_box .box-r div {
+            height: 150px;
+            overflow-y: scroll;
+        }
+
+        .time_box h1 {
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 1px solid #e2e2e2;
+            padding: 5px 0
+        }
+
+        .time_box div p {
+            cursor: pointer;
+            line-height: 30px;
+            font-size: 14px
+        }
+
+        .time_box div p:hover,
+        .time_box p.act {
+            background: green;
+            color: #fff
+        }
+
+        .time_box .scrollbar div::-webkit-scrollbar {
+            width: 1px;
+        }
+
+        .time_box .scrollbar div::-webkit-scrollbar-track {
+            background-color: red;
+            -webkit-border-radius: 2em;
+            -moz-border-radius: 2em;
+            border-radius: 2em;
+        }
+
+        .time_box .scrollbar div::-webkit-scrollbar-thumb {
+            background-color: green;
+            -webkit-border-radius: 2em;
+            -moz-border-radius: 2em;
+            border-radius: 2em;
+        }
+
+        @-webkit-keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                -webkit-transform: translate3d(0, 100%, 0);
+                transform: translate3d(0, 100%, 0)
+            }
+
+            to {
+                opacity: 1;
+                -webkit-transform: none;
+                transform: none
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                -webkit-transform: translate3d(0, 100%, 0);
+                transform: translate3d(0, 100%, 0)
+            }
+
+            to {
+                opacity: 1;
+                -webkit-transform: none;
+                transform: none
+            }
+        }
+
+        .fadeInUp {
+            -webkit-animation-name: fadeInUp;
+            animation-name: fadeInUp
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <input class="dateinput dateicon mr25" id="texthms" type="hidden" placeholder="hh:mm:ss" readonly>
+
+
     <div class="" style="margin-left: 20px">
         <div id="header" class="ax_default label">
             <div id="head_div" class="">
@@ -37,17 +141,17 @@
 
         </div>
         <div id="wrap" style="overflow-x: scroll">
-            <table class="table" id="tMain" cellpadding="0" cellspacing="0">
+            <table class="table fixed-table_header" id="tMain" cellpadding="0" cellspacing="0">
                 <thead class="tb-head">
                 <tr>
                     <th style="width: 100px" colspan="1" class="left-border">
                         <div>时间段</div>
                     </th>
-                    <th style="text-align: left" class="week">周一</th>
-                    <th style="text-align: left" class="week">周二</th>
-                    <th style="text-align: left" class="week">周三</th>
-                    <th style="text-align: left" class="week">周四</th>
-                    <th style="text-align: left" class="week">周五</th>
+                    <th style="text-align: center" class="week">周一</th>
+                    <th style="text-align: center" class="week">周二</th>
+                    <th style="text-align: center" class="week">周三</th>
+                    <th style="text-align: center" class="week">周四</th>
+                    <th style="text-align: center" class="week">周五</th>
                 </tr>
                 <tr class="class-th">
                     <th class="left-border">
@@ -73,6 +177,7 @@
                     {% endfor %}
 
                 </tr>
+
                 </thead>
                 <tbody>
 
@@ -99,28 +204,28 @@
                 </div>
                 <div class="modal-body edit-course">
                     <div class="form-group">
-                        <label for="op-teacher">代课老师:</label>
-                        <select id="op-teacher" class="form-control">
-                            <option id="default-op" value="0">请选择老师</option>
-                            {% for teacher in teacher_list %}
-                                <option value="{{ teacher.pk }}">
-                                    {{ teacher.last_name }}{{ teacher.first_name }}</option>
+                        <label for="op-course">选择课程:</label>
+                        <select id="op-course" class="form-control">
+                            <option id="default-op" value="0">请选择课程</option>
+                            {% for course in course_list %}
+                                <option value="{{ course.pk }}">
+                                    {{ course.course_des }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="op-course">选择课程:</label>
-                        <select id="op-course" class="form-control">
-
-                        </select>
+                        <label for="op-teacher">代课老师:</label>
+                        <input id="op-teacher" class="form-control" type="text" readonly="readonly">
                     </div>
                     <div class="form-group">
                         <p id="single-double-week">
+                            <label for="every">每周</label>
+                            <input type="radio" checked="checked" name="choice-week" value="1" id="every">
                             <label for="single">单周</label>
-                            <input type="radio" name="choice-week" value="1" id="single">
+                            <input type="radio" name="choice-week" value="2" id="single">
                             <label for="double">双周</label>
-                            <input type="radio" name="choice-week" value="2" id="double">
+                            <input type="radio" name="choice-week" value="3" id="double">
                         </p>
                     </div>
                 </div>
@@ -146,7 +251,10 @@
 
 
 {% block js %}
-    <script src="{% build_static_url "/plug/jedate-6.5.0/src/jedate.js" %}"></script>
     <script src="{% build_static_url '/pub/js/ajaxUrl.js' %}"></script>
     <script src="{% build_static_url '/school/school_info/js/timetable.js' %}"></script>
+
+    <script>
+
+    </script>
 {% endblock %}

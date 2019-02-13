@@ -71,7 +71,6 @@ var common_ops = {
         if (parseInt(grade) === 0 || !grade) {
             grade = 7  // 7代表1年级
         }
-
         var classData = '';
         if (grade != 0) {
             $.ajax({

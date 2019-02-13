@@ -15,11 +15,12 @@ def get_user_obj(func):
 
     def inner(request, *args, **kwargs):
         res = BaseResponse()
-        if not request.auth.wx_user:
+        try:
+            user_info = request.auth.wx_user
+        except Exception:
             res.code = -1
             res.msg = '未能获取到身份信息，请先设置身份信息'
             return Response(res.get_dict)
-        user_info = request.auth.wx_user
         if user_info.user_type == 1:
             student_parent_obj = stumodels.StudentToParents.objects.filter(parents_wxinfo=user_info).first()
             return func(request, obj=student_parent_obj, *args, **kwargs)

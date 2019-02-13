@@ -9,8 +9,7 @@ from school import models as sc_models
 from teacher import models as tea_models
 from utils.base_response import BaseResponse
 from utils.generate_calender import *
-from django.db.models import Q
-from utils.common import get_academic_year
+from school.service.course_service import CourseService
 
 
 class ClassManage(views.View):
@@ -28,8 +27,8 @@ class ClassManage(views.View):
             grade_id = item.grade_id
             per_class_student = item.student_class.all().count()
             class_name = item.name
-            tutor = tea_models.ClassToTeacher.objects.filter(stu_class_id=item.id).order_by('-create_date',
-                                                                                            '-id').first()
+            tutor = tea_models.ClassToTeacher.objects.filter(stu_class_id=item.id, relate=1).order_by('-create_date',
+                                                                                                      '-id').first()
             children_dict = {
                 'per_class_student': per_class_student,
                 'class_name': class_name,
@@ -100,7 +99,7 @@ class ClassManage(views.View):
             class_obj = sc_models.StuClass.objects.filter(id=class_id).only('name').first()
             if class_name != class_obj.name:
                 sc_models.StuClass.objects.filter(id=class_id).update(name=class_name)
-            class_tutor_obj = tea_models.ClassToTeacher.objects.filter(stu_class_id=class_id)
+            class_tutor_obj = tea_models.ClassToTeacher.objects.filter(stu_class_id=class_id, relate=1)
             if class_tutor_obj:
                 class_tutor_obj.update(teacher_id=teacher_id)
             else:
@@ -196,67 +195,10 @@ class SchoolTimeTable(views.View):
 
     def get(self, request, *args, **kwargs):
         school_id = kwargs.get('school_id')
-        school_obj = sc_models.SchoolInfo.objects.filter(id=school_id).only('school_name').first()
         grade = request.GET.get('gradeId', 7)
-        grad_queryset = sc_models.StuClass.objects.filter(school=school_obj).select_related('grade').values(
-            'grade__grade_name', 'grade_id').distinct()
-        selected_grade = sc_models.Grade.objects.filter(id=grade).first()
-        # 生成年级信息
-        for item in grad_queryset:
-            item['grade__grade_name'] = sc_models.Grade.grade_choice[item['grade__grade_name'] - 1][1]
-        grade_obj = sc_models.Grade.objects.filter(id=grade).first()
-        grade_display = grade_obj.get_grade_name_display()
-        period = calculate_period(grade_display)
-        them = current_week(datetime.datetime.today())[1]
-        table_year = get_academic_year(them)
-        class_queryset = order_by_class(list(sc_models.StuClass.objects.filter(grade_id=grade, school_id=school_id)))
-        course_queryset = sc_models.Course.objects.all()
-        teacher_queryset = tea_models.TeacherInfo.objects.filter(school_id=school_id)
-        week_list = [1, 2, 3, 4, 5]
-        # 构建学校头部信息
-        head_info_dict = {
-            'school_name': school_obj.school_name,
-            'grade': grade_display,
-            'period': period,
-            'year': table_year,
-        }
-
-        course_table_queryset = sc_models.SchoolTimetable.objects.filter(
-            Q(stu_class__grade_id=grade, school=school_obj) | Q(school=school_obj, info_type=2)).order_by('time_range',
-                                                                                                          'week')
-        # 构建课程信息字典
-        course_table_dict = {}
-        for table_item in course_table_queryset:
-            key = datetime.time.strftime(table_item.time_range, '%H:%M')
-            if table_item.other_event:
-                node = {
-                    'course_table_id': table_item.id,
-                    'is_event': True,
-                    'other_event': table_item.get_other_event_display(),
-                    'event_id': table_item.other_event
-                }
-            else:
-                node = {'course_table_id': table_item.id,
-                        'course_id': table_item.course.id,
-                        'course': table_item.course.course_des,
-                        'teacher_id': table_item.teacher.id,
-                        'teacher': table_item.teacher.last_name + table_item.teacher.first_name,
-                        'week': table_item.week,
-                        'class_id': table_item.stu_class_id,
-                        'position': table_item.position,
-                        'is_event': False,
-                        }
-                if table_item.single_double_week:
-                    node['week_info'] = table_item.single_double_week
-            if key not in course_table_dict:
-                course_table_dict[key] = [node]
-            else:
-                course_table_dict[key].append(node)
-        return render(request, 'school_info/school_timetable.html',
-                      {'class_list': class_queryset, 'week_list': week_list, 'course_list': course_queryset,
-                       'teacher_list': teacher_queryset, 'other_event': sc_models.SchoolTimetable.other_event_choice,
-                       'head_info': head_info_dict, 'grad_queryset': grad_queryset, 'selected_grade': selected_grade,
-                       'course_table_dict': json.dumps(course_table_dict)})
+        service_obj = CourseService(school_id, grade)
+        course_data = service_obj.create_course_data()
+        return render(request, 'school_info/school_timetable.html', course_data)
 
     def post(self, request, *args, **kwargs):
         '''
@@ -270,13 +212,15 @@ class SchoolTimeTable(views.View):
 
         try:
             time_info = request.POST.get('timeInfo')
-            week = request.POST.get('week')
             school_id = kwargs.get('school_id')
+            time_obj = sc_models.SchoolTimeRange.objects.filter(start_time=time_info, school_id=school_id).first()
+            week = request.POST.get('week')
             # 课程表Id 如果存在表示需要更新不存在则创建
             course_table_id = request.POST.get('courseTableId')
             record_type = int(request.POST.get('type'))
-            course_week = 0
-            if not time_info:
+            table_query = sc_models.SchoolTimetable.objects
+
+            if not time_obj:
                 res.msg = '请先设置时间'
                 return JsonResponse(res.get_dict)
 
@@ -297,8 +241,8 @@ class SchoolTimeTable(views.View):
                 if not teacher_obj:
                     res.msg = '该教师已不存在, 请刷新页面'
                     return JsonResponse(res.get_dict)
-                course_table_obj = sc_models.SchoolTimetable.objects.filter(week=week, time_range=time_info,
-                                                                            stu_class=class_id)
+                course_table_obj = table_query.filter(week=week, time_range=time_obj,
+                                                      stu_class=class_id)
                 if course_table_obj and not course_week and not course_table_id:
                     res.msg = "该时段课程已存在,请重新核对或选择单双周"
                     return JsonResponse(res.get_dict)
@@ -312,40 +256,130 @@ class SchoolTimeTable(views.View):
                     'course': course_obj,
                     'week': week,
                     'school_id': school_id,
-                    'time_range': time_info,
+                    'time_range': time_obj,
                     'teacher': teacher_obj,
-                    'position': position
+                    'position': position,
+                    'single_double_week': course_week
                 }
-                if course_week:
-                    save_dict['single_double_week'] = course_week
+                if int(course_week) == 1:
+                    filter_dic = {'time_range': time_obj,
+                                  'position': position,
+                                  'single_double_week__in': [2, 3]}
+                    if course_table_id:
+                        table_query.filter(**filter_dic).exclude(id=course_table_id).delete()
+                    else:
+                        table_query.filter(**filter_dic).delete()
+
+                else:
+                    table_obj = table_query.filter(time_range=time_obj,
+                                                   position=position, single_double_week=course_week)
+                    if table_obj:
+                        table_obj.delete()
+
             # 代表添加的是其他事件
             elif record_type == 1:
                 event_id = request.POST.get('event')
                 save_dict = {
                     'week': week,
                     'school_id': school_id,
-                    'time_range': time_info,
-                    'other_event': event_id,
+                    'time_range': time_obj,
+                    'other_event': int(event_id),
                     'info_type': 2
                 }
             else:
                 raise Exception
             if course_table_id:
-                obj = sc_models.SchoolTimetable.objects.filter(id=course_table_id)
-                if obj.first().single_double_week and obj.first().single_double_week != int(course_week):
-                    res.msg = '该天课程已存在， 请重新核对'
-                    return JsonResponse(res.get_dict)
+                obj = table_query.filter(id=course_table_id)
                 if record_type == 0:
                     obj.update(info_type=1, other_event=None)
                 obj.update(**save_dict)
+                obj = obj.first()
                 res.msg = '修改成功'
             else:
-                sc_models.SchoolTimetable.objects.create(**save_dict)
-                res.msg = '添加成功'
+                obj = table_query.create(**save_dict)
 
-            res.state = True
+            # 添加或修改成功后将需要的数据返回给前端
+            if obj:
+                if obj.info_type == 1:
+                    result_data = {
+                        'table_id': obj.id,
+                        'course_id': obj.course.id,
+                        'course_name': obj.course.course_des,
+                        'teacher_id': obj.teacher.id,
+                        'teacher_name': obj.teacher.last_name + obj.teacher.first_name,
+                        'course_week': int(obj.single_double_week),
+                        'info_type': 0
+                    }
+                else:
+                    result_data = {
+                        'table_id': obj.id,
+                        'event_id': obj.other_event,
+                        'event_name': obj.get_other_event_display(),
+                        'info_type': 1
+                    }
+                res.msg = '添加成功'
+                res.data = result_data
+                res.state = True
         except Exception as e:
             print(e)
             res.msg = '添加失败'
 
+        return JsonResponse(res.get_dict)
+
+    def patch(self, request, *args, **kwargs):
+        '''
+        更新课程表对应的时间
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+        res = BaseResponse()
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            start_time = data.get('time')
+            # 原来的时间
+            source_time = data.get('sourceTime', '')
+            school_id = kwargs.get('school_id')
+            query = sc_models.SchoolTimeRange.objects
+
+            is_exist = query.filter(start_time=start_time, school_id=school_id).first()
+            if is_exist:
+                res.code = -1
+                res.msg = '该时间段已经存在，请重新编辑'
+                return JsonResponse(res.get_dict)
+            if not source_time:
+                # 没有原来设置的时间添加操作
+                query.create(start_time=start_time, school_id=school_id)
+            else:
+                # 如果有原来设置的时间更新操作
+                query.filter(start_time=source_time, school_id=school_id).update(start_time=start_time)
+            res.state = True
+            res.code = 200
+        except:
+            res.code = -1
+            res.msg = '编辑时间失败请重新编辑'
+        return JsonResponse(res.get_dict)
+
+    def delete(self, request, *args, **kwargs):
+        '''
+        根据时间删除一行课程数据表
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+        res = BaseResponse()
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            school_id = kwargs.get('school_id')
+            start_time = data.get('time')
+            time_obj = sc_models.SchoolTimeRange.objects.filter(start_time=start_time, school_id=school_id)
+            sc_models.SchoolTimetable.objects.filter(time_range=time_obj.first()).delete()
+            time_obj.delete()
+            res.code = 200
+            res.state = True
+        except Exception as e:
+            res.code = -1
+            res.msg = '删除失败'
         return JsonResponse(res.get_dict)

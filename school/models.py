@@ -220,6 +220,9 @@ class Course(models.Model):
     课程信息
     '''
     course_des = models.CharField(verbose_name='课程名称', max_length=32)
+    period_choice = ((1, '小学'), (2, '中学'), (3, '小学中学'))
+    period = models.SmallIntegerField(verbose_name='学段', choices=period_choice)
+    abbreviation = models.CharField(verbose_name='简称', max_length=32, blank=True, null=True)
 
     def __str__(self):
         return self.course_des
@@ -235,11 +238,10 @@ class SchoolTimetable(models.Model):
                                 null=True)
     week_choice = ((1, '星期一'), (2, '星期二'), (3, '星期三'), (4, '星期四'), (5, '星期五'))
     week = models.SmallIntegerField(choices=week_choice, verbose_name='星期', blank=True, null=True)
-    time_range = models.TimeField(verbose_name='时间段')
-    single_double_week_choice = ((1, '单'), (2, '双'))
-    single_double_week = models.SmallIntegerField(verbose_name='课程单双周', choices=single_double_week_choice, null=True,
-                                                  blank=True)
-    other_event_choice = ((1, '课间操'), (2, '午休'))
+    time_range = models.ForeignKey(to='SchoolTimeRange', on_delete=models.CASCADE)
+    single_double_week_choice = ((1, '每周'), (2, '单周'), (3, '双周'))
+    single_double_week = models.SmallIntegerField(verbose_name='课程单双周', choices=single_double_week_choice, default=1)
+    other_event_choice = ((1, '课间操'), (2, '午休'), (3, '早读'), (4, '课外活动'), (5, '眼保健操'), (6, '大课间'))
     school = models.ForeignKey(to='SchoolInfo', verbose_name='学校', on_delete=models.CASCADE)
     other_event = models.SmallIntegerField(choices=other_event_choice, verbose_name='学校其他事件', null=True, blank=True)
     info_type_choice = ((1, '课程'), (2, '其他事件'))
@@ -254,6 +256,14 @@ class SchoolTimetable(models.Model):
         else:
             return '%s' % self.get_other_event_display()
 
+
+class SchoolTimeRange(models.Model):
+    '''
+    课程表时间相关
+    '''
+    start_time = models.TimeField(verbose_name='开始时间')
+    end_time = models.TimeField(verbose_name='结束时间', null=True, blank=True)
+    school = models.ForeignKey(to='SchoolInfo', verbose_name='学校', on_delete=models.CASCADE)
 
 # ------------------------- 表单设置相关表  ---------------------------------
 

@@ -6,6 +6,7 @@ from django.shortcuts import HttpResponse, render, redirect
 from django.utils.safestring import mark_safe
 from django.db.models import Q, ManyToManyField, ForeignKey
 from django.http import QueryDict
+from django import forms
 from stark.utils.page import Pagination
 
 
@@ -487,7 +488,7 @@ class StarkConfig(object):
         创建ModelForm
         :return:
         '''
-        from django import forms
+
         if self.model_form_class:
             return self.model_form_class
 
@@ -532,6 +533,7 @@ class StarkConfig(object):
         self.model_class.objects.filter(pk__in=pk_list).delete()
 
         return HttpResponse('删除成功')
+
     multi_delete.text = '批量删除'
 
     def multi_init(self, request):

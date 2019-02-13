@@ -35,7 +35,6 @@ routers.register(r'customization', CustomizationQuestionViewSet)
 urlpatterns = [
    re_path(r"(?P<version>[v1]+)/mental_info/$", AppointmentInfoViewSet.as_view({"get": "list"}), name='mental_info'),
    re_path(r"(?P<version>[v1]+)/per_class_stu/$", GetPerClassStudent.as_view({"get": "list"}), name='per_class_info'),
-   re_path(r"(?P<version>[v1]+)/per_class_stu/$", GetPerClassStudent.as_view({"get": "list"}), name='per_class_info'),
    re_path(r"(?P<version>[v1]+)/teacher_to_course/$", TeacherToCourseInfoViewSet.as_view()),
    re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls))
 ]

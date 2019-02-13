@@ -149,7 +149,7 @@ def edit_school_setting(request, nid):
     return render(request, 'setting/edit_setting.html', {'tb_info': tb_info})
 
 
-def update_choice_table(choice_info,setting_obj ):
+def update_choice_table(choice_info, setting_obj ):
     '''
     根据提交的数据更新选项表
     :param choice_info:
