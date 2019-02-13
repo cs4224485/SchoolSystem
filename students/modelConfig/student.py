@@ -58,7 +58,7 @@ class StudentConfig(StarkConfig):
         return form
 
     def change_view(self, request, pk, template='stark/change.html'):
-        return super(StudentConfig, self).change_view(request, pk, template='operation_table/edit_student.html')
+        return super(StudentConfig, self).change_view(request, pk, template='tables/edit_student.html')
 
     def get_urls(self):
         urlpatterns = [

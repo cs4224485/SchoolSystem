@@ -47,7 +47,6 @@
 }
 
 a {
-    font-size: 16px;
     color: black;
     text-decoration: none;
     cursor: pointer;
@@ -78,5 +77,6 @@ a {
     width: 60px;
     height: 35px;
     border: none;
-    font-size: 4px
+    font-size: 13px;
+
 }

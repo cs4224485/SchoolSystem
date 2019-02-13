@@ -34,12 +34,12 @@ class ClassToTeacher(models.Model):
     '''
     教师与班级映射
     '''
-    stu_class = models.ForeignKey(to="school.StuClass", verbose_name='班级', on_delete=models.CASCADE, related_name='handle_class', limit_choices_to={"school_id__in": ['115']})
+    stu_class = models.ForeignKey(to="school.StuClass", verbose_name='班级', on_delete=models.CASCADE, related_name='handle_class')
     teacher = models.ForeignKey(to='TeacherInfo', verbose_name='老师', on_delete=models.CharField, related_name="teachers")
     create_date = models.DateTimeField(verbose_name='创建时间', auto_now=True)
     relate_choice = ((1, '班主任'), (2, '代课老师'))
     relate = models.SmallIntegerField(verbose_name='教师与班级的对应关系', choices=relate_choice, default=1)
 
     def __str__(self):
-        return "班主任:%s 班级: %s" % (self.teacher.last_name+self.teacher.first_name, self.stu_class.name)
+        return "关联老师:%s 班级: %s" % (self.teacher.last_name+self.teacher.first_name, self.stu_class.name)
 

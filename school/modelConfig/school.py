@@ -202,7 +202,7 @@ class SchoolInfoConfig(StarkConfig):
 
         if request.method == 'GET':
             form = StudentModelForm(school_id=school_id)
-            return render(request, 'school_table/add_student.html', {'form': form, 'school_id': school_id})
+            return render(request, 'tables/add_student.html', {'form': form, 'school_id': school_id})
         request_data = copy.deepcopy(request.POST)
         stu_class_obj = models.StuClass.objects.filter(id=request.POST.get('stu_class')).first()
         grade_obj = models.Grade.objects.filter(id=request.POST.get('grade')).first()
@@ -227,12 +227,12 @@ class SchoolInfoConfig(StarkConfig):
             form.instance.grade = grade_obj
             form.save()
             return redirect(self.reverse_list_url())
-        return render(request, 'school_table/add_student.html', {'form': form, 'school_id': school_id})
+        return render(request, 'tables/add_student.html', {'form': form, 'school_id': school_id})
 
     def add_teacher(self, request, school_id):
         if request.method == 'GET':
             form = TeacherModelForm(school_id=school_id)
-            return render(request, 'school_table/add_teacher.html', {'form': form, 'school_id': school_id})
+            return render(request, 'tables/teacher_change.html', {'form': form, 'school_id': school_id})
         form = TeacherModelForm(request.POST, school_id=school_id)
         if form.is_valid():
             form.instance.school_id = school_id
@@ -244,13 +244,13 @@ class SchoolInfoConfig(StarkConfig):
                 create_list.append(obj)
             tea_models.ClassToTeacher.objects.bulk_create(create_list)
             return redirect(self.reverse_list_url())
-        return render(request, 'school_table/add_teacher.html', {'form': form, 'school_id': school_id})
+        return render(request, 'tables/teacher_change.html', {'form': form, 'school_id': school_id})
 
     def add_view(self, request, template='stark/change.html'):
-        return super().add_view(request, template='school_table/add_school.html')
+        return super().add_view(request, template='tables/add_school.html')
 
     def change_view(self, request, pk, template='stark/change.html'):
-        return super().change_view(request, pk, template='school_table/edit_school.html')
+        return super().change_view(request, pk, template='tables/edit_school.html')
 
     search_list = ['school_name']
     list_display = [display_school_name, 'school_type', 'school_layer', display_address, display_operation]

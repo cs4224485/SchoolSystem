@@ -80,7 +80,7 @@ class TimeTable(APIView):
                 condition.add(q1, 'OR')
                 condition.add(base_q, 'AND')
                 course_table_list = CourseTableService.get_table(condition)
-            print(course_table_list)
+
             # if not course_table_list:
             #     res.msg = '系统繁忙获取失败'
             #     res.code = -1

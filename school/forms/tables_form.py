@@ -134,7 +134,7 @@ class TeacherModelForm(forms.ModelForm):
                                             widget=Fwidgets.RadioSelect())
     course = form_models.ModelMultipleChoiceField(required=False, label='所带课程', queryset=scmodels.Course.objects.all(),
                                                   widget=Fwidgets.CheckboxSelectMultiple())
-    gender = Ffields.ChoiceField(required=False, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
+    gender = Ffields.ChoiceField(required=False, label='性别', choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
 
     def __init__(self, *args, **kwargs):
         school_id = kwargs.pop('school_id')
@@ -145,7 +145,7 @@ class TeacherModelForm(forms.ModelForm):
                                                  filter(stuclass__school_id=school_id).distinct(),
                                                  widget=Fwidgets.Select(
                                                      attrs={'class': 'form-control',
-                                                            'id': 'grade'})
+                                                            'id': 'grade'}), empty_label=None
                                                  )
             self.fields['grade'] = grade
 
@@ -168,9 +168,3 @@ class TeacherModelForm(forms.ModelForm):
             'first_name': '老师名(必填)',
 
         }
-
-
-class GenderField(Ffields.ChoiceField):
-
-    def __init__(self):
-        super(GenderField, self).__init__()
