@@ -13,7 +13,7 @@ class CourseTableService(object):
         '''
         if time:
             add_q = Q()
-            add_q.children.append(('time_range__gte', time))
+            add_q.children.append(('time_range__start_time__gte', time))
             q_condition.add(add_q, 'AND')
 
         course_table_queryset = scmodels.SchoolTimetable.objects.filter(q_condition).order_by('time_range')
