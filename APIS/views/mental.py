@@ -4,6 +4,7 @@ from rest_framework.viewsets import ViewSetMixin
 from APIS.serialize.mental_info import *
 from utils.base_response import BaseResponse
 from teacher import models as tea_models
+from school import models as sch_models
 
 
 class AppointmentInfoViewSet(ViewSetMixin, APIView):
