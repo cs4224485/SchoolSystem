@@ -144,7 +144,7 @@ class ImportStudent(views.View):
     '''
 
     def get(self, request, school_id, *args, **kwargs):
-        return render(request, 'operation_table/../../templates/tables/student_import.html')
+        return render(request, 'tables/student_import.html')
 
     def post(self, request, school_id, *args, **kwargs):
         context = {'status': True, 'msg': '导入成功'}
@@ -212,4 +212,4 @@ class ImportStudent(views.View):
             context['status'] = False
             context['msg'] = '导入失败'
 
-        return render(request, 'operation_table/../../templates/tables/student_import.html', context)
+        return render(request, 'tables/student_import.html', context)
