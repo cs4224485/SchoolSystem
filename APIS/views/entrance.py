@@ -292,11 +292,7 @@ class FamilyInfoViewSet(BaseViewSet):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def create(self, request, *args, **kwargs):
-
         request_data = copy.deepcopy(request.data)
-        # print(request_data)
-        stu = request_data.get('student')
-
         family_info_serialize = FamilyInfoSerializers(data=request_data)
         if family_info_serialize.is_valid():
             # 创建家庭信息
@@ -314,7 +310,6 @@ class FamilyInfoViewSet(BaseViewSet):
                 self.response_error(home_add_serialize.errors)
                 return Response(self.message)
         else:
-            # print(family_info_serialize.errors)
             self.response_error(family_info_serialize.errors)
             return Response(self.message)
 
@@ -334,7 +329,6 @@ class StudentParentsViewSet(BaseViewSet):
         request_data = request.data.get('parents')
         import json
         request_data = json.loads(request_data)
-        # print(request_data)
         for key, item in request_data.items():
             parents_serialize = StudentParentsSerializers(data=item)
             if parents_serialize.is_valid():
@@ -375,7 +369,6 @@ class CustomizationQuestionViewSet(BaseViewSet):
             scale_info = request_data.get('scaleInfo')
             student_id = request_data.get('studentId')
             choice_table = request_data.get('choiceInfo')
-            # print(request_data)
             # 保存所填写的量表信息
             for scale_item in scale_info:
                 for scale_pk, des_info in scale_item.items():

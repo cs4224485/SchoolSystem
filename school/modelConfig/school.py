@@ -124,10 +124,10 @@ class SchoolInfoConfig(StarkConfig):
         import_student_url = '/student/import_student/%s/' % row.pk
         class_manage_url = self.reverse_url('class_manage', row)
         calender_url = self.reverse_url('school_calender', row)
-        cousre_tbale_url = self.reverse_url('school_timetables', row)
+        course_tbale_url = self.reverse_url('school_timetables', row)
         html = '''
             <div class='op_father'>
-                <span><img src="/static/stark/imgs/op.png" width="18" height="18"></span>  
+                <span><image src="/static/stark/imgs/op.png" width="18" height="18"></span>  
                 <div class='op_list'>
                     <a href='%s'>编辑学校</a>
                     <a href='%s'>添加学生</a>
@@ -139,7 +139,7 @@ class SchoolInfoConfig(StarkConfig):
                 </div>
             </div>
         ''' % (edit_school_url, add_student_url, import_student_url,
-               add_teacher_url, class_manage_url, calender_url, cousre_tbale_url)
+               add_teacher_url, class_manage_url, calender_url, course_tbale_url)
         return mark_safe(html)
 
     def get_list_display(self):
@@ -147,14 +147,13 @@ class SchoolInfoConfig(StarkConfig):
         val.remove(StarkConfig.display_edit)
         return val
 
-    def get_model_form_class(self):
+    def get_model_form_class(self, is_add=False):
         '''
         创建添加学校相关信息的modelForm
         :return:
         '''
-        return SchoolAddForm
-
-    def get_edit_model_form_class(self):
+        if is_add:
+            return SchoolAddForm
         return SchoolEditModelForm
 
     def get_add_form(self, model_form, request):

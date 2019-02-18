@@ -4,6 +4,9 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class TeacherInfo(models.Model):
+    '''
+    教师信息
+    '''
     last_name = models.CharField(verbose_name='老师姓', max_length=128)
     first_name = models.CharField(verbose_name='老师名', max_length=128)
     gender_choice = [(1, '男'), (2, '女')]
@@ -43,3 +46,20 @@ class ClassToTeacher(models.Model):
     def __str__(self):
         return "关联老师:%s 班级: %s" % (self.teacher.last_name+self.teacher.first_name, self.stu_class.name)
 
+# ######### 家访相关 ############
+
+
+class FamilyVisitRecord(models.Model):
+    '''
+    家访记录
+    '''
+
+    student = models.ForeignKey(to="students.StudentInfo", verbose_name='对应学生', on_delete=models.CASCADE)
+    visit_date = models.DateField(verbose_name='访问时间')
+    reason = models.TextField(verbose_name='访问原因', max_length=150)
+    relate_parents = models.ManyToManyField(to='students.StudentParents', verbose_name='关联家长')
+    state_choice = ((1, '预约中'), (2, '已完成'), (3, '已取消'))
+    state = models.SmallIntegerField(choices=state_choice, verbose_name='预约状态', default=1)
+
+    class Meta:
+        db_table = 'FamilyVisitRecord'

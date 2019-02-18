@@ -2,6 +2,8 @@ import uuid
 import datetime
 import time
 import re
+import hashlib
+import random
 from pypinyin import lazy_pinyin
 
 
@@ -136,8 +138,10 @@ def school_calendar(date, starting_date=None):
         start_time = first_them_range[0]
     else:
         them = '第二学期'
+        if date.month in special_mon:
+            year += 1
+            first_them_range[1] = datetime.datetime.strptime('%s-2-19' % year, '%Y-%m-%d')
         start_time = first_them_range[1]
-
     if starting_date:
         start_time = starting_date
 
@@ -158,7 +162,6 @@ def current_week(current_date, starting_date=None):
     '''
     time_range, them = school_calendar(current_date, starting_date)
     for index, time in enumerate(time_range, start=0):
-        # print(current_date, 'current_date')
         try:
             if current_date >= time_range[index] and current_date < time_range[index + 1]:
                 return index + 1, them
@@ -244,3 +247,15 @@ def order_by_class(class_list):
                 if this_class_num > next_class_num:
                     class_list[j], class_list[j + 1] = class_list[j + 1], class_list[j]
     return class_list
+
+
+def gen_md5_password(password):
+    """
+       md5加密
+       :param password: 输入的密码
+       :return:
+       """
+    ha = hashlib.md5(b'jk3usodfjwkrsdf')
+    ha.update(password.encode('utf-8'))
+    return ha.hexdigest()
+

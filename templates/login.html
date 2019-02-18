@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Purple_loginform Website Template | Home :: w3layouts</title>
+    <link href="{% static 'web/account/css/login.css' %}" rel="stylesheet" type="text/css" media="all"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- -->
+    <style>
+        .error-info {
+            margin-left: 300px;
+            margin-top: 10px;
+            color: red;
+        }
+
+        input:-webkit-autofill{
+            -webkit-box-shadow: 0 0 0px 1000px #F2F2F2 inset !important;
+        }
+    </style>
+</head>
+<body>
+<!-- contact-form -->
+<div class="message warning">
+    <div class="inset">
+        <div class="login-head">
+            <h1>欢迎登陆</h1>
+        </div>
+        <div>
+            <form action="" method="post">
+                <div>
+                    <li>
+                        <input type="text" class="text" name="username" value="" placeholder="请输入用户名"><a href="#"
+                                                                                                         class=" icon user"></a>
+                    </li>
+                    <div class="error-info" style="">{{ none_username }}</div>
+                </div>
+                <div class="clear"></div>
+                <div>
+                    <li>
+                        <input type="password" name="password" value="" placeholder="请输入密码"> <a href="#"
+                                                                                                class="icon lock"></a>
+                    </li>
+                    <div class="error-info" style="">{{ none_password }}</div>
+                    <div class="error-info" style="">{{ error }}</div>
+                </div>
+                <div class="clear"></div>
+                <div class="submit">
+                    <input type="submit" value="登陆">
+                    <h4><a href="#">Lost your Password ?</a></h4>
+                    <div class="clear"></div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+<!--- footer --->
+<div class="footer">
+    <p>Copyright &copy;君集软件</p>
+</div>
+
+</body>
+</html>

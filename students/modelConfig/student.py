@@ -33,7 +33,7 @@ class StudentConfig(StarkConfig):
         tag = '<a href="%s?sid=%s">家长详情</a>' % (url, row.pk)
         return mark_safe(tag)
 
-    def get_edit_model_form_class(self):
+    def get_model_form_class(self, is_add=False):
         return StudentEditForm
 
     def get_edit_form(self, model_form, request, obj):

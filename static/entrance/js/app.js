@@ -118,7 +118,7 @@ mui.ajax({
                     $(".guoji_name").val(data.data[i].country_name)
                     $("#isName").hide();
                 }
-                html = "<li data-id=" + data.data[i].id + "><p><img src=" + ajaxUrl + data.data[i].img + " ></p><p>" + data.data[i].country_name + "</p></li>";
+                html = "<li data-id=" + data.data[i].id + "><p><images src=" + ajaxUrl + data.data[i].img + " ></p><p>" + data.data[i].country_name + "</p></li>";
                 $("#pop_nationality").append(html)
             }
         }
@@ -136,7 +136,7 @@ mui(".nationality").on('tap', '.right_pop', function () {
 mui("#pop_nationality").on('tap', 'li', function () {
 
     $(this).addClass("act").siblings().removeClass("act");
-    $(".guoji_img").attr("src", $(this).find("img").attr("src"))
+    $(".guoji_img").attr("src", $(this).find("images").attr("src"))
     $(".guoji_img").attr("data-id", $(this).attr("data-id"))
     $(".guoji_name").val($(this).find("p").text())
     $(".pop_nationality").hide()
@@ -175,10 +175,10 @@ mui(".positionSex").on('tap', 'img', function () {
     let index = $(this).index();
     if (index == 0) {
         $(this).attr("src", "/static/entrance/images/male.png");
-        $(this).parent(".positionSex").find("img").eq(1).attr("src", "/static/entrance/images/female2.png");
+        $(this).parent(".positionSex").find("images").eq(1).attr("src", "/static/entrance/images/female2.png");
     } else if (index == 1) {
         $(this).attr("src", "/static/entrance/images/female.png");
-        $(this).parent(".positionSex").find("img").eq(0).attr("src", "/static/entrance/images/male2.png");
+        $(this).parent(".positionSex").find("images").eq(0).attr("src", "/static/entrance/images/male2.png");
     }
     let val = $(this).attr("data-sex");
     $("#gender").val(val)

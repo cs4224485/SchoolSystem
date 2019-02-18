@@ -62,20 +62,6 @@ class GraduateInstitutions(models.Model):
         return self.name
 
 
-# class StudentPrivacy(models.Model):
-#     '''
-#     学生隐私信息表
-#     '''
-#     full_name = models.CharField(verbose_name='学生全名', db_index=True, max_length=256)
-#     id_card = models.CharField(verbose_name='身份证号码', null=True, db_index=True, max_length=32)
-#     student_code = models.IntegerField(verbose_name='学籍号', null=True)
-#     telephone = models.CharField(verbose_name='电话号码', max_length=32, null=True)
-#     student_detail = models.OneToOneField(to=StudentInfo, related_name='student_privacy', verbose_name='学生详细信息', on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return self.full_name
-
-
 class Country(models.Model):
     '''
     国籍信息表

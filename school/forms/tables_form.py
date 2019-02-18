@@ -106,7 +106,7 @@ class StudentModelForm(forms.ModelForm):
         grade_list = [(item.pk, item) for item in grade_list]
         grade_list.insert(0, (0, '--- 选择年级 ---'))
         grade = Ffields.ChoiceField(required=True, choices=grade_list, widget=Fwidgets.Select(
-            attrs={'class': 'form-control', 'id': 'grade', 'data-province': '---- 选择年级 ----'}))
+            attrs={'class': 'form-control', 'id': 'grade'}))
         self.fields['grade'] = grade
         self.fields['stu_class'] = stu_class
 
@@ -156,7 +156,6 @@ class TeacherModelForm(forms.ModelForm):
             "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             'wechat': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
-            # "gender": Fwidgets.RadioSelect()
         }
         error_messages = {
             "last_name": {"required": "请输入老师姓"},
