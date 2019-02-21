@@ -151,11 +151,12 @@ class TeacherModelForm(forms.ModelForm):
 
     class Meta:
         model = teamodels.TeacherInfo
-        fields = ('last_name', 'first_name', 'gender', 'birthday', 'wechat', 'identity', 'course')
+        fields = ('last_name', 'first_name', 'gender', 'birthday', 'telephone', 'wechat', 'identity', 'course')
         widgets = {
             "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             'wechat': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
+            'telephone': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
         }
         error_messages = {
             "last_name": {"required": "请输入老师姓"},

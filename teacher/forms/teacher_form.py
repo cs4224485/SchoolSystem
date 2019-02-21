@@ -19,11 +19,12 @@ class TeacherEditModelForm(forms.ModelForm):
 
     class Meta:
         model = teamodels.TeacherInfo
-        fields = ('last_name', 'first_name', 'gender', 'birthday', 'wechat', 'school', 'identity', 'course', )
+        fields = ('last_name', 'first_name', 'gender', 'birthday', 'telephone', 'wechat', 'school', 'identity', 'course' )
         widgets = {
             "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             'wechat': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
+            'telephone': Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             'school': Fwidgets.Select(attrs={'class': 'form-control', 'style': 'width: 600px'}),
         }
         error_messages = {

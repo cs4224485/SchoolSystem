@@ -56,7 +56,7 @@ def body_list(cl):
                             value = getattr(query_obj, field)
                         # 如果字段是一个link类型字段那么给它构建一个a标签
                         if field in cl.config.list_display_links:
-                            _url = cl.config.reverse_edit_url(query_obj)
+                            _url = cl.config.reverse_edit_url(query_obj.pk)
                             value = mark_safe("<a href='%s'>%s</a>" % (_url, value))
                   except Exception:
                       value = getattr(query_obj, field)

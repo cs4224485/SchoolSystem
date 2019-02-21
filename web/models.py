@@ -22,3 +22,5 @@ class UserInfo(RbacUserInfo):
 
     class Meta:
         db_table = 'UserInfo'
+
+

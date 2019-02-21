@@ -68,7 +68,7 @@ class Country(models.Model):
     '''
     country_name = models.CharField(verbose_name='国籍', max_length=32)
     english_name = models.CharField(verbose_name='english', max_length=32)
-    img = models.FileField(upload_to='country_img')
+    images = models.FileField(upload_to='country_img')
 
     def __str__(self):
         return self.country_name
