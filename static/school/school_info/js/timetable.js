@@ -222,7 +222,6 @@ var schoolTimeTable = {
                 }
             }
 
-
             $('#position').val(position);
             $('#course-table-id').val(courseTableId);
             $('#class-info').attr('class-id', classId);
@@ -374,7 +373,6 @@ var schoolTimeTable = {
                     }
                 })
             }
-
         })
 
     },
@@ -463,11 +461,17 @@ var schoolTimeTable = {
 
         };
 
-
         $("#tMain").on('click', '.time-body .set-time', function () {
             let that = $(this);
+            // 判断当前行是否是表中得最后一行，把scroll拉到最底部
+            let trElement = that.parents('tr');
+            let trIndex = $('tbody').find('tr').index(trElement);
+            let totalTr = $('tbody').find('tr').length;
+            if (totalTr === trIndex+1 || totalTr-1 === trIndex+1){
+                var scrollHeight = $('#wrap').prop("scrollHeight");
+                $('#wrap').animate({scrollTop:scrollHeight}, 100);
+            }
             var Times = new TimeSelection();
-
             Times.init({
                 class: that.parents(".left-border"),
                 isclass: "time_box"

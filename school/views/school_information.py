@@ -77,7 +77,6 @@ class ClassManage(views.View):
             ret.msg = '创建成功'
             ret.data = {'class_id': class_obj.id}
         except Exception as e:
-            print(e)
             ret.msg = '创建失败'
         return JsonResponse(ret.get_dict)
 
@@ -107,7 +106,6 @@ class ClassManage(views.View):
             ret.msg = '修改成功'
             ret.state = True
         except Exception as e:
-            print(e)
             ret.msg = '修改失败'
         return JsonResponse(ret.get_dict)
 

@@ -16,5 +16,6 @@ urlpatterns = [
     re_path('wxinit$', index.WxInit.as_view()),
     # 小程序个人中心
     re_path('personal$', account.PersonCenter.as_view())
+    #
 
 ]

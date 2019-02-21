@@ -33,7 +33,7 @@ class TeacherInfoConfig(StarkConfig):
         if not obj:
             return HttpResponse('数据不存在')
         class_to_teacher_list = obj.teachers.filter(relate=2)
-        form_class = self.get_edit_model_form_class()
+        form_class = self.get_model_form_class()
         if request.method == "GET":
             form = form_class(instance=obj)
             return render(request, 'tables/teacher_change.html',
@@ -59,11 +59,11 @@ class TeacherInfoConfig(StarkConfig):
             return redirect(self.reverse_list_url())
         return render(request, 'tables/teacher_change.html', {'form': form, 'selected_class': class_to_teacher_list})
 
-    def get_edit_model_form_class(self):
+    def get_model_form_class(self, is_add=False):
         return TeacherEditModelForm
 
     def get_add_btn(self):
         return None
 
     list_display = [display_name, 'school']
-    search_list = ['full_name']
+    search_list = ['first_name', 'last_name']

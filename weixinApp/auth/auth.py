@@ -11,7 +11,6 @@ class WeiXinAuth(BaseAuthentication):
 
     def authenticate(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(token, 'token')
         if not token:
             raise AuthenticationFailed({'code': -1, 'error': '认证失败'}, )
         bind_info = check_login(token)

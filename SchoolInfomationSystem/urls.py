@@ -19,11 +19,14 @@ from django.views.static import serve
 from SchoolInfomationSystem import settings
 from APIS.views.entrance import *
 from stark.service.stark import site
-
-
+from web.views import account
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # 后台系统登陆
+    path('login/', account.login, name='login'),
+    # 后台登出
+    path('logout/', account.logout, name='logout'),
     re_path(r'^student/', include('students.urls')),
     re_path(r'^school/', include('school.urls')),
     re_path(r'^mental/', include('StudentMentalHealth.urls')),

@@ -21,6 +21,23 @@ class ModelConfigMapping(object):
         self.prev = prev
 
 
+class StarkModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(StarkModelForm, self).__init__(*args, **kwargs)
+        # 统一给ModelForm生成字段添加样式
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
+class StarkForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(StarkForm, self).__init__(*args, **kwargs)
+        # 统一给ModelForm生成字段添加样式
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
 class Row(object):
     def __init__(self, data_list, option, query_dict):
         '''
@@ -246,6 +263,12 @@ class StarkConfig(object):
            """ % (self.reverse_edit_url(row), self.reverse_del_url(row),)
         return mark_safe(tpl)
 
+    def get_url_name(self, param):
+        app_label, model_name = self.model_class._meta.app_label, self.model_class._meta.model_name
+        if self.prev:
+            return '%s_%s_%s_%s' % (app_label, model_name, self.prev, param,)
+        return '%s_%s_%s' % (app_label, model_name, param,)
+
     @property
     def get_list_url_name(self):
         app_label = self.model_class._meta.app_label
@@ -358,7 +381,7 @@ class StarkConfig(object):
          :return:
          """
 
-        AddModelForm = self.get_model_form_class()
+        AddModelForm = self.get_model_form_class(is_add=True)
         if request.method == "GET":
             form = AddModelForm()
             return render(request, template, {'form': form})
@@ -373,7 +396,7 @@ class StarkConfig(object):
         obj = self.model_class.objects.filter(pk=pk).first()
         if not obj:
             return HttpResponse('数据不存在')
-        EditModelForm = self.get_edit_model_form_class()
+        EditModelForm = self.get_model_form_class()
 
         if request.method == "GET":
             form = EditModelForm(instance=obj)
@@ -381,12 +404,23 @@ class StarkConfig(object):
 
         form = self.get_edit_form(EditModelForm, request, obj)
         if form.is_valid():
-            self.save(form)
+            self.save(form, modify=True)
             return redirect(self.reverse_list_url())
         return render(request, template, {'form': form})
 
     def delete_view(self, request, pk):
-        pass
+        """
+             删除页面
+             :param request:
+             :param pk:
+             :return:
+        """
+        origin_list_url = self.reverse_list_url()
+        if request.method == 'GET':
+            return render(request, 'stark/delete.html', {'cancel_url': origin_list_url})
+
+        self.model_class.objects.filter(pk=pk).delete()
+        return redirect(origin_list_url)
 
     def search_condition(self, request):
         search_list = self.get_search_list()
@@ -453,6 +487,18 @@ class StarkConfig(object):
         del_url = "%s?%s" % (del_url, new_query_dict.urlencode())
         return del_url
 
+    def reverse_commons_url(self, name, *args, **kwargs):
+        name = "%s:%s" % (self.site.namespace, name,)
+        base_url = reverse(name, args=args, kwargs=kwargs)
+        if not self.request.GET:
+            add_url = base_url
+        else:
+            param = self.request.GET.urlencode()
+            new_query_dict = QueryDict(mutable=True)
+            new_query_dict['_filter'] = param
+            add_url = "%s?%s" % (base_url, new_query_dict.urlencode())
+        return add_url
+
     def get_list_filter_condition(self):
         '''
         获取组合搜索筛选
@@ -483,7 +529,7 @@ class StarkConfig(object):
     def get_order_by(self):
         return self.order_by
 
-    def get_model_form_class(self):
+    def get_model_form_class(self, is_add=False):
         '''
         创建ModelForm
         :return:
@@ -499,8 +545,7 @@ class StarkConfig(object):
 
         return ModelForm
 
-    def get_edit_model_form_class(self):
-        return self.get_model_form_class()
+
 
     def get_action_list(self):
         val = []
