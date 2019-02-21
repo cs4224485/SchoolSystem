@@ -78,19 +78,6 @@ class SchoolInfoConfig(StarkConfig):
         temp.append(re_path(r"add_teacher/(?P<school_id>\d+)/$", self.wrapper(self.add_teacher), name='add_teacher'))
         return temp
 
-    def reverse_url(self, menu_name, obj):
-
-        namespace = self.site.namespace
-        name = '%s:%s' % (namespace, menu_name)
-        url = reverse(name, kwargs={'school_id': obj.id})
-        # 保留搜索条件
-        if not self.request.GET:
-            return url
-        parm_str = self.request.GET.urlencode()
-        new_query_dict = QueryDict(mutable=True)
-        new_query_dict[self.back_condition_key] = parm_str
-        url = "%s?%s" % (url, new_query_dict.urlencode())
-        return url
 
     def display_school_name(self, row=None, header=False):
         if header:
@@ -118,13 +105,13 @@ class SchoolInfoConfig(StarkConfig):
     def display_operation(self, row=None, header=False):
         if header:
             return '操作'
-        edit_school_url = self.reverse_edit_url(row)
-        add_student_url = self.reverse_url('add_student', row)
-        add_teacher_url = self.reverse_url('add_teacher', row)
+        edit_school_url = self.reverse_edit_url(row.pk)
+        add_student_url = self.reverse_commons_url('add_student', row.pk)
+        add_teacher_url = self.reverse_commons_url('add_teacher', row.pk)
         import_student_url = '/student/import_student/%s/' % row.pk
-        class_manage_url = self.reverse_url('class_manage', row)
-        calender_url = self.reverse_url('school_calender', row)
-        course_tbale_url = self.reverse_url('school_timetables', row)
+        class_manage_url = self.reverse_commons_url('class_manage', row.pk)
+        calender_url = self.reverse_commons_url('school_calender', row.pk)
+        course_tbale_url = self.reverse_commons_url('school_timetables', row.pk)
         html = '''
             <div class='op_father'>
                 <span><image src="/static/stark/imgs/op.png" width="18" height="18"></span>  
@@ -235,6 +222,7 @@ class SchoolInfoConfig(StarkConfig):
         form = TeacherModelForm(request.POST, school_id=school_id)
         if form.is_valid():
             form.instance.school_id = school_id
+            form.instance.full_name = request.POST.get('last_name') + request.POST.get('first_name')
             teacher_obj = form.save()
             class_ids = request.POST.getlist('choice_class')
             create_list = []

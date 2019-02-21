@@ -40,6 +40,7 @@ class TeacherInfoConfig(StarkConfig):
                           {'form': form, 'selected_class': class_to_teacher_list})
         form = form_class(request.POST, instance=obj)
         if form.is_valid():
+            form.instance.full_name = request.POST.get('last_name') + request.POST.get('first_name')
             teacher_obj = form.save()
             class_ids = request.POST.getlist('choice_class')
             query = models.ClassToTeacher.objects

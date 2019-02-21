@@ -5,7 +5,7 @@ import re
 import hashlib
 import random
 from pypinyin import lazy_pinyin
-
+from collections import OrderedDict
 
 def create_uuid():
     random_id = uuid.uuid4()
@@ -251,7 +251,7 @@ def order_by_class(class_list):
 
 def gen_md5_password(password):
     """
-       md5加密
+       md5加密time
        :param password: 输入的密码
        :return:
        """
@@ -259,3 +259,12 @@ def gen_md5_password(password):
     ha.update(password.encode('utf-8'))
     return ha.hexdigest()
 
+
+
+time_dic =[{'time':datetime.datetime.strptime('9:30', '%H:%M'), 'course':'语文'}, {'time':datetime.datetime.strptime('8:30', '%H:%M'), 'course':'数学'}]
+from operator import itemgetter
+
+print(sorted(time_dic, key=itemgetter('time')))
+time_dic = sorted(time_dic, key=itemgetter('time'))
+
+print(time_dic)

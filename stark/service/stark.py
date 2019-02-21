@@ -204,6 +204,7 @@ class StarkConfig(object):
     list_display_links = []
     order_by = ['-id']
     list_filter = []
+    change_list_template = None
 
     def __init__(self, model_class, site, prev=None):
         self.model_class = model_class
@@ -229,8 +230,8 @@ class StarkConfig(object):
         urlpatterns = [
             re_path(r'^list/$', self.wrapper(self.list_view), name=self.get_list_url_name),
             re_path(r'^add/$', self.wrapper(self.add_view), name=self.get_add_url_name),
-            re_path(r'^(?P<pk>\d+)/change/', self.wrapper(self.change_view), name=self.get_edit_url_name),
-            re_path(r'^(?P<pk>\d+)/del/', self.wrapper(self.delete_view), name=self.get_delete_url_name),
+            re_path(r'^(?P<pk>\d+)/change/$', self.wrapper(self.change_view), name=self.get_edit_url_name),
+            re_path(r'^(?P<pk>\d+)/del/$', self.wrapper(self.delete_view), name=self.get_delete_url_name),
         ]
         urlpatterns.extend(self.extra_urls())
 
@@ -246,21 +247,20 @@ class StarkConfig(object):
             return "编辑"
 
         return mark_safe(
-            '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % self.reverse_edit_url(row))
+            '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % self.reverse_edit_url(row.pk))
 
     def display_del(self, row=None, header=False):
         if header:
             return "删除"
-
         return mark_safe(
-            '<a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>' % self.reverse_del_url(row))
+            '<a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>' % self.reverse_del_url(row.pk))
 
     def display_edit_del(self, row=None, header=False):
         if header:
             return "操作"
         tpl = """<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a> |
            <a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-           """ % (self.reverse_edit_url(row), self.reverse_del_url(row),)
+           """ % (self.reverse_edit_url(row), self.reverse_del_url(row.pk),)
         return mark_safe(tpl)
 
     def get_url_name(self, param):
@@ -271,45 +271,19 @@ class StarkConfig(object):
 
     @property
     def get_list_url_name(self):
-        app_label = self.model_class._meta.app_label
-        model_name = self.model_class._meta.model_name
-        if self.prev:
-            name = '%s_%s_%s_changelist' % (app_label, model_name, self.prev)
-        else:
-            name = '%s_%s_changelist' % (app_label, model_name)
-
-        return name
+        return self.get_url_name('list')
 
     @property
     def get_add_url_name(self):
-        app_label = self.model_class._meta.app_label
-        model_name = self.model_class._meta.model_name
-        if self.prev:
-            name = '%s_%s_%s_add' % (app_label, model_name, self.prev)
-        else:
-            name = '%s_%s_add' % (app_label, model_name)
-
-        return name
+        return self.get_url_name('add')
 
     @property
     def get_edit_url_name(self):
-        app_label = self.model_class._meta.app_label
-        model_name = self.model_class._meta.model_name
-        if self.prev:
-            name = '%s_%s_%s_edit' % (app_label, model_name, self.prev)
-        else:
-            name = '%s_%s_edit' % (app_label, model_name)
-        return name
+        return self.get_url_name('edit')
 
     @property
     def get_delete_url_name(self):
-        app_label = self.model_class._meta.app_label
-        model_name = self.model_class._meta.model_name
-        if self.prev:
-            name = '%s_%s_%s_delete' % (app_label, model_name, self.prev)
-        else:
-            name = '%s_%s_delete' % (app_label, model_name)
-        return name
+        return self.get_url_name('delete')
 
     def extra_urls(self):
         return []
@@ -349,7 +323,7 @@ class StarkConfig(object):
         try:
             # 搜索条件无法匹配到数据时可能会出现异常
             origin_queryset = self.get_queryset()
-            queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition()).order_by(
+            queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(
                 *self.get_order_by()).distinct()[page.start:page.end]
         except Exception as e:
             print(e)
@@ -358,9 +332,8 @@ class StarkConfig(object):
 
         context = {
             'cl': cl,
-
         }
-        return render(request, 'stark/changelist.html', context)
+        return render(request, self.change_list_template or 'stark/changelist.html', context)
 
     def save(self, form, modify=False):
         return form.save()
@@ -444,48 +417,24 @@ class StarkConfig(object):
         list_url = "%s?%s" % (list_url, origin_condition)
         return list_url
 
-    def reverse_add_url(self):
+    def reverse_add_url(self, *args, **kwargs):
+        """
+        生成带有原搜索条件的添加URL
+        :return:
+        """
+        return self.reverse_commons_url(self.get_add_url_name, *args, **kwargs)
 
-        namespace = self.site.namespace
-        name = '%s:%s' % (namespace, self.get_add_url_name)
-        add_url = reverse(name)
-        # 保留搜索条件
-        if not self.request.GET:
-            return add_url
-        parm_str = self.request.GET.urlencode()
-        new_query_dict = QueryDict(mutable=True)
-        new_query_dict[self.back_condition_key] = parm_str
-        add_url = "%s?%s" % (add_url, new_query_dict.urlencode())
-        return add_url
+    def reverse_edit_url(self, *args, **kwargs):
+        """
+        生成带有原搜索条件的编辑URL
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return self.reverse_commons_url(self.get_edit_url_name, *args, **kwargs)
 
-    def reverse_edit_url(self, row):
-
-        namespace = self.site.namespace
-        name = '%s:%s' % (namespace, self.get_edit_url_name)
-        edit_url = reverse(name, kwargs={'pk': row.pk})
-
-        # 保留搜索条件
-        if not self.request.GET:
-            return edit_url
-        parm_str = self.request.GET.urlencode()
-        new_query_dict = QueryDict(mutable=True)
-        new_query_dict[self.back_condition_key] = parm_str
-        edit_url = "%s?%s" % (edit_url, new_query_dict.urlencode())
-        return edit_url
-
-    def reverse_del_url(self, row):
-
-        namespace = self.site.namespace
-        name = '%s:%s' % (namespace, self.get_delete_url_name)
-        del_url = reverse(name, kwargs={'pk': row.pk})
-
-        if not self.request.GET:
-            return del_url
-        parm_str = self.request.GET.urlencode()
-        new_query_dict = QueryDict(mutable=True)
-        new_query_dict[self.back_condition_key] = parm_str
-        del_url = "%s?%s" % (del_url, new_query_dict.urlencode())
-        return del_url
+    def reverse_del_url(self, *args, **kwargs):
+        return self.reverse_commons_url(self.get_delete_url_name, *args, **kwargs)
 
     def reverse_commons_url(self, name, *args, **kwargs):
         name = "%s:%s" % (self.site.namespace, name,)
@@ -499,16 +448,22 @@ class StarkConfig(object):
             add_url = "%s?%s" % (base_url, new_query_dict.urlencode())
         return add_url
 
-    def get_list_filter_condition(self):
+    def get_list_filter_condition(self, request):
         '''
         获取组合搜索筛选
         :return:
         '''
         comb_condition = {}
         for option in self.get_list_filter():
-            element = self.request.GET.getlist(option.field)
-            if element:
-                comb_condition['%s__in' % option.field] = element
+            if option.is_multi:
+                element = self.request.GET.getlist(option.field)
+                if element:
+                    comb_condition['%s__in' % option.field] = element
+            else:
+                value = request.GET.get(option.field)  # tags=[1,2]
+                if not value:
+                    continue
+                comb_condition[option.field] = value
         return comb_condition
 
     def get_list_display(self):
@@ -544,8 +499,6 @@ class StarkConfig(object):
                 fields = "__all__"
 
         return ModelForm
-
-
 
     def get_action_list(self):
         val = []

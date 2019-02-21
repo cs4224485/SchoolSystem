@@ -18,7 +18,7 @@ class AppointmentInfoViewSet(ViewSetMixin, APIView):
             class_id = request.GET.get('class_id', '16')
             stu_class = sch_models.StuClass.objects.filter(id=class_id).first()
             student_queryset = stu_models.StudentInfo.objects.filter(stu_class=stu_class)
-            teacher_queryset = tea_models.TeacherInfo.objects.filter(identity=2)
+            teacher_queryset = tea_models.TeacherInfo.objects.filter(identity=3)
             stu_se = StudentListSerialize(student_queryset, many=True)
             teacher_se = PsychologyTeacherSerialize(teacher_queryset, many=True)
             message.state = True

@@ -14,7 +14,7 @@ class LoginMiddleware(MiddlewareMixin):
         current_url = request.path_info
         for valid_url in settings.VALID_URL_LIST:
             if re.match(valid_url, current_url):
-                return None 
+                return None
         user_id = request.session.get('user_id')
         if not user_id:
             return redirect('/login/')
