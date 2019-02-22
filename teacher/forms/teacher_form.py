@@ -36,3 +36,20 @@ class TeacherEditModelForm(forms.ModelForm):
             'last_name': '老师姓(必填)',
             'first_name': '老师名(必填)',
         }
+
+    def clean(self):
+        '''
+        校验该教师是否已经存在
+        :return:
+        '''
+        birthday = self.cleaned_data.get('birthday')
+        last_name = self.cleaned_data.get('last_name')
+        first_name = self.cleaned_data.get('first_name')
+        school = self.cleaned_data.get('school')
+        teacher_obj = teamodels.TeacherInfo.objects.filter(birthday=birthday,
+                                                           first_name=first_name,
+                                                           last_name=last_name,
+                                                           school=school)
+        if teacher_obj:
+            raise ValidationError('该教师已存在')
+        return self.cleaned_data

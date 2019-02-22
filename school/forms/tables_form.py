@@ -125,6 +125,20 @@ class StudentModelForm(forms.ModelForm):
             "gender": {"required": "请选择性别"},
         }
 
+    def clean(self):
+        '''
+        校验该学生是否已经存在
+        :return:
+        '''
+        birthday = self.cleaned_data.get('birthday')
+        last_name = self.cleaned_data.get('last_name')
+        first_name = self.cleaned_data.get('first_name')
+        student_obj = stumodels.StudentInfo.objects.filter(first_name=first_name,
+                                                           last_name=last_name, birthday=birthday)
+        if student_obj:
+            raise ValidationError('该学生已存在')
+        return self.cleaned_data
+
 
 class TeacherModelForm(forms.ModelForm):
     birthday = Ffields.DateField(required=False, label='生日', widget=Fwidgets.DateInput(
@@ -140,6 +154,7 @@ class TeacherModelForm(forms.ModelForm):
         school_id = kwargs.pop('school_id')
         super(TeacherModelForm, self).__init__(*args, **kwargs)
         if school_id:
+            self.school_id = school_id
             grade = form_models.ModelChoiceField(required=False,
                                                  queryset=scmodels.Grade.objects.
                                                  filter(stuclass__school_id=school_id).distinct(),
@@ -168,3 +183,19 @@ class TeacherModelForm(forms.ModelForm):
             'first_name': '老师名(必填)',
 
         }
+
+    def clean(self):
+        '''
+        校验该教师是否已经存在
+        :return:
+        '''
+        birthday = self.cleaned_data.get('birthday')
+        last_name = self.cleaned_data.get('last_name')
+        first_name = self.cleaned_data.get('first_name')
+        teacher_obj = teamodels.TeacherInfo.objects.filter(birthday=birthday,
+                                                           first_name=first_name,
+                                                           last_name=last_name,
+                                                           school=self.school_id)
+        if teacher_obj:
+            raise ValidationError('该教师已存在')
+        return self.cleaned_data

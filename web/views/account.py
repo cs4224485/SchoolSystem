@@ -17,7 +17,7 @@ def login(request):
     if not user_obj:
         return render(request, 'login.html', {'error': '用户名或密码错误'})
     request.session['user_id'] = user_obj.id
-    school_list_url = reverse('stark:school_schoolinfo_changelist')
+    school_list_url = reverse('stark:school_schoolinfo_list')
     return redirect(school_list_url)
 
 

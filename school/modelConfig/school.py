@@ -52,7 +52,7 @@ class SchoolInfoConfig(StarkConfig):
         try:
             # 搜索条件无法匹配到数据时可能会出现异常
             origin_queryset = self.get_queryset()
-            queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition()).order_by(
+            queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(
                 *self.get_order_by()).distinct()[page.start:page.end]
         except Exception as e:
             queryset = []
@@ -77,7 +77,6 @@ class SchoolInfoConfig(StarkConfig):
         temp.append(re_path(r"add_student/(?P<school_id>\d+)/$", self.wrapper(self.add_student), name='add_student'))
         temp.append(re_path(r"add_teacher/(?P<school_id>\d+)/$", self.wrapper(self.add_teacher), name='add_teacher'))
         return temp
-
 
     def display_school_name(self, row=None, header=False):
         if header:
