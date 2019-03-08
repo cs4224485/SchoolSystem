@@ -126,7 +126,6 @@ class Option(object):
             if self.is_choice:
                 row = Row(_field.choices, self, query_dict)
             else:
-                print(model_class)
                 row = Row(model_class.objects.filter(**self.condition), self, query_dict)
         return row
 
@@ -346,15 +345,16 @@ class StarkConfig(object):
         form = model_form(request.POST, instance=obj)
         return form
 
-    def add_view(self, request, template='stark/change.html'):
+    def add_view(self, request, template='stark/change.html', *args, **kwargs):
         """
          所有添加页面，都在此函数处理
          使用ModelForm实现
          :param request:
+         :param template: 模板
          :return:
          """
 
-        AddModelForm = self.get_model_form_class(is_add=True)
+        AddModelForm = self.get_model_form_class(True, request, None, *args, **kwargs)
         if request.method == "GET":
             form = AddModelForm()
             return render(request, template, {'form': form})
@@ -365,11 +365,11 @@ class StarkConfig(object):
             return redirect(self.reverse_list_url())
         return render(request, template, {'form': form})
 
-    def change_view(self, request, pk, template='stark/change.html'):
+    def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
         obj = self.model_class.objects.filter(pk=pk).first()
         if not obj:
             return HttpResponse('数据不存在')
-        EditModelForm = self.get_model_form_class()
+        EditModelForm = self.get_model_form_class(False, request, pk, *args, **kwargs)
 
         if request.method == "GET":
             form = EditModelForm(instance=obj)
@@ -456,11 +456,11 @@ class StarkConfig(object):
         comb_condition = {}
         for option in self.get_list_filter():
             if option.is_multi:
-                element = self.request.GET.getlist(option.field)
+                element = self.request.GET.getlist(option.field) # tags=[1,2]
                 if element:
                     comb_condition['%s__in' % option.field] = element
             else:
-                value = request.GET.get(option.field)  # tags=[1,2]
+                value = request.GET.get(option.field)
                 if not value:
                     continue
                 comb_condition[option.field] = value
@@ -484,7 +484,7 @@ class StarkConfig(object):
     def get_order_by(self):
         return self.order_by
 
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         '''
         创建ModelForm
         :return:

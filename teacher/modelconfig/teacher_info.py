@@ -1,5 +1,4 @@
 from stark.service.stark import StarkConfig, ChangeList
-from django.urls import reverse, re_path
 from django.shortcuts import HttpResponse, render, redirect
 from django.conf import settings
 from utils.common import *
@@ -20,7 +19,7 @@ class TeacherInfoConfig(StarkConfig):
         else:
             return mark_safe(html.format(last_name, '*', first_name))
 
-    def change_view(self, request, pk, template='stark/change.html'):
+    def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
         '''
         编辑教师
         :param request:
@@ -33,7 +32,7 @@ class TeacherInfoConfig(StarkConfig):
         if not obj:
             return HttpResponse('数据不存在')
         class_to_teacher_list = obj.teachers.filter(relate=2)
-        form_class = self.get_model_form_class()
+        form_class = self.get_model_form_class(False, request, pk, *args, **kwargs)
         if request.method == "GET":
             form = form_class(instance=obj)
             return render(request, 'tables/teacher_change.html',
@@ -60,7 +59,7 @@ class TeacherInfoConfig(StarkConfig):
             return redirect(self.reverse_list_url())
         return render(request, 'tables/teacher_change.html', {'form': form, 'selected_class': class_to_teacher_list})
 
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         return TeacherEditModelForm
 
     def get_add_btn(self):

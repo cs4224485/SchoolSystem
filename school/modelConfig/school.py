@@ -133,7 +133,7 @@ class SchoolInfoConfig(StarkConfig):
         val.remove(StarkConfig.display_edit)
         return val
 
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         '''
         创建添加学校相关信息的modelForm
         :return:
@@ -232,11 +232,11 @@ class SchoolInfoConfig(StarkConfig):
             return redirect(self.reverse_list_url())
         return render(request, 'tables/teacher_change.html', {'form': form, 'school_id': school_id})
 
-    def add_view(self, request, template='stark/change.html'):
-        return super().add_view(request, template='tables/add_school.html')
+    def add_view(self, request, template='stark/change.html', *args, **kwargs):
+        return super().add_view(request, template='tables/add_school.html', *args, **kwargs)
 
-    def change_view(self, request, pk, template='stark/change.html'):
-        return super().change_view(request, pk, template='tables/edit_school.html')
+    def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
+        return super().change_view(request, pk, template='tables/edit_school.html', *args, **kwargs)
 
     search_list = ['school_name']
     list_display = [display_school_name, 'school_type', 'school_layer', display_address, display_operation]

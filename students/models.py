@@ -68,7 +68,7 @@ class Country(models.Model):
     '''
     country_name = models.CharField(verbose_name='国籍', max_length=32)
     english_name = models.CharField(verbose_name='english', max_length=32)
-    images = models.FileField(upload_to='country_img')
+    img = models.FileField(upload_to='country_img')
 
     def __str__(self):
         return self.country_name
@@ -95,6 +95,9 @@ class HealthInfo(models.Model):
 
     def __str__(self):
         return self.student.first_name + "健康信息"
+
+    class Meta:
+        unique_together = (('student', 'record_date'),)
 
 
 class Allergy(models.Model):
@@ -194,7 +197,7 @@ class StudentToParents(models.Model):
 
     student = models.ForeignKey(verbose_name='学生ID', to='StudentInfo', on_delete=models.CASCADE, related_name='student')
     parents_wxinfo = models.ForeignKey(verbose_name='家长的微信信息', to='weixinApp.WechatUserInfo', on_delete=models.CASCADE,
-                                       null=True, blank=True)
+                                       null=True, blank=True, related_name='stu_parent')
     parents = models.ForeignKey(verbose_name='家长ID', to='StudentParents', on_delete=models.CASCADE, null=True,
                                 blank=True)
     relation_choice = ((1, '父亲'), (2, '母亲'), (3, '爷爷'), (4, '奶奶'), (5, '外公'), (6, '外婆'), (7, '其他长辈'), (8, '其他平辈'))
@@ -206,6 +209,9 @@ class StudentToParents(models.Model):
             return "学生：%s 家长：%s" % (self.student.full_name, self.parents.last_name + self.parents.first_name)
         else:
             return "学生：%s 家长微信：%s" % (self.student.full_name, self.parents_wxinfo)
+
+    class Meta:
+        unique_together = (('student', 'parents_wxinfo'),)
 
 
 class ScaleQuestion(models.Model):

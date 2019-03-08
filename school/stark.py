@@ -1,4 +1,4 @@
-from stark.service.stark import site, StarkConfig
+from stark.service.stark import site
 from .models import *
 from school.modelConfig.school import *
 
