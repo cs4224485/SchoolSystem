@@ -263,6 +263,7 @@ class SchoolTimeTable(views.View):
                     filter_dic = {'time_range': time_obj,
                                   'position': position,
                                   'single_double_week__in': [2, 3]}
+                    # 如果单周或双周改为每周 要把对应单元格另外的一个单双周数据删除
                     if course_table_id:
                         table_query.filter(**filter_dic).exclude(id=course_table_id).delete()
                     else:

@@ -1,3 +1,5 @@
+import json
+import copy
 from rest_framework.views import Response
 from rest_framework import viewsets
 from django.db import transaction
@@ -9,10 +11,6 @@ from utils.common import *
 from utils.checkinfo import *
 from school import models as sc_models
 from students import models as stu_models
-import copy
-
-
-# Create your views here.
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -326,7 +324,6 @@ class StudentParentsViewSet(BaseViewSet):
     def create(self, request, *args, **kwargs):
 
         request_data = request.data.get('parents')
-        import json
         request_data = json.loads(request_data)
         for key, item in request_data.items():
             parents_serialize = StudentParentsSerializers(data=item)
@@ -363,7 +360,6 @@ class CustomizationQuestionViewSet(BaseViewSet):
 
     def create(self, request, *args, **kwargs):
         request_data = copy.deepcopy(request.data.get('info'))
-        import json
         request_data = json.loads(request_data)
         try:
             scale_info = request_data.get('scaleInfo')

@@ -33,7 +33,7 @@ class StudentConfig(StarkConfig):
         tag = '<a href="%s?sid=%s">家长详情</a>' % (url, row.pk)
         return mark_safe(tag)
 
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         return StudentEditForm
 
     def get_edit_form(self, model_form, request, obj):
@@ -57,8 +57,8 @@ class StudentConfig(StarkConfig):
         form.instance.grade = grade_obj
         return form
 
-    def change_view(self, request, pk, template='stark/change.html'):
-        return super(StudentConfig, self).change_view(request, pk, template='tables/edit_student.html')
+    def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
+        return super(StudentConfig, self).change_view(request, pk, template='tables/edit_student.html', *args, **kwargs)
 
     def get_urls(self):
         urlpatterns = [
