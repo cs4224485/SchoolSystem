@@ -17,7 +17,7 @@ class TeacherInfo(models.Model):
     wechat = models.CharField(verbose_name='微信',  max_length=32, null=True, blank=True)
     course = models.ManyToManyField(to='school.Course', verbose_name='老师所带科目', null=True, blank=True)
     identity = models.ForeignKey(to='Identity', verbose_name='老师的身份', on_delete=models.CASCADE, null=True)
-    school = models.ForeignKey(to='school.SchoolInfo', verbose_name='老师所在学校', on_delete=models.CASCADE)
+    school = models.ForeignKey(to='school.SchoolInfo', verbose_name='所在学校', on_delete=models.CASCADE)
     wx_info = GenericRelation(to='weixinApp.WechatUserInfo')
 
     def __str__(self):
