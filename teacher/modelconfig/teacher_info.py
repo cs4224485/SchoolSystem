@@ -1,6 +1,5 @@
-from stark.service.stark import StarkConfig, ChangeList
+from stark.service.stark import StarkConfig
 from django.shortcuts import HttpResponse, render, redirect
-from django.conf import settings
 from utils.common import *
 from django.utils.safestring import mark_safe
 from teacher import models
@@ -12,12 +11,23 @@ class TeacherInfoConfig(StarkConfig):
     def display_name(self, row=None, header=False):
         if header:
             return "姓名"
-        first_name, last_name, mark = shadow_name(row.first_name, row.last_name)
-        html = '{0}<span style="font-size:21px; color:black; position: relative; top: 5px;">{1}</span>{2}'
-        if mark:
-            return mark_safe(html.format(last_name, mark, first_name))
-        else:
-            return mark_safe(html.format(last_name, '*', first_name))
+        return row.full_name
+
+    def display_bind_info(self, row=None, header=False):
+        if header:
+            return '是否与微信绑定'
+        is_bind = row.wx_info.first()
+        if is_bind:
+            return 'Y'
+        return 'N'
+
+    def display_wexin(self, row=None, header=False):
+        if header:
+            return '微信账号'
+        weixin = row.wechat
+        if not weixin:
+            return '暂无'
+        return weixin
 
     def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
         '''
@@ -65,5 +75,5 @@ class TeacherInfoConfig(StarkConfig):
     def get_add_btn(self):
         return None
 
-    list_display = [display_name, 'school']
+    list_display = [display_name, 'school', display_bind_info, display_wexin]
     search_list = ['first_name', 'last_name']
