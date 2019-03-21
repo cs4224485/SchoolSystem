@@ -238,7 +238,13 @@ def order_by_class(class_list):
     '''
     regx = '\d+'
     for i in range(0, len(class_list)):
+        exchange = False
         for j in range(0, len(class_list) - i - 1):
+            # 如果届别（年级）不相对无需进行比较
+            period_j = calculate_period(class_list[j].grade.get_grade_name_display())
+            period_next = calculate_period(class_list[j+1].grade.get_grade_name_display())
+            if period_j != period_next:
+                continue
             match_class_num = re.search(regx, class_list[j].name)
             match_next_class_num = re.search(regx, class_list[j + 1].name)
             if match_class_num and match_next_class_num:
@@ -246,6 +252,9 @@ def order_by_class(class_list):
                 next_class_num = int(match_next_class_num.group())
                 if this_class_num > next_class_num:
                     class_list[j], class_list[j + 1] = class_list[j + 1], class_list[j]
+                    exchange = True
+        if not exchange:
+            return class_list
     return class_list
 
 

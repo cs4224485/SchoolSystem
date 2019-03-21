@@ -1,7 +1,5 @@
 from stark.service.stark import StarkConfig
 from django.shortcuts import HttpResponse, render, redirect
-from utils.common import *
-from django.utils.safestring import mark_safe
 from teacher import models
 from teacher.forms.teacher_form import TeacherEditModelForm
 
@@ -75,5 +73,5 @@ class TeacherInfoConfig(StarkConfig):
     def get_add_btn(self):
         return None
 
-    list_display = [display_name, 'school', display_bind_info, display_wexin]
-    search_list = ['first_name', 'last_name']
+    list_display = ['full_name', 'school', display_bind_info, display_wexin]
+    search_list = ['first_name', 'last_name', 'full_name']

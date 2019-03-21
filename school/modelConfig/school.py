@@ -1,5 +1,4 @@
 import copy
-from django.http import QueryDict
 from stark.service.stark import StarkConfig, ChangeList
 from django.urls import reverse, re_path
 from django.shortcuts import HttpResponse, render, redirect
@@ -142,22 +141,16 @@ class SchoolInfoConfig(StarkConfig):
             return SchoolAddForm
         return SchoolEditModelForm
 
-    def get_add_form(self, model_form, request):
-        import uuid
-        # 随机的学校内部ID
-        school_id = uuid.uuid4()
-        request_data = copy.deepcopy(request.POST)
-        request_data['internal_id'] = school_id
-        form = model_form(request_data)
-        return form
-
-    def get_edit_form(self, model_form, request, obj):
-        '''
-        上传图片需要加request.FILES
-        :param model_form:
-        :param request:
-        :return:
-        '''
+    def get_form(self, model_form, request, modify=False, *args, **kwargs):
+        if not modify:
+            import uuid
+            # 随机的学校内部ID
+            school_id = uuid.uuid4()
+            request_data = copy.deepcopy(request.POST)
+            request_data['internal_id'] = school_id
+            form = model_form(request_data)
+            return form
+        obj = kwargs.get('obj')
         school_layer = int(request.POST.get('school_layer', 0))
         school_id = obj.id
         form = model_form(request.POST, request.FILES, instance=obj)

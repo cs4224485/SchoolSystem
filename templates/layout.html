@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>君集软件</title>
+    <link href="{% static 'plug/iCheck/skins/flat/blue.css' %}" rel="stylesheet">
     <link rel="shortcut icon" href="{% static 'stark/imgs/luffy-study-logo.png' %} ">
     <link rel="stylesheet" href="{% static 'stark/plugins/bootstrap/css/bootstrap.css' %} "/>
     <link rel="stylesheet" href="{% static 'stark/plugins/font-awesome/css/font-awesome.css' %} "/>
@@ -15,6 +16,11 @@
     <style>
         .in-active {
             color: orangered !important;
+        }
+
+        ul li {
+            list-style: none;
+            display: inline-block;
         }
     </style>
     {% block css %} {% endblock %}
@@ -274,7 +280,7 @@
                 </li>
 
                 <li class="">
-                    <a href="#"><i class="fa fa-sitemap"></i> 小思徽章 <span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-sitemap"></i> 德育评价 <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
                             <a class="" href="/stark/weixinApp/emblem/list/">徽章列表</a>
@@ -326,6 +332,17 @@
 
 <!-- Custom Js -->
 <script src="{% static 'stark/js/custom-scripts.js' %}"></script>
+<script src="{% static 'plug/iCheck/icheck.min.js' %}"></script>
+<script>
+    // radio和checkbox样式
+    $(document).ready(function () {
+        $('.icheck').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-blue'
+        });
+    });
+
+</script>
 {% block js %}
 {% endblock %}
 </body>

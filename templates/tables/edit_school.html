@@ -162,19 +162,6 @@
 {% block js %}
     <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
     <script>
-        var kinderGarten = [[13, '小班'], [14, '中班'], [15, '大班']];
-        var PrimarySchool = [[1, '一年级'], [2, '二年级'], [3, '三年级'], [4, '四年级'], [5, '五年级'], [6, '六年级']];
-        var middleSchool = [[7, '初一'], [8, '初二'], [9, '初三']];
-        var highSchool = [[10, '高一'], [11, '高二'], [12, '高三']];
-        var stuClass = {
-            1: kinderGarten,
-            2: PrimarySchool,
-            3: middleSchool,
-            4: highSchool,
-            5: PrimarySchool.concat(middleSchool),
-            6: highSchool,
-            7: PrimarySchool.concat(middleSchool).concat(highSchool)
-        };
         $(function () {
             // 获取学校所在的省市区的信息
             $("#province").val("{{ form.instance.province }}");

@@ -8,6 +8,7 @@ from django.db.models import Q, ManyToManyField, ForeignKey
 from django.http import QueryDict
 from django import forms
 from stark.utils.page import Pagination
+from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
 
 
 class ModelConfigMapping(object):
@@ -26,6 +27,9 @@ class StarkModelForm(forms.ModelForm):
         super(StarkModelForm, self).__init__(*args, **kwargs)
         # 统一给ModelForm生成字段添加样式
         for name, field in self.fields.items():
+            if isinstance(field.widget, RadioSelect) or isinstance(field.widget, CheckboxSelectMultiple):
+                field.widget.attrs['class'] = 'icheck'
+                continue
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -337,12 +341,11 @@ class StarkConfig(object):
     def save(self, form, modify=False):
         return form.save()
 
-    def get_add_form(self, model_form, request):
-        form = model_form(request.POST)
-        return form
-
-    def get_edit_form(self, model_form, request, obj):
-        form = model_form(request.POST, instance=obj)
+    def get_form(self, model_form, request, modify=False, *args, **kwargs):
+        form = model_form(request.POST, request.FILES)
+        if modify:
+            obj = kwargs.get('obj')
+            form = model_form(request.POST, request.FILES, instance=obj)
         return form
 
     def add_view(self, request, template='stark/change.html', *args, **kwargs):
@@ -359,7 +362,7 @@ class StarkConfig(object):
             form = AddModelForm()
             return render(request, template, {'form': form})
 
-        form = self.get_add_form(AddModelForm, request)
+        form = self.get_form(AddModelForm, request)
         if form.is_valid():
             self.save(form)
             return redirect(self.reverse_list_url())
@@ -375,7 +378,7 @@ class StarkConfig(object):
             form = EditModelForm(instance=obj)
             return render(request, template, {'form': form})
 
-        form = self.get_edit_form(EditModelForm, request, obj)
+        form = self.get_form(EditModelForm, request, modify=True, obj=obj)
         if form.is_valid():
             self.save(form, modify=True)
             return redirect(self.reverse_list_url())
@@ -456,7 +459,7 @@ class StarkConfig(object):
         comb_condition = {}
         for option in self.get_list_filter():
             if option.is_multi:
-                element = self.request.GET.getlist(option.field) # tags=[1,2]
+                element = self.request.GET.getlist(option.field)  # tags=[1,2]
                 if element:
                     comb_condition['%s__in' % option.field] = element
             else:

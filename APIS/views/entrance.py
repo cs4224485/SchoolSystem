@@ -128,9 +128,7 @@ class StudentInfoViewSet(BaseViewSet):
         # 生成内部编号
         interior_student_id = 'sid:' + str(create_uuid())
         request_data['interior_student_id'] = interior_student_id
-        # 获取学校信息
-        # school_id = request_data.get('school_id')
-        # request_data['school'] = school_id
+
         # 判断学生的国籍是否为中国
         if str(country) == '1':
             # 判断是否已经存在
