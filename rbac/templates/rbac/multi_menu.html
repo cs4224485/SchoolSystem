@@ -1,13 +1,15 @@
-<div class="multi-menu">
+<ul class="nav" id="main-menu">
     {% for item in menu_dict.values %}
-        <div class="item">
-            <div class="title" {{ item.class }}><span class="icon-wrap"><i class="fa {{ item.icon }}"></i></span> {{ item.title }}</div>
-            <div class="body {{ item.class }}">
+        <li class="{{ item.class }}">
+            <a href="#"><i class="fa {{ item.icon }}"></i> {{ item.title }} <span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
                 {% for per in item.children %}
-                    <a class="{{ per.class }}" href="{{ per.url }}">{{ per.title }}</a>
+                    <li>
+                        <a class="{{ per.class }}" href="{{ per.url }}">{{ per.title }}</a>
+                    </li>
                 {% endfor %}
-            </div>
-
-        </div>
+            </ul>
+        </li>
     {% endfor %}
-</div>
+
+</ul>

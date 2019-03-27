@@ -37,7 +37,10 @@ ICON_LIST = [
     ['fa-reply', '<i aria-hidden="true" class="fa fa-reply"></i>'],
     ['fa-reply-all', '<i aria-hidden="true" class="fa fa-reply-all"></i>'],
     ['fa-retweet', '<i aria-hidden="true" class="fa fa-retweet"></i>'],
-    ['fa-wrench', '<i aria-hidden="true" class="fa fa-wrench"></i>']]
+    ['fa-wrench', '<i aria-hidden="true" class="fa fa-wrench"></i>'],
+    ['fa-envira', '<i aria-hidden="true" class="fa fa-envira"></i>'],
+]
+
 for item in ICON_LIST:
     item[1] = mark_safe(item[1])
 

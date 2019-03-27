@@ -28,7 +28,9 @@
                 <span class="mui-badge ">{{ request.session.teacher_info.name }}</span>
             </li>
             <li class="mui-table-view-cell">身份
-                <span class="mui-badge ">{{ request.session.teacher_info.identity }}{% if  stu_class %}({{ stu_class }}){% endif %}</span>
+                <span class="mui-badge ">{% if request.session.teacher_info.is_psychology_teacher %} 心理老师 {% else %}
+                    {{ request.session.teacher_info.identity }}{% endif %}
+                    {% if  stu_class %}({{ stu_class }}){% endif %}</span>
             </li>
         </ul>
         <h3 class="component-title">功能列表</h3>
@@ -44,7 +46,7 @@
                 </li>
             {% endif %}
 
-            {% if request.session.teacher_info.identity == '心理老师' %}
+            {% if request.session.teacher_info.is_psychology_teacher %}
                 <li class="mui-table-view-cell"><a href="/mental/appointment_manage/">预约管理</a>
 {#                    <span class="mui-badge mui-badge-danger">44</span>#}
                 </li>

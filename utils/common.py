@@ -227,7 +227,7 @@ def shadow_name(first_name, last_name):
         mark = '*'
         mark *= len(first_name) - 1
         return first_name, last_name, mark
-    return first_name, last_name, ''
+    return first_name, last_name, '*'
 
 
 def order_by_class(class_list):

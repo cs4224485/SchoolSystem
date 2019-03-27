@@ -36,7 +36,7 @@ def body_list(cl):
         for field in cl.list_display:
             if callable(field):
                 # 如果display中的字段是一个函数
-                value = field(cl.config, row=query_obj)
+                value = field(cl.config, query_obj, False, *cl.args, **cl.kwargs)
             else:
                   try:  # 如果filed __str__ 需要捕捉异常处理
                     field_obj = cl.config.model_class._meta.get_field(field)

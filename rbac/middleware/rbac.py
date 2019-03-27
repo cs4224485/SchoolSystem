@@ -39,7 +39,7 @@ class RbacMiddleware(MiddlewareMixin):
         ]
 
         #  此处代码进行判断是否是无需权限校验但是需要登录的URL: 如 '/login/ /logout/'
-        for url in settings.NO_PERMISSION_LIST:
+        for url in settings.VALID_URL_LIST:
             if re.match(url, request.path_info):
                 request.current_permission_pid = 0
                 request.breadcrumb = url_record

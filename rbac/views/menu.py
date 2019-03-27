@@ -8,6 +8,7 @@ from rbac.form.menu import MenuModelForm, SecondMenuModelForm, PermissionModelFo
 from rbac.service.urls import memory_reverse
 from rbac import models
 from rbac.service.routes import *
+from web.models import UserInfo
 
 
 def menu_list(request):
@@ -157,7 +158,7 @@ def second_menu_del(request, pk):
     """
     url = memory_reverse(request, 'rbac:menu_list')
     if request.method == 'GET':
-        return render(request, 'rbac/delete.html', {'cancel': url})
+        return render(request, 'rbac/delete.html', {'cancel_url': url})
 
     models.Permission.objects.filter(id=pk).delete()
     return redirect(url)
@@ -216,7 +217,7 @@ def permission_del(request, pk):
     """
     url = memory_reverse(request, 'rbac:menu_list')
     if request.method == 'GET':
-        return render(request, 'rbac/delete.html', {'cancel': url})
+        return render(request, 'rbac/delete.html', {'cancel_url': url})
 
     models.Permission.objects.filter(id=pk).delete()
     return redirect(url)
@@ -245,6 +246,7 @@ def multi_permissions(request):
             has_error = False
             for i in range(0, formset.total_form_count()):
                 row_dict = post_row_list[i]
+                print(row_dict)
                 try:
                     new_object = models.Permission(**row_dict)
                     new_object.validate_unique()
@@ -265,6 +267,7 @@ def multi_permissions(request):
             post_row_list = formset.cleaned_data
             for i in range(0, formset.total_form_count()):
                 row_dict = post_row_list[i]
+                print(row_dict)
                 permission_id = row_dict.pop('id')
                 try:
                     row_object = models.Permission.objects.filter(id=permission_id).first()
@@ -308,6 +311,7 @@ def multi_permissions(request):
         router_row_dict = all_url_dict.get(name)  # {'name': 'rbac:role_list', 'url': '/rbac/role/list/'},
         if not router_row_dict:
             continue
+        # 校验生成的url与数据库中的url是否一致
         if value['url'] != router_row_dict['url']:
             value['url'] = '路由和数据库中不一致'
 
@@ -324,6 +328,7 @@ def multi_permissions(request):
 
     # 3.3 计算出应该更新的name
     if not update_formset:
+        # 取出数据中已创建的并且再自动生成url中也存在的url
         update_name_list = permission_name_set & router_name_set
         update_formset = update_formset_class(
             initial=[row_dict for name, row_dict in permission_dict.items() if name in update_name_list])
@@ -362,7 +367,7 @@ def distribute_permissions(request):
     """
 
     user_id = request.GET.get('uid')
-    user_object = models.UserInfo.objects.filter(id=user_id).first()
+    user_object = UserInfo.objects.filter(id=user_id).first()
     if not user_object:
         user_id = None
 
@@ -407,7 +412,7 @@ def distribute_permissions(request):
     else:
         user_has_permissions_dict = {}
 
-    all_user_list = models.UserInfo.objects.all()
+    all_user_list = UserInfo.objects.all()
 
     all_role_list = models.Role.objects.all()
 

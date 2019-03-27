@@ -185,6 +185,8 @@ class StudentParents(models.Model):
     job = models.CharField(verbose_name='职位', max_length=32, null=True, blank=True)
     wechat = models.CharField(verbose_name='微信', max_length=32, null=True, blank=True)
     wx_info = GenericRelation(to='weixinApp.WechatUserInfo')
+    gender_choice = ((1, '男'), (2, '女'))
+    gender = models.IntegerField(choices=gender_choice, verbose_name='性别', default=None, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + self.last_name
@@ -236,7 +238,6 @@ class ScaleValue(models.Model):
     '''
     title = models.ForeignKey(verbose_name='对应的行标题', to=ScaleLineTitle, on_delete=models.CASCADE)
     value = models.ForeignKey(verbose_name='对应的值', to=ScaleOptionDes, on_delete=models.CASCADE)
-    # score = models.IntegerField(verbose_name='分数')
     scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE,
                                   related_name='scale_value')
 

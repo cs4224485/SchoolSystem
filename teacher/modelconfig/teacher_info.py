@@ -6,12 +6,13 @@ from teacher.forms.teacher_form import TeacherEditModelForm
 
 class TeacherInfoConfig(StarkConfig):
 
-    def display_name(self, row=None, header=False):
+
+    def display_name(self, row=None, header=False, *args, **kwargs):
         if header:
             return "姓名"
         return row.full_name
 
-    def display_bind_info(self, row=None, header=False):
+    def display_bind_info(self, row=None, header=False, *args, **kwargs):
         if header:
             return '是否与微信绑定'
         is_bind = row.wx_info.first()
@@ -19,7 +20,7 @@ class TeacherInfoConfig(StarkConfig):
             return 'Y'
         return 'N'
 
-    def display_wexin(self, row=None, header=False):
+    def display_wexin(self, row=None, header=False, *args, **kwargs):
         if header:
             return '微信账号'
         weixin = row.wechat
@@ -64,7 +65,7 @@ class TeacherInfoConfig(StarkConfig):
                 obj = models.ClassToTeacher(teacher=teacher_obj, stu_class_id=item_id, relate=2)
                 create_list.append(obj)
             query.bulk_create(create_list)
-            return redirect(self.reverse_list_url())
+            return redirect(self.reverse_list_url(*args, **kwargs))
         return render(request, 'tables/teacher_change.html', {'form': form, 'selected_class': class_to_teacher_list})
 
     def get_model_form_class(self, is_add, request, pk, *args, **kwargs):

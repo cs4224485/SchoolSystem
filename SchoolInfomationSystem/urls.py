@@ -30,9 +30,10 @@ urlpatterns = [
     re_path(r'^student/', include('students.urls')),
     re_path(r'^school/', include('school.urls')),
     re_path(r'^mental/', include('StudentMentalHealth.urls')),
-    re_path(r'^api/', include('APIS.urls')),
+    re_path(r'api/', include('APIS.urls')),
     re_path(r'^wxapi/(?P<version>\w+)/', include('weixinApp.urls')),
     path('stark/', site.urls),
+    re_path(r'^rbac/', include(('rbac.urls', 'rbac'), namespace='rbac'), ),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]
 

@@ -490,7 +490,7 @@ function sendData(data) {
                 alert('保存成功');
                 console.log(data);
                 var nid = data.setting_obj_id;
-                location.href = '/stark/school/tablesettings/release/' + nid + '/'
+                location.href = '/stark/school/tablesettings/'+ nid +'/release/'
             }else {
                 alert('请求出错');
             }

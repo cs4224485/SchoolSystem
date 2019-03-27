@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, reverse
 from web import models
 from utils.common import gen_md5_password
-
+from django.conf import settings
+from rbac.service.init_permission import init_permission
 
 def login(request):
     if request.method == 'GET':
@@ -16,6 +17,7 @@ def login(request):
     user_obj = models.UserInfo.objects.filter(name=username, password=md5_password).first()
     if not user_obj:
         return render(request, 'login.html', {'error': '用户名或密码错误'})
+    init_permission(user_obj, request)
     request.session['user_id'] = user_obj.id
     school_list_url = reverse('stark:school_schoolinfo_list')
     return redirect(school_list_url)

@@ -172,7 +172,7 @@ class ChangeList(object):
     封装列表页面需要的所有功能
     """
 
-    def __init__(self, config, queryset, keyword, search_list, page):
+    def __init__(self, config, queryset, keyword, search_list, page, *args, **kwargs):
         self.keyword = keyword
         self.search_list = search_list
         self.page = page
@@ -182,6 +182,8 @@ class ChangeList(object):
         self.queryset = queryset
         self.list_display = config.get_list_display()
         self.list_filter = self.config.get_list_filter()
+        self.args = args
+        self.kwargs = kwargs
 
     def gen_list_filter_row(self):
         for option in self.list_filter:
@@ -243,27 +245,30 @@ class StarkConfig(object):
     def display_checkbox(self, row=None, header=False):
         if header:
             return "选择"
+
         return mark_safe(r"<input type='checkbox' name='pk' value='%s'/>" % row.pk)
 
-    def display_edit(self, row=None, header=False):
+    def display_edit(self, row=None, header=False, *args, **kwargs):
         if header:
             return "编辑"
-
         return mark_safe(
-            '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % self.reverse_edit_url(row.pk))
+            '<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a>' % self.reverse_edit_url(pk=row.pk,
+                                                                                                         *args,
+                                                                                                         **kwargs))
 
-    def display_del(self, row=None, header=False):
+    def display_del(self, row=None, header=False, *args, **kwargs):
         if header:
             return "删除"
         return mark_safe(
-            '<a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>' % self.reverse_del_url(row.pk))
+            '<a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>' % self.reverse_del_url(pk=row.pk, *args,
+                                                                                                       **kwargs))
 
-    def display_edit_del(self, row=None, header=False):
+    def display_edit_del(self, row=None, header=False, *args, **kwargs):
         if header:
             return "操作"
         tpl = """<a href="%s"><i class="fa fa-edit" aria-hidden="true"></i></a></a> |
            <a href="%s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-           """ % (self.reverse_edit_url(row), self.reverse_del_url(row.pk),)
+           """ % (self.reverse_edit_url(pk=row.pk, *args, **kwargs), self.reverse_del_url(pk=row.pk, *args, **kwargs),)
         return mark_safe(tpl)
 
     def get_url_name(self, param):
@@ -291,10 +296,10 @@ class StarkConfig(object):
     def extra_urls(self):
         return []
 
-    def get_queryset(self):
+    def get_queryset(self, request, *args, **kwargs):
         return self.model_class.objects
 
-    def list_view(self, request):
+    def list_view(self, request, *args, **kwargs):
 
         if request.method == 'POST':
             action_name = request.POST.get('actions')
@@ -311,8 +316,12 @@ class StarkConfig(object):
 
         # ##### 处理分页 #####
         from stark.utils.page import Pagination
+        # 获取数据
+        origin_queryset = self.get_queryset(request, *args, **kwargs)
+        queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(
+            *self.get_order_by()).distinct()
         # 全部数据
-        total_set = self.model_class.objects.filter(con).count()
+        total_set = queryset.count()
 
         # 携带参数
         query_params = request.GET.copy()
@@ -322,21 +331,22 @@ class StarkConfig(object):
         page = Pagination(total_set, request.GET.get('page'), query_params, base_url, per_page=20)
         # 获取组合搜索筛选
         list_filter = self.get_list_filter()
-
         try:
             # 搜索条件无法匹配到数据时可能会出现异常
-            origin_queryset = self.get_queryset()
-            queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(
-                *self.get_order_by()).distinct()[page.start:page.end]
+            queryset = queryset[page.start:page.end]
         except Exception as e:
             print(e)
             queryset = []
-        cl = ChangeList(self, queryset, keyword, search_list, page.page_html())
+        cl = ChangeList(self, queryset, keyword, search_list, page.page_html(), *args, **kwargs)
 
         context = {
             'cl': cl,
+            'extra': self.get_extra_content(*args, **kwargs)
         }
         return render(request, self.change_list_template or 'stark/changelist.html', context)
+
+    def get_extra_content(self, *args, **kwargs):
+        return None
 
     def save(self, form, modify=False):
         return form.save()
@@ -365,7 +375,7 @@ class StarkConfig(object):
         form = self.get_form(AddModelForm, request)
         if form.is_valid():
             self.save(form)
-            return redirect(self.reverse_list_url())
+            return redirect(self.reverse_list_url(*args, **kwargs))
         return render(request, template, {'form': form})
 
     def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
@@ -381,17 +391,17 @@ class StarkConfig(object):
         form = self.get_form(EditModelForm, request, modify=True, obj=obj)
         if form.is_valid():
             self.save(form, modify=True)
-            return redirect(self.reverse_list_url())
+            return redirect(self.reverse_list_url(*args, **kwargs))
         return render(request, template, {'form': form})
 
-    def delete_view(self, request, pk):
+    def delete_view(self, request, pk, *args, **kwargs):
         """
              删除页面
              :param request:
              :param pk:
              :return:
         """
-        origin_list_url = self.reverse_list_url()
+        origin_list_url = self.reverse_list_url(*args, **kwargs)
         if request.method == 'GET':
             return render(request, 'stark/delete.html', {'cancel_url': origin_list_url})
 
@@ -408,11 +418,11 @@ class StarkConfig(object):
                 conn.children.append(('%s__contains' % filed, keyword))
         return search_list, keyword, conn
 
-    def reverse_list_url(self):
+    def reverse_list_url(self, *args, **kwargs):
 
         namespace = self.site.namespace
         name = '%s:%s' % (namespace, self.get_list_url_name)
-        list_url = reverse(name)
+        list_url = reverse(name, args=args, kwargs=kwargs)
         # 保留之前的搜索条件
         origin_condition = self.request.GET.get(self.back_condition_key)
         if not origin_condition:

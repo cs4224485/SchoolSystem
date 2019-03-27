@@ -1,0 +1,136 @@
+{% extends 'layout.html' %}
+{% load my_tags %}
+
+{% block css %}
+    <style>
+        .comb-search {
+            padding: 5px 20px;
+        }
+
+        .comb-search .row .whole {
+            width: 60px;
+            float: left;
+
+        }
+
+        .comb-search .row .others {
+            padding-left: 60px;
+        }
+
+        .comb-search .row a {
+            display: inline-block;
+            padding: 5px 8px;
+            margin: 3px;
+            border: 1px solid #d4d4d4;
+
+        }
+
+        .comb-search .row a {
+            display: inline-block;
+            padding: 5px 8px;
+            margin: 3px;
+            border: 1px solid #d4d4d4;
+        }
+
+        .comb-search a.active {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+
+        td, th {
+            text-align: center;
+            height: 30px;
+
+        }
+
+        {#学校列表相关css#}
+        .grey span {
+            color: gray;
+        }
+
+        .op_father {
+            position: relative;
+
+        }
+
+        .op_father:hover .op_list {
+            height: 140px;
+            width: 60px;
+            display: block;
+            z-index: 10;
+        }
+
+        .op_list {
+
+            position: absolute;
+            left: 13px;
+            display: none;
+            border: 1px solid rgba(0, 0, 0, .15);
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+            background-color: #fff;
+        }
+
+        .op_list a {
+            display: inline-block;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000000;
+
+        }
+    </style>
+{% endblock %}
+
+
+
+{% block content %}
+
+    <div class="comb-search">
+        {% for row in cl.gen_list_filter_row %}
+            <div class="row">
+                {% for obj in row %}
+                    {{ obj|safe }}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="pull-right" style="margin-bottom: 5px">
+        <a class="btn btn-primary" href="{{ extra.add }}">添加学生</a>
+        <a class="btn btn-success" href="{{ extra.import }}">导入学生</a>
+        <a class="btn btn-warning" href="{{ extra.import }}">导出学生</a>
+    </div>
+
+    {% if cl.search_list %}
+        <form method="get" class="" action="">
+            <input type="text" class="" name="q" value="{{ cl.keyword }}">
+            <input type="submit" value="搜索" class="btn btn-primary">
+        </form>
+    {% endif %}
+
+    {% if cl.action_list %}
+        <form method="post">
+        {% csrf_token %}
+        <select name="actions" class="form-control"
+                style="width: 200px; display: inline-block; vertical-align: -1px; margin: 8px 2px">
+            {% for action in cl.action_list %}
+                <option value="{{ action.name }}">{{ action.text }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary btn">执行</button>
+    {% endif %}
+
+
+{% table cl %}
+</form>
+
+    <nav class="pull-right">
+        <ul class="pagination">
+            {{ cl.page|safe }}
+        </ul>
+    </nav>
+
+
+
+
+{% endblock %}
