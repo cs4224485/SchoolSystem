@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from rbac import models
 from rbac.form.user import UserModelForm, UpdateUserModelForm, ResetPasswordUserModelForm
+from web.models import UserInfo
 
 
 def user_list(request):
@@ -14,7 +15,7 @@ def user_list(request):
     :param request:
     :return:
     """
-    user_queryset = models.UserInfo.objects.all()
+    user_queryset = UserInfo.objects.all()
 
     return render(request, 'rbac/user_list.html', {'users': user_queryset})
 
@@ -44,7 +45,7 @@ def user_edit(request, pk):
     :param pk: 要修改的用户ID
     :return:
     """
-    obj = models.UserInfo.objects.filter(id=pk).first()
+    obj = UserInfo.objects.filter(id=pk).first()
     if not obj:
         return HttpResponse('用户不存在')
     if request.method == 'GET':
@@ -66,7 +67,7 @@ def user_reset_pwd(request, pk):
     :param pk:
     :return:
     """
-    obj = models.UserInfo.objects.filter(id=pk).first()
+    obj = UserInfo.objects.filter(id=pk).first()
     if not obj:
         return HttpResponse('用户不存在')
     if request.method == 'GET':
@@ -92,5 +93,5 @@ def user_del(request, pk):
     if request.method == 'GET':
         return render(request, 'rbac/delete.html', {'cancel_url': origin_url})
 
-    models.UserInfo.objects.filter(id=pk).delete()
+    UserInfo.objects.filter(id=pk).delete()
     return redirect(origin_url)

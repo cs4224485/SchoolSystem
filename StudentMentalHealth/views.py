@@ -48,12 +48,14 @@ class LoinView(views.View):
             message.msg = '姓名输入有误'
             return JsonResponse(message)
         phone = request.POST.get('phoneNumber')
-        teacher_obj = th_models.TeacherInfo.objects.filter(last_name=teacher_name[0], first_name=teacher_name[1::],
-                                                           telephone__endswith=phone).values('last_name', 'first_name',
-                                                                                             'teachers__stu_class__grade',
-                                                                                             'teachers__stu_class',
-                                                                                             'school', 'id',
-                                                                                             'identity__title').first()
+        teacher_query = th_models.TeacherInfo.objects.filter(last_name=teacher_name[0], first_name=teacher_name[1::],
+                                                             telephone__endswith=phone)
+        teacher_obj = teacher_query.values('last_name', 'first_name',
+                                           'teachers__stu_class__grade',
+                                           'teachers__stu_class',
+                                           'school', 'id',
+                                           'identity__title').first()
+
         if teacher_obj:
             # 将老师的信息存放到session中
             teacher_info = {
@@ -62,7 +64,9 @@ class LoinView(views.View):
                 'grade': teacher_obj.get('teachers__stu_class__grade'),
                 'stu_class': teacher_obj.get('teachers__stu_class'),
                 'identity': teacher_obj.get('identity__title'),
-                'id': teacher_obj.get('id')
+                'id': teacher_obj.get('id'),
+                'is_psychology_teacher': teacher_query.first().course.all().filter(course_des='心理').exists()
+
             }
             message.state = True
             message.msg = '登陆成功'
@@ -113,7 +117,8 @@ class RecordList(views.View):
         student_obj = stu_models.StudentInfo.objects.filter(id=student_id, school=teacher_info.get('school'),
                                                             stu_class=teacher_info.get('stu_class')).first()
 
-        if teacher_info.get('identity') == '心理老师':
+        is_psychology_teacher = request.session['teacher_info'].get('is_psychology_teacher')
+        if is_psychology_teacher:
             student_obj = stu_models.StudentInfo.objects.filter(id=student_id,
                                                                 school=teacher_info.get('school')).first()
 
@@ -187,8 +192,7 @@ class RecordsOfStudents(views.View):
     def get(self, request, *args, **kwargs):
         record_id = kwargs.get('record_id')
         teacher_info = request.session.get('teacher_info')
-        teacher_id = teacher_info.get('id')
-        record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id, teacher_id=teacher_id).first()
+        record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id).first()
         if teacher_info.get('identity') == '心理老师':
             record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id).first()
 
@@ -217,8 +221,8 @@ class AppointmentTeacher(views.View):
         student_queryset = stu_models.StudentInfo.objects.filter(stu_class=stu_class, school_id=school_id).only('id')
         student_ids = [obj.id for obj in student_queryset]
         appointment_queryset = mental_models.AppointmentManage.objects.filter(
-                                                                              date__gte=current_day,
-                                                                              student_id__in=student_ids)
+            date__gte=current_day,
+            student_id__in=student_ids)
         return render(request, 'about.html', {'class_id': class_id, 'stu_class': stu_class, 'school_id': school_id,
                                               'appointment_info': appointment_queryset})
 

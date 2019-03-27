@@ -17,8 +17,9 @@ class AppointmentInfoViewSet(ViewSetMixin, APIView):
         try:
             class_id = request.GET.get('class_id', '16')
             stu_class = sch_models.StuClass.objects.filter(id=class_id).first()
+            school = request.session['teacher_info'].get('school')
             student_queryset = stu_models.StudentInfo.objects.filter(stu_class=stu_class)
-            teacher_queryset = tea_models.TeacherInfo.objects.filter(identity=3)
+            teacher_queryset = tea_models.TeacherInfo.objects.filter(course__course_des='心理', school=school)
             stu_se = StudentListSerialize(student_queryset, many=True)
             teacher_se = PsychologyTeacherSerialize(teacher_queryset, many=True)
             message.state = True
@@ -40,8 +41,9 @@ class GetPerClassStudent(ViewSetMixin, APIView):
             teacher_info = tea_models.TeacherInfo.objects.filter(id=teacher_id).values('identity__title', 'school',
                                                                                        'teachers__stu_class__grade',
                                                                                        'teachers__stu_class').first()
+            is_psychology_teacher = request.session['teacher_info'].get('is_psychology_teacher')
             grade = teacher_info.get('teachers__stu_class__grade')
-            if teacher_info.get('identity__title') != '心理老师':
+            if not is_psychology_teacher:
                 stu_class = sch_models.StuClass.objects.filter(grade=grade, id=teacher_info.get('teachers__stu_class'),
                                                                school=teacher_info.get('school'))
             else:
@@ -58,5 +60,6 @@ class GetPerClassStudent(ViewSetMixin, APIView):
             message.state = True
             message.data = data_list
         except Exception as e:
+            print(e)
             message.msg = '获取学生列表失败'
         return Response(message.__dict__)

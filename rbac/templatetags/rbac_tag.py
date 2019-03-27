@@ -15,7 +15,6 @@ def static_menu(request):
     '''
 
     menu_list = request.session[settings.MENU_SESSION_KEY]
-    print(menu_list)
     return {'menu_list': menu_list}
 
 
@@ -34,12 +33,12 @@ def multi_menu(request):
     ordered_dict = OrderedDict()
     for key in key_list:
         val = menu_dict[key]
-        val['class'] = 'hide'
+        val['class'] = ''
         for per in val['children']:
             # 根据当前选择的权决定菜单的隐藏与展开
             if per['id'] == request.current_permission_pid:
                 per['class'] = 'active'
-                val['class'] = ''
+                val['class'] = 'active'
         ordered_dict[key] = val
     return {
         'menu_dict': ordered_dict

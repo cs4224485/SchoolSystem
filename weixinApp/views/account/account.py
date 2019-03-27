@@ -1,11 +1,8 @@
 from rest_framework.views import APIView, Response
-from django.conf import settings
-from utils.base_response import BaseResponse
 from weixinApp.service.user_service import *
 from weixinApp import models
 from school import models as scmodels
 from weixinApp.auth.auth import WeiXinAuth
-from students import models as stumodels
 from weixinApp.service.decorator import *
 from django.utils.decorators import method_decorator
 from weixinApp.serialize.person_center import StudentSerialize
@@ -142,7 +139,6 @@ class FilterClass(APIView):
         res = BaseResponse()
         try:
             grade = int(request.GET.get('grade', 0))
-            print(request.user, request.auth)
             if not grade:
                 res.code = -1
                 res.msg = '请提供年级信息'

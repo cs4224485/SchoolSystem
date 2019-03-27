@@ -1,7 +1,6 @@
 import copy
 from students import models
 from stark.service.stark import StarkConfig, Option
-from django.urls import reverse
 from django.utils.safestring import mark_safe
 from students.forms.student_form import StudentEditForm
 from django.urls import re_path
@@ -11,27 +10,6 @@ from utils.common import *
 
 
 class StudentConfig(StarkConfig):
-
-    def display_health(self, row=None, header=None):
-        if header:
-            return '健康信息'
-        url = reverse('stark:students_healthinfo_self_changelist')
-        tag = '<a href="%s?sid=%s">健康详情</a>' % (url, row.pk)
-        return mark_safe(tag)
-
-    def display_family(self, row=None, header=False):
-        if header:
-            return "家庭信息"
-        url = reverse('stark:students_familyinfo_self_changelist')
-        tag = '<a href="%s?sid=%s">家庭详情</a>' % (url, row.pk)
-        return mark_safe(tag)
-
-    def display_parent(self, row=None, header=False):
-        if header:
-            return "家长信息"
-        url = reverse('stark:students_studenttoparents_self_changelist')
-        tag = '<a href="%s?sid=%s">家长详情</a>' % (url, row.pk)
-        return mark_safe(tag)
 
     def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         return StudentEditForm
@@ -102,7 +80,7 @@ class StudentConfig(StarkConfig):
         val = super().get_list_display()
         return val
 
-    def display_stu_class(self, row=None, header=False):
+    def display_stu_class(self, row=None, header=False, *args, **kwargs):
         if header:
             return '班级'
         return "%s(%s届)" % (row.stu_class, row.period)
@@ -110,7 +88,7 @@ class StudentConfig(StarkConfig):
     def get_add_btn(self):
         return None
 
-    def display_name(self, row=None, header=False):
+    def display_name(self, row=None, header=False, *args, **kwargs):
         if header:
             return "姓名"
         first_name, last_name, mark = shadow_name(row.first_name, row.last_name)
@@ -124,39 +102,3 @@ class StudentConfig(StarkConfig):
     search_list = ['full_name']
 
 
-class SelfHealthInfoConfig(StarkConfig):
-    '''
-    学生个人健康信息配置
-    '''
-
-    def get_queryset(self):
-        sid = self.request.GET.get('sid')
-        return models.HealthInfo.objects.filter(student=sid)
-
-    def get_list_display(self):
-        val = ['student', 'height', 'weight', 'vision_left', 'vision_right', 'blood_type', 'record_date']
-        return val
-
-
-class SelfFamilyInfoConfig(StarkConfig):
-    '''
-    学生个人家庭信息配置
-    '''
-
-    def get_queryset(self):
-        sid = self.request.GET.get('sid')
-        return models.FamilyInfo.objects.filter(student=sid)
-
-    list_display = ['student', 'family_status', 'living_type', 'language', ]
-
-
-class SelfParentsInfoConfig(StarkConfig):
-    '''
-    学生个人家长信息
-    '''
-
-    def get_queryset(self):
-        sid = self.request.GET.get('sid')
-        return models.StudentToParents.objects.filter(student=sid).all()
-
-    list_display = ['student', 'parents', 'relation']

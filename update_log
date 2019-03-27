@@ -69,9 +69,12 @@
 2. 优化课程表选择时间展示问题
 3. 添加Schedule日程表
 
-2019-03-5 CaiShuang v1.13 (线上)
+2019-03-27 CaiShuang v1.13 (线上)
 1. 添加微信小程序日常通知表IndexNotification
 2. 添加小程序徽章系统所需表EmblemType， Emblem，IssuedRecord
 3. 添加小程序家访系统所需表FamilyVisitRecord
 4. 优化stark组件中的get_form
 5. 实现后台对徽章的增删查改
+6. 添加权限系统
+7. 教师身份添加校长；副校长；校长助理；工会主席；教导主任 删除心理老师
+8. 对心理健康部分对应心理老师的判断进行调整

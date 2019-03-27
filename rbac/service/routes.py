@@ -42,6 +42,8 @@ def recursion_urls(pre_namespace, pre_url, urlpatterns, url_ordered_dict):
             if not item.name:
                 raise Exception('URL路由中必须设置name属性')
             url = pre_url + str(item.pattern)
+            if check_url_exclude(url):
+                continue
             url_ordered_dict[name] = {'name': name, 'url': url.replace('^', '').replace('$', '')}
 
         elif isinstance(item, URLResolver):  # 路由分发，递归操作

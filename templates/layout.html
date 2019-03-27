@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 {% load static %}
+{% load rbac_tag %}
 <html>
 <head>
     <meta charset="utf-8"/>
@@ -14,7 +15,7 @@
 
 
     <style>
-        .in-active {
+        .active {
             color: orangered !important;
         }
 
@@ -258,41 +259,7 @@
     <nav class="navbar-default navbar-side" role="navigation">
         <div id="sideNav" href=""><i class="fa fa-caret-right"></i></div>
         <div class="sidebar-collapse">
-            <ul class="nav" id="main-menu">
-
-                <li class="active">
-                    <a href="#"><i class="fa fa-sitemap"></i> 校园管理 <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="in-active" href="/stark/school/schoolinfo/list/">学校列表</a>
-                        </li>
-                        <li>
-                            <a href="/stark/students/studentinfo/list/">学生管理</a>
-                        </li>
-                        <li>
-                            <a href="/stark/teacher/teacherinfo/list/">教师管理</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="">
-                    <a href="/stark/school/tablesettings/list/"><i class="fa fa-edit"></i> 表单管理 </a>
-                </li>
-
-                <li class="">
-                    <a href="#"><i class="fa fa-sitemap"></i> 德育评价 <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="" href="/stark/weixinApp/emblem/list/">徽章列表</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="empty.html"><i class="fa fa-fw fa-file"></i> Empty Page</a>
-                </li>
-            </ul>
-
+            {% multi_menu request %}
         </div>
 
     </nav>
@@ -300,13 +267,7 @@
     <div id="page-wrapper">
         <div id="page-inner">
             <div class="row">
-                <div class="col-md-12">
-                    <ol class="breadcrumb">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Library</a></li>
-                        <li class="active">Data</li>
-                    </ol>
-                </div>
+                {% breadcrumb request %}
             </div>
             <div class="row">
                 <div class="col-md-12">
