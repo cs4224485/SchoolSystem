@@ -20,7 +20,7 @@ class ClassManage(views.View):
     def get(self, request, *args, **kwargs):
         school_id = kwargs.get('school_id')
         school_obj = sc_models.SchoolInfo.objects.filter(id=school_id).only('school_name').first()
-        class_queryset = order_by_class(list(sc_models.StuClass.objects.filter(school=school_obj)))
+        class_queryset = order_by_class(list(sc_models.StuClass.objects.filter(school=school_obj).order_by('grade')))
         teacher_list = tea_models.TeacherInfo.objects.filter(school=school_obj, identity=2)
         class_dict = {}
         for item in class_queryset:

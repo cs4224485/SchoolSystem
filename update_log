@@ -73,3 +73,5 @@
 1. 添加微信小程序日常通知表IndexNotification
 2. 添加小程序徽章系统所需表EmblemType， Emblem，IssuedRecord
 3. 添加小程序家访系统所需表FamilyVisitRecord
+4. 优化stark组件中的get_form
+5. 实现后台对徽章的增删查改

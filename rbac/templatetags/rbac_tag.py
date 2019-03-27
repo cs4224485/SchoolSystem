@@ -1,12 +1,9 @@
 # Author: harry.cai
 # DATE: 2018/10/11
-from django.urls import reverse
 from django.template import Library
 from django.conf import settings
-from django.http import QueryDict
 from collections import OrderedDict
 from rbac.service import urls
-import re
 register = Library()
 
 

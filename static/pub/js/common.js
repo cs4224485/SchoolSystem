@@ -89,7 +89,18 @@ var common_ops = {
             // 判断字段是否被选中
             var testStr = ',' + arr.join(",") + ",";
             return testStr.indexOf("," + val + ",") != -1;
-        }
+        },
+    bindChangePicture:function (id) {
+            // 预览上传的图片
+            $("#" + id).change(function () {
+                var file_obj = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file_obj);
+                reader.onload = function () {
+                    $("#" + id + "_img").attr("src", reader.result)
+                };
+            })
+    }
 };
 
 $(document).ready(function () {

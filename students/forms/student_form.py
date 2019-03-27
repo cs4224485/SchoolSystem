@@ -1,9 +1,7 @@
 from django import forms
-from django.forms import ValidationError
 from django.forms import fields as Ffields
 from django.forms import widgets as Fwidgets
 from students import models as stumodels
-from django.forms import models as form_models
 
 
 class StudentEditForm(forms.ModelForm):
