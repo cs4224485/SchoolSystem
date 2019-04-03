@@ -3,8 +3,6 @@ from django.forms import ValidationError
 from django.forms import fields as Ffields
 from django.forms import widgets as Fwidgets
 from school import models as scmodels
-from teacher import models as teamodels
-from django.forms import models as form_models
 
 
 class SchoolBaseForm(forms.ModelForm):

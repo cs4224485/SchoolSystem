@@ -1,0 +1,5 @@
+<div class="layui-line">
+    <input readonly class="layui-input lay-time" type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %}
+           value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} />
+
+</div>

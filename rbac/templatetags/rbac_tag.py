@@ -37,7 +37,7 @@ def multi_menu(request):
         for per in val['children']:
             # 根据当前选择的权决定菜单的隐藏与展开
             if per['id'] == request.current_permission_pid:
-                per['class'] = 'active'
+                per['class'] = 'layui-this'
                 val['class'] = 'active'
         ordered_dict[key] = val
     return {

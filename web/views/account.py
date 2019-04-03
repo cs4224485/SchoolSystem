@@ -4,6 +4,7 @@ from utils.common import gen_md5_password
 from django.conf import settings
 from rbac.service.init_permission import init_permission
 
+
 def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
@@ -19,6 +20,7 @@ def login(request):
         return render(request, 'login.html', {'error': '用户名或密码错误'})
     init_permission(user_obj, request)
     request.session['user_id'] = user_obj.id
+    request.session['username'] = user_obj.nickname
     school_list_url = reverse('stark:school_schoolinfo_list')
     return redirect(school_list_url)
 

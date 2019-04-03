@@ -86,51 +86,63 @@
 
 {% block content %}
 
-    <div class="comb-search">
-        {% for row in cl.gen_list_filter_row %}
-            <div class="row">
-                {% for obj in row %}
-                    {{ obj|safe }}
-                {% endfor %}
+
+    <div class="x-body">
+        <div style="overflow: hidden">
+            {% if cl.search_list %}
+                <div style="float: left">
+                    <form method="get" class="layui-form x-so" style="width: 280px" action="">
+                        <input type="text" name="q" placeholder="请输入老师名称" autocomplete="off" class="layui-input"
+                               value="{{ cl.keyword }}" style="width: 200px">
+                        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="sreach"><i
+                                class="layui-icon"></i>
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+            {% if cl.add_btn %}
+                <div style="float: left">
+                    {{ cl.add_btn }}
+                </div>
+            {% endif %}
+
+            <div class="pull-right" style="margin-bottom: 5px">
+                <a class="layui-btn layui-btn-normal" href="{{ extra.add }}">添加老师</a>
+                <a class="layui-btn layui-btn-warm" href="{{ extra.import }}">导入老师</a>
+                <a class="layui-btn layui-btn-danger" href="{{ extra.import }}">导出老师</a>
             </div>
-        {% endfor %}
+         </div>
+
+        {% if cl.list_filter%}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-filter" aria-hidden="true"></i> 快速筛选
+                </div>
+                <div class="panel-body">
+                    <div class="comb-search">
+                        {% for row in cl.gen_list_filter_row %}
+                            <div class="row">
+                                {% for obj in row %}
+                                    {{ obj|safe }}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% table2 cl %}
+
+        <nav class="pull-right">
+            <ul class="pagination">
+                {{ cl.page|safe }}
+            </ul>
+        </nav>
+
+
     </div>
-    <div class="pull-right" style="margin-bottom: 5px">
-        <a class="btn btn-primary" href="{{ extra.add }}">添加老师</a>
-        <a class="btn btn-success" href="{{ extra.import }}">导入老师</a>
-        <a class="btn btn-warning" href="{{ extra.import }}">导出老师</a>
-    </div>
-
-    {% if cl.search_list %}
-        <form method="get" class="" action="">
-            <input type="text" class="" name="q" value="{{ cl.keyword }}">
-            <input type="submit" value="搜索" class="btn btn-primary">
-        </form>
-    {% endif %}
-
-    {% if cl.action_list %}
-        <form method="post">
-        {% csrf_token %}
-        <select name="actions" class="form-control"
-                style="width: 200px; display: inline-block; vertical-align: -1px; margin: 8px 2px">
-            {% for action in cl.action_list %}
-                <option value="{{ action.name }}">{{ action.text }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn-primary btn">执行</button>
-    {% endif %}
-
-
-{% table cl %}
-</form>
-
-    <nav class="pull-right">
-        <ul class="pagination">
-            {{ cl.page|safe }}
-        </ul>
-    </nav>
-
-
-
 
 {% endblock %}
+
+

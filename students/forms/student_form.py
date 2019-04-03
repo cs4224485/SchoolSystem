@@ -3,12 +3,12 @@ from django.forms import ValidationError
 from django.forms import fields as Ffields
 from django.forms import widgets as Fwidgets
 from students import models as stumodels
-
+from stark.forms.widgets import DateTimePickerInput
 
 class StudentEditForm(forms.ModelForm):
     gender = Ffields.ChoiceField(required=True, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
-    birthday = Ffields.DateField(required=False, widget=Fwidgets.DateInput(
-        attrs={'class': 'form-control', 'type': 'date', 'style': 'width: 600px'}))
+    birthday = Ffields.DateField(required=False, widget=DateTimePickerInput(
+        attrs={ 'type': 'date', 'style': 'width: 600px'}))
 
     class Meta:
         model = stumodels.StudentInfo

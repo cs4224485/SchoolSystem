@@ -1,11 +1,26 @@
-<div>
-    <ol class="breadcrumb no-radius no-margin" style="border-bottom: 1px solid #ddd;">
-        {% for item in record_list %}
+{#<div>#}
+{#    <ol class="breadcrumb no-radius no-margin" style="border-bottom: 1px solid #ddd;">#}
+{#        {% for item in record_list %}#}
+{#            {% if item.class %}#}
+{#                <li class="active">{{ item.title }}</li>#}
+{#            {% else %}#}
+{#                <li class="{{ item.class }}"><a href=" {{ item.url }}">{{ item.title }}</a></li>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    </ol>#}
+{#</div>#}
+<div class="x-nav" style="margin-bottom: 30px">
+      <span class="layui-breadcrumb" style="visibility: visible;">
+          {% for item in record_list %}
             {% if item.class %}
-                <li class="active">{{ item.title }}</li>
+                <a><cite >{{ item.title }}</cite></a>
             {% else %}
-                 <li class="{{ item.class }}"><a href=" {{ item.url }}">{{ item.title }}</a></li>
+               <a href=" {{ item.url }}">{{ item.title }}</a>
+                <span lay-separator="">/</span>
             {% endif %}
         {% endfor %}
-    </ol>
+
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
 </div>

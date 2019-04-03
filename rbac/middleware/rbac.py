@@ -11,7 +11,7 @@ class RbacMiddleware(MiddlewareMixin):
     用户权限信息校验
     '''
 
-    def process_request(self, request):
+    def process_request(self, request, *args, **kwargs):
         '''
         当用户请求刚进入时候执行
         :param request:
@@ -24,7 +24,6 @@ class RbacMiddleware(MiddlewareMixin):
         3 权限信息匹配
         '''
         current_url = request.path_info
-
         for valid_url in settings.VALID_URL_LIST:
             if re.match(valid_url, current_url):
                 return None
@@ -44,7 +43,6 @@ class RbacMiddleware(MiddlewareMixin):
                 request.current_permission_pid = 0
                 request.breadcrumb = url_record
                 return None
-
         flag = False
 
         for item in permission_dict.values():
@@ -61,6 +59,5 @@ class RbacMiddleware(MiddlewareMixin):
                 # 导航条
                 request.breadcrumb = url_record
                 break
-
         if not flag:
             return HttpResponse('无权限访问')

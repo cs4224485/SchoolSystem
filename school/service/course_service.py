@@ -63,6 +63,23 @@ class CourseService(object):
         other_event = models.SchoolTimetable.other_event_choice
         return other_event
 
+    def _get_position(self, class_id, week, class_list):
+        '''
+        计算每个课程再前端课程表展示的位置
+        计算方式 星期（从0开始） * 班级总数 +当前第几班
+        :param class_id 班级ID
+        :return:
+        '''
+        total_class = len(class_list)
+        current = 0
+        for item in class_list:
+            if class_id == item.id:
+                current = class_list.index(item) + 1
+                print(current, item.name)
+                break
+
+        return (week - 1) * total_class + current
+
     def _get_course_data(self):
         '''
         获取学校课程数据
@@ -71,8 +88,8 @@ class CourseService(object):
 
         course_table_queryset = models.SchoolTimetable.objects.filter(
             Q(stu_class__grade_id=self.grade, school=self.school_obj) |
-            Q(school=self.school_obj, info_type=2)).order_by('time_range', 'week')
-
+            Q(school=self.school_obj, info_type=2)).order_by('time_range', 'week', 'stu_class')
+        class_list = order_by_class(list(models.StuClass.objects.filter(grade=self.grade, school_id=self.school_id)))
         per_grade_time = []
         course_time_dict = {}
         # 构建每个时间点包含的course对象
@@ -101,14 +118,17 @@ class CourseService(object):
                         'event_id': table_item.other_event
                     }
                 else:
+                    week = table_item.week
+                    class_id = table_item.stu_class_id
+                    position = self._get_position(class_id, week, class_list)
                     node = {'course_table_id': table_item.id,
                             'course_id': table_item.course.id,
                             'course': table_item.course.course_des,
                             'teacher_id': table_item.teacher.id,
                             'teacher': table_item.teacher.last_name + table_item.teacher.first_name,
-                            'week': table_item.week,
-                            'class_id': table_item.stu_class_id,
-                            'position': table_item.position,
+                            'week': week,
+                            'class_id': class_id,
+                            'position': position,
                             'is_event': False,
                             }
                     if table_item.single_double_week != 1:

@@ -11,7 +11,7 @@ class SchoolTeacherConfig(TeacherInfoConfig):
     每个学校的老师管理
     '''
     change_list_template = 'teacher_list.html'
-    search_list = []
+    search_list = ['full_name']
 
     def get_urls(self):
         urlpatterns = [
