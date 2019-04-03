@@ -1,16 +1,16 @@
 {% extends 'layout.html' %}
+{% load static %}
 {% load my_tags %}
-
 {% block css %}
+
     <style>
         .comb-search {
             padding: 5px 20px;
         }
 
         .comb-search .row .whole {
-            width: 60px;
+            width: 80px;
             float: left;
-
         }
 
         .comb-search .row .others {
@@ -55,7 +55,7 @@
         }
 
         .op_father:hover .op_list {
-            height: 140px;
+
             width: 60px;
             display: block;
             z-index: 10;
@@ -79,18 +79,26 @@
             color: #000000;
 
         }
+
+        #location {
+            width: 110px;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 14px;
+            color: #666666;
+            text-align: left;
+        }
     </style>
 {% endblock %}
 
-
-
 {% block content %}
-    <div class="x-body">
+
+    <div class="">
         <div style="overflow: hidden">
             {% if cl.search_list %}
                 <div style="float: left">
-                    <form method="get" class="layui-form x-so" style="width: 280px" action="">
-                        <input type="text" name="q" placeholder="请输入学生名称" autocomplete="off" class="layui-input"
+                    <form method="get" class="layui-form x-so" style="width: 253px" action="">
+                        <input type="text" name="q" placeholder="请输入学校名称" autocomplete="off" class="layui-input"
                                value="{{ cl.keyword }}" style="width: 200px">
                         <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="sreach"><i
                                 class="layui-icon"></i>
@@ -103,15 +111,9 @@
                     {{ cl.add_btn }}
                 </div>
             {% endif %}
+        </div>
 
-            <div class="pull-right" style="margin-bottom: 5px">
-                <a class="layui-btn layui-btn-normal" href="{{ extra.add }}">添加学生</a>
-                <a class="layui-btn layui-btn-warm" href="{{ extra.import }}">导入学生</a>
-                <a class="layui-btn layui-btn-danger" href="{{ extra.import }}">导出学生</a>
-            </div>
-         </div>
-
-        {% if cl.list_filter%}
+        {% if cl.list_filter %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-filter" aria-hidden="true"></i> 快速筛选
@@ -127,18 +129,46 @@
                         {% endfor %}
                     </div>
                 </div>
+                <form method="get" class="layui-form x-so">
+
+                    <div class="layui-form-item" id="x-city">
+                        <label class="layui-form-label " id="location" style="">学校所在地</label>
+                        <div class="layui-input-inline">
+                            <select name="province" lay-filter="province" id="province">
+                                <option value="">请选择省</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="city" lay-filter="city" id="city">
+                                <option value="">请选择市</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="area" lay-filter="area" id="area">
+                                <option value="">请选择县/区</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
             </div>
+
         {% endif %}
 
         {% table2 cl %}
 
-        <nav class="pull-right">
-            <ul class="pagination">
-                {{ cl.page|safe }}
-            </ul>
-        </nav>
-
+        <div class="page">
+            <nav class="pull-right">
+                <ul class="pagination">
+                    {{ cl.page|safe }}
+                </ul>
+            </nav>
+        </div>
 
     </div>
+{% endblock %}
+
+{% block js %}
+
 
 {% endblock %}

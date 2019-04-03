@@ -8,9 +8,9 @@
     </style>
 {% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="x-body">
         {% fields %}
-        <div class="content-area">
+        <div class="layui-col-md10 layui-col-md-offset1">
             <div class="panel panel-default" style="margin-top: 20px">
                 <div class="panel-heading">
                     <h3 class="panel-title">设置信息
@@ -142,16 +142,17 @@
 
                 </div>
             </div>
+            <div class="actions">
+                <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
+                    <span class="glyphicon glyphicon-check" id="preview">预览</span>
+                </a>
+                <a class="pull-right btn-xs btn-warning" style="padding: 3px 5px; ">
+                    <span class="glyphicon glyphicon-floppy-saved " id="save">保存</span>
+                </a>
+            </div>
         </div>
 
-        <div class="actions">
-            <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
-                <span class="glyphicon glyphicon-check" id="preview">预览</span>
-            </a>
-            <a class="pull-right btn-xs btn-warning" style="padding: 3px 5px; ">
-                <span class="glyphicon glyphicon-floppy-saved " id="save">保存</span>
-            </a>
-        </div>
+
     </div>
 
 {% endblock %}

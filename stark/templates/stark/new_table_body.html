@@ -1,0 +1,19 @@
+<table class="layui-table x-admin">
+    <thead>
+        <tr>
+            {% for item in header_list %}
+                <th style="text-align: center">{{ item }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+     {% for row_list in body_list %}
+                <tr>
+                    {% for col in row_list %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+      {% endfor %}
+
+    </tbody>
+</table>

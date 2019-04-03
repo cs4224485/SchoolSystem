@@ -55,8 +55,8 @@
         <div class="archives_zixun">请各位教师务必遵守我校《心理咨询隐私保密制度》</div>
         <h3 class="component-title">记录教师</h3>
         <ul class="mui-table-view">
-            <li class="mui-table-view-cell">{{ request.session.teacher_info.identity }}
-                <span class="mui-badge ">{{ request.session.teacher_info.name }}</span>
+            <li class="mui-table-view-cell">{{ record.teacher.identity.title }}
+                <span class="mui-badge ">{{ record.teacher.full_name }}</span>
             </li>
         </ul>
         <h3 class="component-title">记录时间</h3>

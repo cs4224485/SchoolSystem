@@ -87,22 +87,22 @@
 
 
 {% block content %}
-    <div class="container">
-        <div class="" style="margin-left: 20px">
-            <div id="header" class="ax_default label">
-                <div id="head_div" class="">
-                    <div id="head_text" class="text ">
-                        <p><span>{{ school_obj.school_name }}{{ school_year }}校历</span></p>
-                    </div>
+
+    <div class="layui-body">
+        <div id="header" class="ax_default label">
+            <div id="head_div" class="">
+                <div id="head_text" class="text ">
+                    <p><span>{{ school_obj.school_name }}{{ school_year }}校历</span></p>
                 </div>
             </div>
-            <div id="calendar-wrap">
-                {% ger_cal month_day_num special_day %}
-            </div>
+        </div>
+        <div id="calendar-wrap">
+            {% ger_cal month_day_num special_day %}
         </div>
     </div>
+
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="cal-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div class="modal" id="cal-edit" tabindex="0" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" style="margin-top:250px ">
             <div class="modal-content">
@@ -111,7 +111,7 @@
                     <h4 class="modal-title" id="myModalLabel">日程编辑</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="special-id" >
+                    <input type="hidden" id="special-id">
                     <div class="form-group">
                         <label for="op-des">日程描述:</label>
                         <select id="op-des" class="form-control">
@@ -135,6 +135,8 @@
             </div>
         </div>
     </div>
+
+
 {% endblock %}
 
 {% block js %}
@@ -146,7 +148,9 @@
             },
             bindModal: function () {
                 $('.tb-body').on('click', '.cal', function () {
+
                     $('#cal-edit').modal('show');
+
                     var day = $(this).find('.day').text();
                     var month = $(this).parents('tr').find('.month').attr('mon');
                     var year = $(this).parents('tr').find('.year').attr('year');
@@ -161,37 +165,38 @@
                     var endDate = $(this).find('.special_day').children().attr('end-date');
                     $('#end-date').val(endDate);
                     $('#op-des').find('option').each(function () {
-                       if (parseInt(desId) === parseInt($(this).val())){
+                        if (parseInt(desId) === parseInt($(this).val())) {
                             $(this).prop('selected', 'selected');
-                       }
+                        }
                     });
-                    var startDate = year+'-'+month+'-'+day;
+                    var startDate = year + '-' + month + '-' + day;
                     $('#special-id').val(specialId);
                     $('#star-date').val(startDate);
+
                 })
             },
-            bindSend:function () {
+            bindSend: function () {
                 $('#submit-data').click(function () {
                     var startDate = $('#star-date').val();
                     var endDate = $('#end-date').val();
                     var desOptions = $('#op-des').val();
                     var specialId = $('#special-id').val();
                     var data = {
-                        startDate:startDate,
-                        endDate:endDate,
-                        desOptions:desOptions,
-                        specialId:specialId
+                        startDate: startDate,
+                        endDate: endDate,
+                        desOptions: desOptions,
+                        specialId: specialId
                     };
                     $.ajax({
-                        url:'',
-                        method:'POST',
-                        type:'json',
-                        data:data,
-                        success:function (res) {
-                            if (res.state){
+                        url: '',
+                        method: 'POST',
+                        type: 'json',
+                        data: data,
+                        success: function (res) {
+                            if (res.state) {
                                 alert(res.msg);
                                 window.location.href = ''
-                            }else {
+                            } else {
                                 alert(res.msg)
                             }
                         }

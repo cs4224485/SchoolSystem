@@ -246,7 +246,6 @@ class SchoolTimetable(models.Model):
     other_event = models.SmallIntegerField(choices=other_event_choice, verbose_name='学校其他事件', null=True, blank=True)
     info_type_choice = ((1, '课程'), (2, '其他事件'))
     info_type = models.SmallIntegerField(choices=info_type_choice, verbose_name='存储的类型', default=1)
-    position = models.SmallIntegerField(verbose_name='前端展示的位置', null=True, blank=True)
 
     def __str__(self):
         if self.stu_class:

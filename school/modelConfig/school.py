@@ -1,5 +1,5 @@
 import copy
-from stark.service.stark import StarkConfig, ChangeList
+from stark.service.stark import StarkConfig, ChangeList, Option
 from django.urls import reverse, re_path
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -54,21 +54,23 @@ class SchoolInfoConfig(StarkConfig):
         teacher_url = self.reverse_commons_url('teacher_teacherinfo_school_list', school_id=row.pk)
         class_manage_url = self.reverse_commons_url('class_manage', row.pk)
         calender_url = self.reverse_commons_url('school_calender', row.pk)
-        course_tbale_url = self.reverse_commons_url('school_timetables', row.pk)
+        course_table_url = self.reverse_commons_url('school_timetables', row.pk)
+        menu_list = [{'title': '编辑学校', 'name': 'stark:school_schoolinfo_edit', 'url': edit_school_url},
+                     {'title': '学生管理', 'name': 'stark:students_studentinfo_school_list', 'url': student_url},
+                     {'title': '教师管理', 'name': 'stark:teacher_teacherinfo_school_list', 'url': teacher_url},
+                     {'title': '班级管理', 'name': 'stark:class_manage', 'url': class_manage_url},
+                     {'title': '学校校历', 'name': 'stark:school_calender', 'url': calender_url},
+                     {'title': '课程表', 'name': 'stark:school_timetables', 'url': course_table_url}]
         html = '''
-            <div class='op_father'>
+             <div class='op_father'>
                 <span><image src="/static/stark/imgs/op.png" width="18" height="18"></span>  
                 <div class='op_list'>
-                    <a href='%s'>编辑学校</a>
-                    <a href='%s'>学生管理</a>
-                    <a href='%s'>教师管理</a>
-                    <a href='%s'>班级管理</a>
-                    <a href='%s'>学校校历</a>
-                    <a href='%s'>课程表</a>
-                </div>
-            </div>
-        ''' % (edit_school_url, student_url,
-               teacher_url, class_manage_url, calender_url, course_tbale_url)
+        '''
+        for item in menu_list:
+            if item['name'] in self.request.session[settings.PERMISSION_SESSION_KEY]:
+                html += "<a href='%s'>%s</a>" % (item['url'], item['title'])
+        html += '</div> </div>'
+
         return mark_safe(html)
 
     def get_list_display(self):
@@ -119,8 +121,14 @@ class SchoolInfoConfig(StarkConfig):
     def change_view(self, request, pk, template='stark/change.html', *args, **kwargs):
         return super().change_view(request, pk, template='tables/edit_school.html', *args, **kwargs)
 
+    def get_add_btn(self):
+        return mark_safe(
+            '<a href="%s" class="layui-btn" ><i class="layui-icon"></i>添加新的学校</a>' % self.reverse_add_url())
+
     search_list = ['school_name']
     list_display = [display_school_name, 'school_type', 'school_layer', display_address, display_operation]
+    list_filter = [Option('school_layer', is_choice=True, text_func=lambda x: x[1]),
+                   Option('school_type', is_choice=True, text_func=lambda x: x[1])]
 
 
 class ChoiceFieldConfig(StarkConfig):

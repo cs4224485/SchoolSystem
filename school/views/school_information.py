@@ -224,7 +224,6 @@ class SchoolTimeTable(views.View):
 
             # 代表添加的是普通的课程
             if record_type == 0:
-                position = request.POST.get('position')
                 teacher_id = request.POST.get('teacherId')
                 course_id = request.POST.get('courseId')
                 class_id = request.POST.get('classId')
@@ -256,13 +255,10 @@ class SchoolTimeTable(views.View):
                     'school_id': school_id,
                     'time_range': time_obj,
                     'teacher': teacher_obj,
-                    'position': position,
                     'single_double_week': course_week
                 }
                 if int(course_week) == 1:
-                    filter_dic = {'time_range': time_obj,
-                                  'position': position,
-                                  'single_double_week__in': [2, 3]}
+                    filter_dic = {'time_range': time_obj, 'single_double_week__in': [2, 3]}
                     # 如果单周或双周改为每周 要把对应单元格另外的一个单双周数据删除
                     if course_table_id:
                         table_query.filter(**filter_dic).exclude(id=course_table_id).delete()
@@ -270,8 +266,7 @@ class SchoolTimeTable(views.View):
                         table_query.filter(**filter_dic).delete()
 
                 else:
-                    table_obj = table_query.filter(time_range=time_obj,
-                                                   position=position, single_double_week=course_week)
+                    table_obj = table_query.filter(time_range=time_obj, single_double_week=course_week)
                     if table_obj:
                         table_obj.delete()
 

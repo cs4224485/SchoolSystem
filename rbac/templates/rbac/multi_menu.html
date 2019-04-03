@@ -1,15 +1,29 @@
-<ul class="nav" id="main-menu">
+{#<ul class="nav" id="main-menu">#}
+{#    {% for item in menu_dict.values %}#}
+{#        <li class="{{ item.class }}">#}
+{#            <a href="#"><i class="fa {{ item.icon }}"></i> {{ item.title }} <span class="fa arrow"></span></a>#}
+{#            <ul class="nav nav-second-level">#}
+{#                {% for per in item.children %}#}
+{#                    <li>#}
+{#                        <a class="{{ per.class }}" href="{{ per.url }}">{{ per.title }}</a>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        </li>#}
+{#    {% endfor %}#}
+{##}
+{#</ul>#}
+
+
+<ul class="layui-nav layui-nav-tree">
     {% for item in menu_dict.values %}
-        <li class="{{ item.class }}">
-            <a href="#"><i class="fa {{ item.icon }}"></i> {{ item.title }} <span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
+        <li class="layui-nav-item  {% if  item.class %} layui-nav-itemed {% endif %}">
+            <a href="#"><i class="fa {{ item.icon }}"></i> {{ item.title }}</a>
+            <dl class="layui-nav-child">
                 {% for per in item.children %}
-                    <li>
-                        <a class="{{ per.class }}" href="{{ per.url }}">{{ per.title }}</a>
-                    </li>
+                <dd class="{{ per.class }}"> <a  href="{{ per.url }}">{{ per.title }}</a></dd>
                 {% endfor %}
-            </ul>
+            </dl>
         </li>
     {% endfor %}
-
 </ul>

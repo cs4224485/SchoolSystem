@@ -1,5 +1,6 @@
 import datetime
 import json
+import xlwt
 from django.shortcuts import render, redirect
 from django import views
 from django.shortcuts import HttpResponse
@@ -11,6 +12,8 @@ from django.http import JsonResponse
 from utils.common import current_week
 from django.utils.decorators import method_decorator
 from utils.base_response import BaseResponse
+from django.conf import settings
+from django.http import FileResponse
 
 
 # Create your views here.
@@ -37,7 +40,8 @@ class LoinView(views.View):
     '''
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'landing.html')
+        school = sch_models.SchoolInfo.objects.filter(id=115).first()
+        return render(request, 'landing.html', {'school': school})
 
     def post(self, request, *args, **kwargs):
         message = BaseResponse()
@@ -122,7 +126,8 @@ class RecordList(views.View):
             student_obj = stu_models.StudentInfo.objects.filter(id=student_id,
                                                                 school=teacher_info.get('school')).first()
         if student_obj:
-            record_list = mental_models.IndividualStudentRecord.objects.filter(student_id=student_id)
+            record_list = mental_models.IndividualStudentRecord.objects.filter(student_id=student_id).order_by(
+                '-record_time')
             # 如果本周已经填写那么无法继续再填
             is_filled = False
             school_week = current_week(datetime.datetime.now())
@@ -164,6 +169,13 @@ class AddRecord(views.View):
         try:
             data = json.loads(request.POST.get('info'))
             teacher_id = request.session.get('teacher_info').get('id')
+            record = mental_models.IndividualStudentRecord.objects.filter(student_id=data.get('studentId'),
+                                                                          teacher_id=teacher_id,
+                                                                          record_time=datetime.datetime.now())
+            if record.exists():
+                message.msg = '今日已记录'
+                return JsonResponse(message.get_dict)
+
             for scale_id, values in data.get('scaleInfo').items():
                 # 创建量表与学生的对应关系
                 scale_obj = stu_models.ScaleQuestion.objects.create(student_id=data.get('studentId'), scale_id=scale_id)
@@ -192,13 +204,12 @@ class RecordsOfStudents(views.View):
         record_id = kwargs.get('record_id')
         teacher_info = request.session.get('teacher_info')
         record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id).first()
-        if teacher_info.get('identity') == '心理老师':
-            record_obj = mental_models.IndividualStudentRecord.objects.filter(id=record_id).first()
 
         if record_obj:
             student_obj = record_obj.student
             # 量表信息
             scale = stu_models.ScaleValue.objects.filter(scale_stu=record_obj.scale_table)
+            print(record_obj.teacher.full_name, record_obj.teacher.identity.title)
             return render(request, 'show_record.html',
                           {'student': student_obj, 'scale_item': scale, 'record': record_obj})
         else:
@@ -306,3 +317,66 @@ class AppointmentManage(views.View):
             print(e)
             message.msg = '修改失败'
         return JsonResponse(message.get_dict)
+
+
+class ExportData(views.View):
+    '''
+    导出记录
+    '''
+
+    def get(self, request):
+        field_name_list = ['姓名', '班级', '记录日期', '详细日期', '记录教师']
+        data_list = []
+        record_queryset = mental_models.IndividualStudentRecord.objects.prefetch_related().distinct().order_by(
+            'student',
+            'record_time')
+        scale_table = record_queryset.first().scale_table.scale
+        # 取出量表行标题
+        for line in scale_table.line_title.all():
+            field_name_list.insert(-1, line.des)
+
+        for item in record_queryset:
+            student = item.student
+            class_name = student.stu_class.grade.get_grade_name_display() + student.stu_class.name
+            record_date = item.record_time.strftime('%Y-%m-%d')
+            school_week = current_week(datetime.datetime.strptime(str(record_date), '%Y-%m-%d'))
+            detail_date = '%s第%s周' % (school_week[1], school_week[0])
+            row = [student.full_name, class_name, record_date, detail_date]
+            student_scale = item.scale_table
+            for scale in student_scale.scale_value.prefetch_related():
+                value = scale.value.des
+                row.append(value)
+            row.append(item.teacher.full_name)
+            data_list.append(row)
+
+        # 创建Excel
+        style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on')
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Sheet', cell_overwrite_ok=True)
+        # 创建表头
+        for i in range(len(field_name_list)):
+            ws.write(0, i, field_name_list[i], style0)
+
+        # 写入每一行
+        for i in range(len(data_list)):
+            for j in range(len(data_list[i])):
+                ws.write(i + 1, j, data_list[i][j])
+        timestr = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        file_name = 'New-' + timestr + '.xls'
+        file_path = settings.MEDIA_ROOT + '/' + file_name
+        wb.save(file_path)
+
+        # 读取文件生成器
+        def file_iterator(file_name, chunk_size=512):
+            with open(file_name, 'rb') as f:
+                while True:
+                    c = f.read(chunk_size)
+                    if c:
+                        yield c
+                    else:
+                        break
+        # file = open(file_path, 'rb')
+        response = FileResponse(file_iterator(file_path))
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(file_name)
+        return response

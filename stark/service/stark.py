@@ -43,13 +43,14 @@ class StarkForm(forms.Form):
 
 
 class Row(object):
-    def __init__(self, data_list, option, query_dict):
+    def __init__(self, data_list, option, query_dict, title):
         '''
         :param data_list: 元祖或queryset
         '''
         self.data_list = data_list
         self.option = option
         self.query_dict = query_dict
+        self.title = title
 
     def __iter__(self):
         '''
@@ -57,6 +58,9 @@ class Row(object):
         :return:
         '''
         yield '<div class="whole">'
+        yield '<a>%s</a>' % self.title
+        yield '</div>'
+        yield '<div class="others">'
         # 处理‘全部’标签
         total_query_dict = self.query_dict.copy()
         total_query_dict._mutable = True
@@ -66,8 +70,6 @@ class Row(object):
             yield '<a href="?%s">全部</a>' % (total_query_dict.urlencode())
         else:
             yield '<a class="active" href="?%s">全部</a>' % (total_query_dict.urlencode())
-        yield '</div>'
-        yield '<div class="others">'
 
         for item in self.data_list:  # item是元祖或者是queryset中的一个对象
             val = self.option.get_value(item)
@@ -124,13 +126,14 @@ class Option(object):
         :param query_dict: request.GET
         :return: ROW对象
         '''
+        title = _field.verbose_name
         if isinstance(_field, ForeignKey) or isinstance(_field, ManyToManyField):
-            row = Row(_field.related_model.objects.filter(**self.condition), self, query_dict)
+            row = Row(_field.related_model.objects.filter(**self.condition), self, query_dict, title)
         else:
             if self.is_choice:
-                row = Row(_field.choices, self, query_dict)
+                row = Row(_field.choices, self, query_dict, title)
             else:
-                row = Row(model_class.objects.filter(**self.condition), self, query_dict)
+                row = Row(model_class.objects.filter(**self.condition), self, query_dict, title)
         return row
 
     def get_text(self, item):
@@ -343,7 +346,7 @@ class StarkConfig(object):
             'cl': cl,
             'extra': self.get_extra_content(*args, **kwargs)
         }
-        return render(request, self.change_list_template or 'stark/changelist.html', context)
+        return render(request, self.change_list_template or 'stark/new_change_list.html', context)
 
     def get_extra_content(self, *args, **kwargs):
         return None

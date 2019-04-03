@@ -68,3 +68,8 @@ def body_list(cl):
 @register.inclusion_tag('stark/table_body.html')
 def table(cl):
     return {'header_list': header_list(cl), 'body_list': body_list(cl)}
+
+
+@register.inclusion_tag('stark/new_table_body.html')
+def table2(cl):
+    return {'header_list': header_list(cl), 'body_list': body_list(cl)}
