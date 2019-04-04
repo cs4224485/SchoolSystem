@@ -75,7 +75,6 @@ class CourseService(object):
         for item in class_list:
             if class_id == item.id:
                 current = class_list.index(item) + 1
-                print(current, item.name)
                 break
 
         return (week - 1) * total_class + current
