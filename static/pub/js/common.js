@@ -86,21 +86,58 @@ var common_ops = {
         return classData
     },
     IsInArray: function (arr, val) {
-            // 判断字段是否被选中
-            var testStr = ',' + arr.join(",") + ",";
-            return testStr.indexOf("," + val + ",") != -1;
-        },
-    bindChangePicture:function (id) {
-            // 预览上传的图片
-            $("#" + id).change(function () {
-                var file_obj = $(this)[0].files[0];
-                var reader = new FileReader();
-                reader.readAsDataURL(file_obj);
-                reader.onload = function () {
-                    $("#" + id + "_img").attr("src", reader.result)
-                };
-            })
+        // 判断字段是否被选中
+        var testStr = ',' + arr.join(",") + ",";
+        return testStr.indexOf("," + val + ",") != -1;
+    },
+    bindChangePicture: function (id) {
+        // 预览上传的图片
+        $("#" + id).change(function () {
+            var file_obj = $(this)[0].files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file_obj);
+            reader.onload = function () {
+                $("#" + id + "_img").attr("src", reader.result)
+            };
+        })
+    },
+    getUrlParam: function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.toString().substr(1).match(reg);
+        if (r != null) return decodeURI(r[2]);
+        return null;
+    },
+    replaceParamVal: function (domain, obj) {
+        var Url = domain.href.toString();
+        for (var key in obj) {
+            var re = eval('/(' + key + '=)([^&]*)/gi');
+            Url = Url.replace(re, key + '=' + obj[key]);
+        }
+        return Url
+    },
+    delParama: function (keys) {
+        var search = window.location.search;
+        var url = window.location.href;
+        for (var j = 0; j <= keys.length; j++) {
+            if (search.indexOf(keys[j]) != -1) {
+                search = search.substring(1);
+                var search_arr = search.split('&');
+                var url_arr = [];
+                var temp =  search_arr[keys[j]];
+                for (var i = 0; i < search_arr.length; i++) {
+                    var temp = search_arr[i].split('=');
+                    if (keys[j] === temp[0]) {
+                        console.log(keys[j], temp[0], '111');
+                        url_arr.splice(search_arr[i]);
+                    }
+                }
+
+            }
+        }
+        url = window.location.pathname + '?' + url_arr.join('&');
+        window.location.href = url;
     }
+
 };
 
 $(document).ready(function () {

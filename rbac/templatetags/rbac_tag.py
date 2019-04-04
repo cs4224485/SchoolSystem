@@ -61,6 +61,7 @@ def has_permission(request, name):
     if name in request.session[settings.PERMISSION_SESSION_KEY]:
         return True
 
+
 @register.simple_tag
 def memory_url(request, name, *args, **kwargs):
     '''

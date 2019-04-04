@@ -104,7 +104,7 @@
 <script type="text/javascript" src="{% static 'xadmin/js/xadmin.js' %}" charset="utf-8"></script>
 <script type="text/javascript" src="{% static 'xadmin/js/xcity.js' %}" charset="utf-8"></script>
 <script type="text/javascript" src="{% static 'xadmin/js/cookie.js' %}" charset="utf-8"></script>
-
+<script type="text/javascript" src="{% static 'pub/js/common.js' %}"></script>
 <script src="{% static 'stark/plugins/bootstrap/js/bootstrap.js' %} "></script>
 {% block js %}
 {% endblock %}
@@ -120,22 +120,50 @@
     layui.use(['form', 'code'], function () {
         form = layui.form;
         layui.code();
-        $('#x-city').xcity();
+        var param = common_ops.getUrlParam('area');
+
+        if (!param) {
+            $('#x-city').xcity();
+        } else {
+            var province = common_ops.getUrlParam('province');
+            var city = common_ops.getUrlParam('city');
+            $('#x-city').xcity(province, city, param);
+        }
 
         form.on('select(area)', function () {
-            console.log(123)
-            console.log($('#area').val())
+            var area = $('#area').val();
+            var city = $('#city').val();
+            var province = $('#province').val();
+            var domain = document.location;
+            if (param) {
+                var locationObj = {'province': province, 'city': city, 'area': area};
+                window.location.href = common_ops.replaceParamVal(domain, locationObj)
+            } else {
+                var currentUrl = domain.href;
+                if (domain.search) {
+                    currentUrl += '&';
+                } else {
+                    currentUrl += '?';
+                }
+                setTimeout(function () {
+                    window.location.href = currentUrl + 'province=' + province + '&' + 'city=' + city + '&' + 'area=' + area
+                }, 100)
+            }
+
         });
     });
 
     layui.use('laydate', function () {
         var laydate = layui.laydate;
-
         //执行一个laydate实例
         laydate.render({
             elem: '.lay-time' //指定元素
         });
     });
+
+    $('#reset').click(function () {
+        common_ops.delParama(['province', 'city', 'area'])
+    })
 </script>
 
 </body>

@@ -78,6 +78,15 @@ class SchoolInfoConfig(StarkConfig):
         val.remove(StarkConfig.display_edit)
         return val
 
+    def get_queryset(self, request, *args, **kwargs):
+        province = request.GET.get('province')
+        city = request.GET.get('city')
+        area = request.GET.get('area')
+
+        if province and city and area:
+            return self.model_class.objects.filter(province=province, city=city, region=area)
+        return self.model_class.objects
+
     def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         '''
         创建添加学校相关信息的modelForm

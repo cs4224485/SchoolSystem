@@ -201,7 +201,6 @@ mui("#input_information").on('tap', '.Submission', function () {
 
         })
 
-        console.log(obj)
 //						console.log(JSON.stringify(obj))
 //						var ss = JSON.stringify(obj)
 
