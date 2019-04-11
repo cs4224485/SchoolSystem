@@ -78,26 +78,32 @@ class HealthInfo(models.Model):
     '''
     健康信息表
     '''
-    height = models.IntegerField(verbose_name='身高', null=True)
-    weight = models.DecimalField(verbose_name='体重', max_digits=4, decimal_places=2, null=True)
-    vision_left = models.DecimalField(verbose_name='左眼视力', max_digits=3, decimal_places=2, null=True)
-    vision_right = models.DecimalField(verbose_name='右眼视力', max_digits=3, decimal_places=2, null=True)
-    vision_status_choice = ((1, '正常'), (2, '远视'), (3, '近视'), (4, '散光'), (5, '其他'))
-    vision_status = models.IntegerField(verbose_name='视力情况', null=True)
     disability_choice = ((1, '无'), (2, '视力'), (3, '听力语言'), (4, '智力'), (5, '肢体'), (6, '精神'))
     disability = models.IntegerField(verbose_name='残疾', choices=disability_choice, default=1, null=True)
-    record_date = models.DateField(verbose_name='记录日期', auto_now=True)
     blood_type_choice = ((1, 'A'), (2, 'B'), (3, 'O'), (4, 'AB'), (5, '不知道'))
     blood_type = models.IntegerField(verbose_name='血型', choices=blood_type_choice, null=True, blank=True)
-    student = models.ForeignKey('StudentInfo', on_delete=models.CASCADE)
+    student = models.ForeignKey('StudentInfo', on_delete=models.CASCADE, unique=True, db_index=True)
     allergy = models.ForeignKey('Allergy', verbose_name='过敏源', on_delete=models.CASCADE, null=True)
     InheritedDisease = models.ForeignKey('InheritedDisease', verbose_name='遗传病', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.student.first_name + "健康信息"
 
-    class Meta:
-        unique_together = (('student', 'record_date'),)
+
+class HealthRecord(models.Model):
+    '''
+    健康信息记录
+    '''
+    height = models.IntegerField(verbose_name='身高', null=True, blank=True)
+    weight = models.DecimalField(verbose_name='体重', max_digits=4, decimal_places=2, null=True, blank=True)
+    vision_left = models.DecimalField(verbose_name='左眼视力', max_digits=3, decimal_places=2, null=True, blank=True)
+    vision_right = models.DecimalField(verbose_name='右眼视力', max_digits=3, decimal_places=2, null=True, blank=True)
+    vision_status_choice = ((1, '正常'), (2, '远视'), (3, '近视'), (4, '散光'), (5, '其他'))
+    vision_status = models.IntegerField(verbose_name='视力情况', null=True)
+    record_date = models.DateField(verbose_name='记录日期', auto_now=True)
+    health_info = models.ForeignKey(to='HealthInfo', verbose_name='健康信息', on_delete=models.CASCADE)
+    measure_type_choice = ((1, '校测'), (2, '自测'))
+    measure_type = models.IntegerField(verbose_name='测试类型', default=1, choices=measure_type_choice, null=True, blank=True)
 
 
 class Allergy(models.Model):

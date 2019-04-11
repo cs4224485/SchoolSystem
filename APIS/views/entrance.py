@@ -239,21 +239,49 @@ class HealthInfoViewSet(BaseViewSet):
     添加学生健康信息接口
     '''
     queryset = HealthInfo.objects.all()
-    serializer_class = HealthInfoSerializers
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def create(self, request, *args, **kwargs):
-        request_data = copy.deepcopy(request.data)
+
         # print(request_data)
-        health_serialize = HealthInfoSerializers(data=request_data)
-        student_id = request_data.get('student')
-        if health_serialize.is_valid():
-            health_serialize.save()
+        student_id = request.data.get('student')
+        height = request.data.get('height')
+        weight = request.data.get('weight')
+        vision_left = request.data.get('vision_left')
+        vision_right = request.data.get('vision_right')
+        vision_status = request.data.get('vision_status')
+        allergy = request.data.get('allergy') if request.data.get('allergy') else 1
+        InheritedDisease = request.data.get('InheritedDisease', 1)
+        blood_type = request.data.get('blood_type', None)
+        disability = request.data.get('disability') if request.data.get('disability') else 1
+        health_info_query = HealthInfo.objects.filter(student_id=student_id)
+        health_info = health_info_query.first()
+
+        # 如果之前有健康记录
+        if health_info:
+            health_info_query.update(allergy_id=allergy, InheritedDisease_id=InheritedDisease, disability=disability,
+                                     blood_type=blood_type)
+        else:
+            health_info = HealthInfo.objects.create(allergy_id=allergy, InheritedDisease_id=InheritedDisease,
+                                                    disability=disability, student_id=student_id, blood_type=blood_type)
+        record_dict = {'health_info': health_info}
+        if height:
+            record_dict['height'] = height
+        if weight:
+            record_dict['weight'] = weight
+        if vision_right:
+            record_dict['vision_left'] = vision_left
+            record_dict['vision_right'] = vision_right
+        if vision_status:
+            record_dict['vision_status'] = vision_status
+        health_record = HealthRecord.objects.create(**record_dict)
+        if health_record:
             self.message['state'] = True
             self.message['msg'] = '创建成功'
             self.message['data'].append({'student_id': student_id})
         else:
-            self.response_error(health_serialize.errors)
+            self.message['state'] = False
+            self.message['msg'] = '创建失败'
         return Response(self.message)
 
 
