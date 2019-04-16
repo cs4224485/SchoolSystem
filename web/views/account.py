@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from web import models
 from utils.common import gen_md5_password
-from django.conf import settings
 from rbac.service.init_permission import init_permission
 
 

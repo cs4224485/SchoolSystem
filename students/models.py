@@ -101,7 +101,7 @@ class HealthRecord(models.Model):
     vision_status_choice = ((1, '正常'), (2, '远视'), (3, '近视'), (4, '散光'), (5, '其他'))
     vision_status = models.IntegerField(verbose_name='视力情况', null=True)
     record_date = models.DateField(verbose_name='记录日期', auto_now=True)
-    health_info = models.ForeignKey(to='HealthInfo', verbose_name='健康信息', on_delete=models.CASCADE)
+    health_info = models.ForeignKey(to='HealthInfo', verbose_name='健康信息', on_delete=models.CASCADE, related_name='record')
     measure_type_choice = ((1, '校测'), (2, '自测'))
     measure_type = models.IntegerField(verbose_name='测试类型', default=1, choices=measure_type_choice, null=True, blank=True)
 
