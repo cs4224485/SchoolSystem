@@ -159,7 +159,7 @@ class AddRecord(views.View):
         if student_obj:
             # 获取表单设置信息
             setting_obj = sch_models.TableSettings.objects.filter(school_range=teacher_info.get('school'),
-                                                                  fill_range=1).first()
+                                                                  fill_range=2).first()
 
             scale = setting_obj.scale.first()
             return render(request, 'add_record.html', {'student': student_obj, 'scale': scale})
