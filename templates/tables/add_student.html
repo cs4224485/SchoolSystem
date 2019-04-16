@@ -73,7 +73,7 @@
                 $('#class option').remove();
                 if(grade !=0){
                     $.ajax({
-                        url:"/stark/students/studentinfo/filter_class/",
+                        url:"/api/v1/filter_stu_lass/",
                         type:"get",
                         data:{"school_id":{{ school_id }}, 'grade':grade},
                         success:function (data) {
@@ -90,15 +90,5 @@
             })
         });
 
-        // 获取url中的参数
-        function getQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 匹配目标参数
-            var result = window.location.search.substr(1).match(reg); // 对querystring匹配目标参数
-            if (result != null) {
-                return decodeURIComponent(result[2]);
-            } else {
-                return null;
-            }
-        }
     </script>
 {% endblock %}

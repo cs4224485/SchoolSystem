@@ -19,6 +19,8 @@ from APIS.views.entrance import *
 from rest_framework import routers
 from APIS.views.mental import *
 from APIS.views.school_info.timetable_api import *
+from APIS.views.filters import FilterSchoolByCity, FilterStuClass
+
 routers = routers.DefaultRouter()
 routers.register(r'student', StudentInfoViewSet)
 routers.register(r'health', HealthInfoViewSet)
@@ -36,5 +38,10 @@ urlpatterns = [
    re_path(r"(?P<version>[v1]+)/mental_info/$", AppointmentInfoViewSet.as_view({"get": "list"}), name='mental_info'),
    re_path(r"(?P<version>[v1]+)/per_class_stu/$", GetPerClassStudent.as_view({"get": "list"}), name='per_class_info'),
    re_path(r"(?P<version>[v1]+)/teacher_to_course/$", TeacherToCourseInfoViewSet.as_view()),
+   # 过滤学校
+   re_path(r"(?P<version>[v1]+)/filter_school/$", FilterSchoolByCity.as_view()),
+   # 根据年级过滤班级
+   re_path(r"(?P<version>[v1]+)/filter_stu_lass/$", FilterStuClass.as_view()),
    re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls))
+
 ]

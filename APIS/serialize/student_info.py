@@ -36,14 +36,14 @@ class HealthInfoSerializers(serializers.ModelSerializer):
     '''
 
     class Meta:
-        model = HealthInfo
+        model = HealthRecord
         exclude = ('record_date',)
         extra_kwargs = {'height': {"error_messages": {"required": "请输入身高", "max_whole_digits": "身高输入有误"}},
                         'weight': {"error_messages": {"required": "请输入体重", "max_whole_digits": "体重输入有误"}},
                         'vision_left': {"error_messages": {"required": "请输入左眼视力", "max_whole_digits": '视力输入有误'}},
                         'vision_right': {"error_messages": {"required": "请输入右眼视力", "max_whole_digits": '视力输入有误'}},
                         'vision_status': {"error_messages": {"required": "请选择视力状况"}},
-                        'blood_type': {"error_messages": {"required": '请选择血型'}}}
+                        }
 
 
 class AllergySerializers(serializers.ModelSerializer):

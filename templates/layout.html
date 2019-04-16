@@ -118,6 +118,7 @@
     });
 
     layui.use(['form', 'code'], function () {
+        // 通过位置过滤学校
         form = layui.form;
         layui.code();
         var param = common_ops.getUrlParam('area');
@@ -129,7 +130,6 @@
             var city = common_ops.getUrlParam('city');
             $('#x-city').xcity(province, city, param);
         }
-
         form.on('select(area)', function () {
             var area = $('#area').val();
             var city = $('#city').val();
@@ -149,7 +149,6 @@
                     window.location.href = currentUrl + 'province=' + province + '&' + 'city=' + city + '&' + 'area=' + area
                 }, 100)
             }
-
         });
     });
 
@@ -162,6 +161,7 @@
     });
 
     $('#reset').click(function () {
+        // 重置删除过滤学校的URL参数
         common_ops.delParama(['province', 'city', 'area'])
     })
 </script>

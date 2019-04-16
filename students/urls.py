@@ -1,5 +1,3 @@
-
-
 from django.urls import path, re_path
 from students.views import student_entrance
 

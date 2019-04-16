@@ -74,7 +74,7 @@ var common_ops = {
         var classData = '';
         if (grade != 0) {
             $.ajax({
-                url: "/stark/students/studentinfo/filter_class/",
+                url: "/api/v1/filter_stu_lass/",
                 type: "get",
                 async: false,
                 data: {"school_id": schoolId, 'grade': grade},
@@ -102,12 +102,14 @@ var common_ops = {
         })
     },
     getUrlParam: function (name) {
+        // 获取url中参数的值
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.toString().substr(1).match(reg);
         if (r != null) return decodeURI(r[2]);
         return null;
     },
     replaceParamVal: function (domain, obj) {
+        // 替换Url中参数的值
         var Url = domain.href.toString();
         for (var key in obj) {
             var re = eval('/(' + key + '=)([^&]*)/gi');
@@ -116,6 +118,7 @@ var common_ops = {
         return Url
     },
     delParama: function (keys) {
+        // 删除Url中的参数
         var search = window.location.search;
         var url = window.location.href;
         for (var j = 0; j <= keys.length; j++) {
@@ -123,7 +126,7 @@ var common_ops = {
                 search = search.substring(1);
                 var search_arr = search.split('&');
                 var url_arr = [];
-                var temp =  search_arr[keys[j]];
+                var temp = search_arr[keys[j]];
                 for (var i = 0; i < search_arr.length; i++) {
                     var temp = search_arr[i].split('=');
                     if (keys[j] === temp[0]) {
@@ -131,14 +134,15 @@ var common_ops = {
                         url_arr.splice(search_arr[i]);
                     }
                 }
-
             }
         }
         url = window.location.pathname + '?' + url_arr.join('&');
         window.location.href = url;
-    }
+    },
 
-};
+
+}
+;
 
 $(document).ready(function () {
     common_ops.init();

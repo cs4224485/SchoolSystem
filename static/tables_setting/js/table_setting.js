@@ -384,7 +384,7 @@ function createDate() {
 
     });
 
-    $('.content-area span').each(function (index) {
+    $('.contents span').each(function (index) {
         // 获取选中的字段信息
         var id = parseInt($(this).attr('id'));
         if (id) {
@@ -439,7 +439,7 @@ function operation() {
     // 保存和预览操作
     $('.actions').on('click', '#save,#preview', function () {
         var data = createDate();
-        console.log(data, 'data');
+        // console.log(data, 'data');
         var action = $(this).html();
         if (action == '保存') {
             if (check(data)) {
@@ -486,9 +486,9 @@ function sendData(data) {
         contentType: 'json',
         data: JSON.stringify({'data': data}),
         success: function (data) {
+            console.log(data)
             if (data.state) {
                 alert('保存成功');
-                console.log(data);
                 var nid = data.setting_obj_id;
                 location.href = '/stark/school/tablesettings/'+ nid +'/release/'
             }else {
@@ -509,9 +509,8 @@ function filterSchool() {
         var region = $('#region').val();
         var layer = $('#layer').val();
         if (province && city && region) {
-            console.log(province, city, region);
             $.ajax({
-                url: '/school/filter/',
+                url: '/api/v1/filter_school/',
                 type: 'get',
                 dataType: 'json',
                 data: {
@@ -521,7 +520,6 @@ function filterSchool() {
                     'layer': layer
                 },
                 success: function (data) {
-                    console.log('ok', data);
                     $('.school-range label').remove();
                     $.each(data['school_list'], function (index, item) {
                         var campus = item.campus_district;

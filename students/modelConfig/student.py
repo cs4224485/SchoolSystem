@@ -4,8 +4,6 @@ from stark.service.stark import StarkConfig, Option
 from django.utils.safestring import mark_safe
 from students.forms.student_form import StudentEditForm
 from django.urls import re_path
-from django.core import serializers
-from django.http import JsonResponse
 from utils.common import *
 
 
@@ -48,33 +46,6 @@ class StudentConfig(StarkConfig):
         ]
         urlpatterns.extend(self.extra_urls())
         return urlpatterns
-
-    def get_stu_class(self, request):
-        '''
-        根据年级过滤出学校的班级
-        :param request:
-        :return:
-        '''
-        school_id = request.GET.get('school_id')
-        grade = request.GET.get('grade', 7)
-        # 筛选出符合父级要求的所有子级，因为输出的是一个集合，需要将数据序列化 serializers.serialize（）
-        class_queryset = order_by_class(
-            list(models.StuClass.objects.filter(school=school_id, grade=grade).order_by('name')))
-        grade_queryset = models.Grade.objects.filter(stuclass__school_id=school_id).distinct()
-        grade_list = []
-        for item in grade_queryset:
-            grade_list.append({'id': item.id, 'grade': item.get_grade_name_display()})
-        stu_class = serializers.serialize("json", class_queryset)
-        # 判断是否存在，输出
-        if stu_class:
-            return JsonResponse({'stu_class': stu_class, 'grade_list': grade_list, 'code': 200})
-        else:
-            return JsonResponse({'stu_class': []})
-
-    def extra_urls(self):
-        temp = []
-        temp.append(re_path("filter_class/", self.get_stu_class))
-        return temp
 
     def get_list_display(self):
         val = super().get_list_display()

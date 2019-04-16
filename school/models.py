@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 
 # from students.models import StudentInfo
@@ -300,6 +301,7 @@ class TableSettings(models.Model):
     school_range = models.ManyToManyField('SchoolInfo', verbose_name='学校范围', related_name='setting')
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
     fill_range = models.ManyToManyField('ScopeOfFilling', verbose_name='填表范围')
+    notification = GenericRelation(to='weixinApp.IndexNotification')
 
     def __str__(self):
         return self.title
@@ -379,7 +381,7 @@ class ScopeOfFilling(models.Model):
     填表范围
     '''
 
-    range_choice = ((1, '老师'), (2, '家长'), (3, '学生'))
+    range_choice = ((1, '家长'), (2, '老师'), (3, '学生'))
     name = models.IntegerField(verbose_name='填表范围', choices=range_choice)
 
     def __str__(self):
