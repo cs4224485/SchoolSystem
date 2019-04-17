@@ -37,12 +37,10 @@ var relation = $.getUrlParam('relation');
             BloodTypeButton.addEventListener('tap', function (event) {
                 userPicker.show(function (items) {
                     BloodTypeButton.value = items[0].text;
-                    console.log(items[0].value);
                     personalState.blood_type = items[0].value
                 });
             }, false);
         }
-
 
         //视力情况
         var visionPicker = new $.PopPicker();
@@ -203,7 +201,9 @@ mui("#input_information").on('tap', '.Submission', function () {
     //window.location.href = "index2.html";
     let check = true;
     mui("#input_information input").each(function () {
-
+        if ($(this).hasClass('vision')){
+            return
+        }
         //若当前input为空，则alert提醒
         if (!this.value || this.value.trim() == "") {
             var label = this.previousElementSibling;
@@ -268,7 +268,7 @@ function num(obj,n) {
     obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
     if(n=="name"){
         if (obj.value > 5.3 || obj.value < 3.5) {
-        mui.alert("视力范围：3.5---5.3")
+        mui.alert("视力范围：3.5---5.3");
         obj.value = ""
          }
     }
@@ -276,6 +276,6 @@ function num(obj,n) {
 }
 
 $(window).click(function () {
-    $(".pop_Choice").hide()
+    $(".pop_Choice").hide();
     return false
 });
