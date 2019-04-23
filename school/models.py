@@ -52,6 +52,9 @@ class SchoolInfo(models.Model):
         else:
             return self.school_name
 
+    class Meta:
+        db_table = 'SchoolInfo'
+
 
 class Grade(models.Model):
     grade_choice = ((1, '一年级'), (2, '二年级'), (3, '三年级'), (4, '四年级'), (5, '五年级'), (6, '六年级'), (7, '初一'), (8, '初二')
@@ -60,6 +63,9 @@ class Grade(models.Model):
 
     def __str__(self):
         return self.get_grade_name_display()
+
+    class Meta:
+        db_table = 'Grade'
 
 
 class StuClass(models.Model):
@@ -74,6 +80,7 @@ class StuClass(models.Model):
         return "%s%s" % (self.grade, self.name)
 
     class Meta:
+        db_table = 'StuClass'
         unique_together = (("grade", "school", 'name'),)
 
 
@@ -83,6 +90,9 @@ class Community(models.Model):
     '''
     title = models.CharField(verbose_name='居委会', max_length=32)
 
+    class Meta:
+        db_table = 'Community'
+
 
 class System(models.Model):
     '''
@@ -90,6 +100,9 @@ class System(models.Model):
     如 西安交大附属中学、西安交大附属小学…
     '''
     title = models.CharField(verbose_name='系统名称', max_length=32)
+
+    class Meta:
+        db_table = 'System'
 
 
 class Group(models.Model):
@@ -99,12 +112,18 @@ class Group(models.Model):
     '''
     title = models.CharField(verbose_name='集团名称', max_length=32)
 
+    class Meta:
+        db_table = 'Group'
+
 
 class CompetentOrganization(models.Model):
     '''
     主管部门暂未使用
     '''
     title = models.CharField(verbose_name='主管部门', max_length=32)
+
+    class Meta:
+        db_table = 'CompetentOrganization'
 
 
 class Major(models.Model):
@@ -113,6 +132,9 @@ class Major(models.Model):
     '''
 
     title = models.CharField(verbose_name='专业名称', max_length=16)
+
+    class Meta:
+        db_table = 'Major'
 
 
 class SchoolHonor(models.Model):
@@ -124,6 +146,9 @@ class SchoolHonor(models.Model):
     title = models.CharField(verbose_name='荣誉名称', max_length=32)
     assessment = models.ForeignKey(verbose_name='评测机构', to='Assessment', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'SchoolHonor'
+
 
 class Assessment(models.Model):
     '''
@@ -131,6 +156,9 @@ class Assessment(models.Model):
     '''
 
     name = models.CharField(verbose_name='机构名称', max_length=32)
+
+    class Meta:
+        db_table = 'Assessment'
 
 
 class SchoolToHonor(models.Model):
@@ -142,6 +170,9 @@ class SchoolToHonor(models.Model):
     honor = models.ForeignKey(verbose_name='荣誉', to='SchoolHonor', on_delete=models.CASCADE)
     time = models.DateField(verbose_name='获取时间')
 
+    class Meta:
+        db_table = 'SchoolToHonor'
+
 
 class SchoolTitle(models.Model):
     '''
@@ -151,6 +182,9 @@ class SchoolTitle(models.Model):
 
     name = models.CharField(verbose_name='称号名称', max_length=32)
 
+    class Meta:
+        db_table = 'SchoolTitle'
+
 
 class SchoolToTitle(models.Model):
     '''
@@ -159,6 +193,9 @@ class SchoolToTitle(models.Model):
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
     title = models.ForeignKey(verbose_name='称号', to='SchoolTitle', on_delete=models.CASCADE)
     time = models.DateField(verbose_name='获取时间')
+
+    class Meta:
+        db_table = 'SchoolToTitle'
 
 
 class ScoreLine(models.Model):
@@ -174,6 +211,9 @@ class ScoreLine(models.Model):
     Year = models.IntegerField(verbose_name='年度', choices=year_choice)
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'ScoreLine'
+
 
 class SchoolBoundary(models.Model):
     '''
@@ -187,6 +227,9 @@ class SchoolBoundary(models.Model):
     Year = models.IntegerField(verbose_name='年度', choices=year_choice)
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'SchoolBoundary'
+
 
 class SchoolHistory(models.Model):
     '''
@@ -199,6 +242,9 @@ class SchoolHistory(models.Model):
     old_name = models.CharField(verbose_name='学校源名称', max_length=64)
     new_name = models.CharField(verbose_name='学校新名称', max_length=64)
     school = models.ForeignKey(verbose_name='学校', to='SchoolInfo', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'SchoolHistory'
 
 
 class SchoolCalendar(models.Model):
@@ -215,6 +261,9 @@ class SchoolCalendar(models.Model):
     def __str__(self):
         return "%s:%s" % (self.get_date_des_display(), self.date)
 
+    class Meta:
+        db_table = 'SchoolCalendar'
+
 
 class Course(models.Model):
     '''
@@ -227,6 +276,9 @@ class Course(models.Model):
 
     def __str__(self):
         return self.course_des
+
+    class Meta:
+        db_table = 'Course'
 
 
 class SchoolTimetable(models.Model):
@@ -256,6 +308,9 @@ class SchoolTimetable(models.Model):
         else:
             return '%s' % self.get_other_event_display()
 
+    class Meta:
+        db_table = 'SchoolTimetable'
+
 
 class SchoolTimeRange(models.Model):
     '''
@@ -264,6 +319,10 @@ class SchoolTimeRange(models.Model):
     start_time = models.TimeField(verbose_name='开始时间')
     end_time = models.TimeField(verbose_name='结束时间', null=True, blank=True)
     school = models.ForeignKey(to='SchoolInfo', verbose_name='学校', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'SchoolTimeRange'
+
 
 # ------------------------- 表单设置相关表  ---------------------------------
 
@@ -279,6 +338,9 @@ class ChoiceField(models.Model):
     def __str__(self):
         return self.fieldName
 
+    class Meta:
+        db_table = 'ChoiceField'
+
 
 class FieldType(models.Model):
     '''
@@ -289,6 +351,9 @@ class FieldType(models.Model):
 
     def __str__(self):
         return self.get_name_display()
+
+    class Meta:
+        db_table = 'FieldType'
 
 
 class TableSettings(models.Model):
@@ -302,9 +367,15 @@ class TableSettings(models.Model):
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
     fill_range = models.ManyToManyField('ScopeOfFilling', verbose_name='填表范围')
     notification = GenericRelation(to='weixinApp.IndexNotification')
+    status_choice = ((1, '已发布'), (2, '未发布'))
+    status = models.SmallIntegerField(verbose_name='状态', choices=status_choice, default=1)
+    description = models.TextField(verbose_name='表单描述', default=None, null=True, blank=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'TableSettings'
 
 
 class SettingToField(models.Model):
@@ -314,8 +385,11 @@ class SettingToField(models.Model):
     setting = models.ForeignKey(verbose_name='设置信息', to='TableSettings', on_delete=models.CASCADE)
     fields = models.ForeignKey(verbose_name='字段', to='ChoiceField', on_delete=models.CASCADE)
     order = models.IntegerField(verbose_name='排序')
+    required_choice = ((1, '必填'), (2, '选填'))
+    is_required = models.SmallIntegerField(verbose_name='是否必填', default=1, choices=required_choice)
 
     class Meta:
+        db_table = 'SettingToField'
         unique_together = (('setting', 'fields'),)
 
 
@@ -326,9 +400,14 @@ class ScaleSetting(models.Model):
     title = models.CharField(verbose_name='量表标题', max_length=64)
     setting_table = models.ForeignKey(to='TableSettings', verbose_name='对应的表单', on_delete=models.CASCADE,
                                       related_name='scale')
+    required_choice = ((1, '必填'), (2, '选填'))
+    is_required = models.SmallIntegerField(verbose_name='是否必填', default=1, choices=required_choice)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'ScaleSetting'
 
 
 class ScaleOptionDes(models.Model):
@@ -343,6 +422,9 @@ class ScaleOptionDes(models.Model):
     def __str__(self):
         return self.des
 
+    class Meta:
+        db_table = 'ScaleOptionDes'
+
 
 class ScaleLineTitle(models.Model):
     '''
@@ -351,6 +433,9 @@ class ScaleLineTitle(models.Model):
     scale_table = models.ForeignKey(to='ScaleSetting', verbose_name='对应的量表', on_delete=models.CASCADE,
                                     related_name='line_title')
     des = models.CharField(verbose_name='量表行标题', max_length=64)
+
+    class Meta:
+        db_table = 'ScaleLineTitle'
 
 
 class ChoiceTable(models.Model):
@@ -362,9 +447,14 @@ class ChoiceTable(models.Model):
                                       related_name='choice')
     choice_type_choice = ((1, '单选'), (2, '多选'))
     choice_type = models.PositiveIntegerField(verbose_name='单选或多选', choices=choice_type_choice)
+    required_choice = ((1, '必填'), (2, '选填'))
+    is_required = models.SmallIntegerField(verbose_name='是否必填', default=1, choices=required_choice)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'ChoiceTable'
 
 
 class ChoiceOptionsDes(models.Model):
@@ -374,6 +464,9 @@ class ChoiceOptionsDes(models.Model):
 
     def __str__(self):
         return self.des
+
+    class Meta:
+        db_table = 'ChoiceOptionsDes'
 
 
 class ScopeOfFilling(models.Model):
@@ -387,6 +480,9 @@ class ScopeOfFilling(models.Model):
     def __str__(self):
         return self.get_name_display()
 
+    class Meta:
+        db_table = 'ScopeOfFilling'
+
 
 class TableInfo(models.Model):
     '''
@@ -397,7 +493,10 @@ class TableInfo(models.Model):
     finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
     student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CASCADE,
                                 related_name='for_student')
+
     # teacher = models.ForeignKey(to='TeacherInfo', verbose_name='填表老师', on_delete=models.CharField)
+    class Meta:
+        db_table = 'TableInfo'
 
 
 class WXappSettings(models.Model):
@@ -410,3 +509,6 @@ class WXappSettings(models.Model):
     background_img = models.FileField(upload_to='school/wx/background/')
     status_choice = ((1, '正常'), (2, '关闭'))
     status = models.SmallIntegerField(verbose_name='小程序状态', choices=status_choice, default=1)
+
+    class Meta:
+        db_table = 'WXappSettings'

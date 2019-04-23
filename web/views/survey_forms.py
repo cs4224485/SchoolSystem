@@ -97,8 +97,8 @@ class TableSettingsConfig(StarkConfig):
         for i in range(1, 5):
             field_dict[field_type[i - 1]] = models.SettingToField.objects.filter(setting=setting_obj,
                                                                                  fields__field_type=i).values(
-                'fields__fieldName', 'fields__pk').order_by('order')
-        selected_fields = json.dumps(list(setting_obj.settingtofield_set.values_list('fields__fieldName', )))
+                'fields__fieldName', 'fields__pk', 'is_required').order_by('order')
+        selected_fields = json.dumps(list(setting_obj.settingtofield_set.values_list('fields__fieldName')))
         # 填表范围信息
         scope_of_filling = models.ScopeOfFilling.objects.all()
         # 矩阵表信息

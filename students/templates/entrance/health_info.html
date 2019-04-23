@@ -38,16 +38,16 @@
         {% for hel_field in hel_field_list %}
             {% if hel_field.fields__fieldName == "身高" %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>现在身高：</label>
-                    <input type="number" name="height" class="mui-input-clear" placeholder="请输入身高" id="statureHeight"
+                    <label>现在身高{% if hel_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="number" name="height" class="mui-input-clear {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="请输入身高" id="statureHeight"
                            onkeyup="num(this,'')"
                            size="6">
                     <div class="right_pop flex_center">厘米</div>
                 </div>
             {% elif hel_field.fields__fieldName == "体重" %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>现在体重：</label>
-                    <input type="number" name="weight" class="mui-input-clear" placeholder="请输入体重" id="weight" onkeyup="num(this,'')"
+                    <label>现在体重{% if hel_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="number" name="weight" class="mui-input-clear {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="请输入体重" id="weight" onkeyup="num(this,'')"
                            size="6">
                     <div class="right_pop flex_center">公斤</div>
                 </div>
@@ -63,17 +63,17 @@
             {% elif hel_field.fields__fieldName == "视力" %}
                 <div class="mui-input-row flex_center box_sizing">
                     <label>左眼：</label>
-                    <input type="number" name="vision_left" class="mui-input-clear vision" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
+                    <input type="number" name="vision_left" class="mui-input-clear vision {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
                 </div>
                 <div class="mui-input-row flex_center box_sizing">
                     <label>右眼：</label>
-                    <input type="number" name="vision_right" class="mui-input-clear vision" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
+                    <input type="number" name="vision_right" class="mui-input-clear vision {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
                 </div>
 
             {% elif hel_field.fields__fieldName == '视力状况' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>视力情况：</label>
-                    <input  type="text" name="vision_status" class="mui-input-clear" placeholder="请选择视力情况" id="visionType" readonly="readonly"
+                    <label>视力情况{% if hel_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input  type="text" name="vision_status" class="mui-input-clear {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="请选择视力情况" id="visionType" readonly="readonly"
                            data-input-clear="4"><span class="mui-icon mui-icon-clear mui-hidden"></span>
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
@@ -82,19 +82,19 @@
             {% elif hel_field.fields__fieldName == '过敏源' %}
                 <div class="mui-input-row flex_center box_sizing allergy">
                     <label>过敏源：</label>
-                    <input type="text" name="allergy" class="" value="无" data-id="" id="allergy" readonly="readonly">
+                    <input type="text" name="allergy" class="{% if hel_field.is_required == 1 %} required{% endif %}" value="无" data-id="" id="allergy" readonly="readonly">
                     <div class="right_pop flex_center">选择过敏源<span class="mui-icon mui-icon-arrowright"></span></div>
                 </div>
             {% elif hel_field.fields__fieldName == '遗传病' %}
                 <div class="mui-input-row flex_center box_sizing inheritance">
                     <label>遗传和曾患疾病：</label>
-                    <input type="text" name="InheritedDisease" class="" value="无" data-id="" id="InheritedDisease" readonly="readonly">
+                    <input type="text" name="InheritedDisease" class="{% if hel_field.is_required == 1 %} required{% endif %}" value="无" data-id="" id="InheritedDisease" readonly="readonly">
                     <div class="right_pop flex_center">选择<span class="mui-icon mui-icon-arrowright"></span></div>
                 </div>
             {% elif  hel_field.fields__fieldName == '血型' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>血型：</label>
-                    <input type="text" name="blood_type" class="mui-input-clear" placeholder="请选择血型" id='BloodType' readonly="readonly">
+                    <label>血型{% if hel_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" name="blood_type" class="mui-input-clear {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="请选择血型" id='BloodType' readonly="readonly">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
@@ -102,7 +102,7 @@
             {% elif hel_field.fields__fieldName == '残疾状况' %}
                 <div class="mui-input-row flex_center box_sizing">
                     <label>残疾状况：</label>
-                    <input type="text" value="无" name="disability" class="mui-input-clear" placeholder="请选择" id='disabilityType' readonly="readonly"
+                    <input type="text" value="无" name="disability" class="mui-input-clear {% if hel_field.is_required == 1 %} required{% endif %}" placeholder="请选择" id='disabilityType' readonly="readonly"
                            data-id="1">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>

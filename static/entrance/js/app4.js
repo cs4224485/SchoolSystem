@@ -124,7 +124,10 @@ function formFunctionTap() {
 mui("#input_information").on('tap', '.Submission', function () {
     let check = true;
     mui("#input_information input").each(function () {
-
+        var required = $(this).hasClass('required');
+        if (!required) {
+            return
+        }
         //若当前input为空，则alert提醒
         if (!this.value || this.value.trim() == "") {
             var label = this.previousElementSibling;
@@ -380,36 +383,36 @@ $("#input_information").on("click", ".btnClose", function (e) {
 
 if (relation != "" && relation != null) {
 
-        switch (relation) {
-            case "1":
-                addHtmls("父亲")
-                break;
-            case "2":
-                addHtmls("母亲")
-                break;
-            case "3":
-                addHtmls("爷爷")
-                break;
-            case "4":
-                addHtmls("奶奶")
-                break;
-            case "5":
-                addHtmls("外公")
-                break;
-            case "6":
-                addHtmls("外婆")
-                break;
-                break;
-            case "7":
-                addHtmls("其他亲属")
-                break;
-            default:
-
-        }
-    }
-
-    function addHtmls(name) {
-        $("#input_information").find(".mui-navigate-right").eq(0).find("span").text(name)
-        $("#input_information").find(".mui-navigate-right").eq(0).attr("data-name", name)
+    switch (relation) {
+        case "1":
+            addHtmls("父亲")
+            break;
+        case "2":
+            addHtmls("母亲")
+            break;
+        case "3":
+            addHtmls("爷爷")
+            break;
+        case "4":
+            addHtmls("奶奶")
+            break;
+        case "5":
+            addHtmls("外公")
+            break;
+        case "6":
+            addHtmls("外婆")
+            break;
+            break;
+        case "7":
+            addHtmls("其他亲属")
+            break;
+        default:
 
     }
+}
+
+function addHtmls(name) {
+    $("#input_information").find(".mui-navigate-right").eq(0).find("span").text(name)
+    $("#input_information").find(".mui-navigate-right").eq(0).attr("data-name", name)
+
+}

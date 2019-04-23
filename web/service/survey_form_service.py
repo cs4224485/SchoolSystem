@@ -34,7 +34,9 @@ class SurveyFormService(object):
         temp = []
         index = 1
         for field in self.data['choiceFieldId']:
-            obj = models.SettingToField(setting=setting_obj, fields_id=int(field), order=index)
+            field_id = field.get('id')
+            required = field.get('required')
+            obj = models.SettingToField(setting=setting_obj, fields_id=int(field_id), is_required=required, order=index)
             temp.append(obj)
             index += 1
         models.SettingToField.objects.bulk_create(temp)
@@ -100,21 +102,32 @@ class SurveyFormService(object):
         # 更新填表范围
         setting_obj.fill_range.set(fill_range)
         # 更新设置信息
-        setting_queryset.update(title=self.data['title'], stat_time=self.data['statTime'], end_time=self.data['endTime'])
+        setting_queryset.update(title=self.data['title'], stat_time=self.data['statTime'],
+                                end_time=self.data['endTime'])
         # 更新选中的字段
-        new_fields_ids = [int(field_id) for field_id in self.data.get('choiceFieldId')]
+        fields = self.data.get('choiceFieldId')
+        new_fields = [{'id': int(field.get('id')), 'required': field.get('required')} for field in fields]
+        new_fields_ids = [int(field.get('id')) for field in fields]
         old_fields = models.SettingToField.objects.filter(setting=setting_obj).all().distinct().order_by('order')
         old_fields_ids = [item.fields.pk for item in old_fields]
         temp = []
-        for field in new_fields_ids:
-            index = new_fields_ids.index(field)
-            if field not in old_fields_ids:
-                obj = models.SettingToField.objects.create(setting=setting_obj, fields_id=int(field), order=index)
+        for field in new_fields:
+            field_id = field.get('id')
+            required = int(field.get('required'))
+            index = new_fields.index(field)
+            if field_id not in old_fields_ids:
+                obj = models.SettingToField.objects.create(setting=setting_obj, fields_id=int(field_id), order=index,
+                                                           is_required=required)
                 temp.append(obj)
                 temp.append(obj.pk)
-            elif index != old_fields_ids.index(field):
-                models.SettingToField.objects.filter(setting=setting_obj, fields_id=int(field)).update(
-                    order=index)
+            elif index != old_fields_ids.index(field_id):
+                models.SettingToField.objects.filter(setting=setting_obj, fields_id=int(field_id)).update(order=index)
+            # 更新必填选填
+            query = models.SettingToField.objects.filter(fields=field_id)
+            obj_required = query.values('is_required').first()
+            if required != obj_required.get('is_required'):
+                query.update(is_required=required)
+
         new_fields_ids.extend(temp)
         del_fields = list(set(old_fields_ids).difference(new_fields_ids))
         for item in del_fields:

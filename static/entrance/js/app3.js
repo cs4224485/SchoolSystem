@@ -139,14 +139,17 @@ mui(".FamilyBox").on('tap', '.flex', function () {
         $(".FamilyBox .isno").removeClass("addFamilybj");
         $(".FamilyBox .isno").attr("data-choose", false)
     }
-})
+});
 
 //			下一步
 mui("#input_information").on('tap', '.Submission', function () {
     //window.location.href = "index2.html";
     let check;
     mui("#input_information input").each(function () {
-
+        var required = $(this).hasClass('required');
+        if(!required){
+            return
+        }
         //若当前input为空，则alert提醒
         if (!this.value || this.value.trim() == "") {
             var label = this.previousElementSibling;
@@ -158,7 +161,7 @@ mui("#input_information").on('tap', '.Submission', function () {
         check = true;
     }); //校验通过，继续执行业务逻辑
     if (check) {
-        mui.alert('验证通过!')
+        mui.alert('验证通过!');
         //获取家庭关系
         let FamilyText = [];
         mui("#input_information .FamilyBox .flex").each(function (e) {
@@ -208,7 +211,7 @@ mui("#input_information").on('tap', '.Submission', function () {
             }
         })
 
-        console.log(input[0].element.value)
+
     }
 
 })

@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="{% static 'stark/plugins/bootstrap/css/bootstrap.css' %} "/>
     <link rel="stylesheet" href="{% static 'stark/plugins/font-awesome/css/font-awesome.css' %} "/>
     <!-- Custom Styles-->
-
     <link rel="stylesheet" href="{% static 'xadmin/css/font.css' %}">
     <link rel="stylesheet" href="{% static 'xadmin/css/xadmin.css' %}">
-
-
     <link href="{% static 'plug/iCheck/skins/flat/blue.css' %}" rel="stylesheet">
     <style>
 
@@ -107,6 +104,7 @@
 <script type="text/javascript" src="{% static 'xadmin/js/cookie.js' %}" charset="utf-8"></script>
 <script type="text/javascript" src="{% static 'pub/js/common.js' %}"></script>
 <script src="{% static 'stark/plugins/bootstrap/js/bootstrap.js' %} "></script>
+<script src="{% static 'rbac/js/rbac.js' %} "></script>
 {% block js %}
 {% endblock %}
 <script>
@@ -152,6 +150,7 @@
             }
         });
     });
+    // 点击layui生成radio时更新input值
 
     layui.use('laydate', function () {
         var laydate = layui.laydate;

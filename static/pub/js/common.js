@@ -1,151 +1,152 @@
 ;
 var common_ops = {
-    init: function () {
-    },
-    confirm: function (msg, callback) {
-        callback = (callback != undefined) ? callback : {'ok': null, 'cancel': null};
-        layer.confirm(msg, {
-            btn: ['确定', '取消'] //按钮
-        }, function (index) {
-            //确定事件
-            if (typeof callback.ok == "function") {
-                callback.ok();
+        init: function () {
+        },
+        confirm: function (msg, callback) {
+            callback = (callback != undefined) ? callback : {'ok': null, 'cancel': null};
+            layer.confirm(msg, {
+                btn: ['确定', '取消'] //按钮
+            }, function (index) {
+                //确定事件
+                if (typeof callback.ok == "function") {
+                    callback.ok();
+                }
+                layer.close(index);
+            }, function (index) {
+                //取消事件
+                if (typeof callback.cancel == "function") {
+                    callback.cancel();
+                }
+                layer.close(index);
+            });
+        },
+        tip: function (msg, target) {
+            layer.tips(msg, target, {
+                tips: [3, '#e5004f']
+            });
+            $('html, body').animate({
+                scrollTop: target.offset().top - 10
+            }, 100);
+        },
+        buildUrl: function (path, params) {
+            var url = "" + path;
+            var _paramUrl = "";
+            if (params) {
+                _paramUrl = Object.keys(params).map(function (k) {
+                    return [encodeURIComponent(k), encodeURIComponent(params[k])].join("=");
+                }).join("&");
+                _paramUrl = "?" + _paramUrl;
             }
-            layer.close(index);
-        }, function (index) {
-            //取消事件
-            if (typeof callback.cancel == "function") {
-                callback.cancel();
-            }
-            layer.close(index);
-        });
-    },
-    tip: function (msg, target) {
-        layer.tips(msg, target, {
-            tips: [3, '#e5004f']
-        });
-        $('html, body').animate({
-            scrollTop: target.offset().top - 10
-        }, 100);
-    },
-    buildUrl: function (path, params) {
-        var url = "" + path;
-        var _paramUrl = "";
-        if (params) {
-            _paramUrl = Object.keys(params).map(function (k) {
-                return [encodeURIComponent(k), encodeURIComponent(params[k])].join("=");
-            }).join("&");
-            _paramUrl = "?" + _paramUrl;
-        }
-        return url + _paramUrl;
-    },
-    buildPicUrl: function (img_key) {
-        var domain = $(".hidden_layout_wrap input[name=domain]").val();
-        var prefix_url = $(".hidden_layout_wrap input[name=prefix_url]").val();
-        return domain + prefix_url + img_key;
-    },
-    orderClass: function (targetset, target) {
-        targetset.each(function () {
-            // 根据班级名称排序
-            var perClass = $(this).find(target);
-            var classCount = perClass.length;
-            var reg = /\d+/;
+            return url + _paramUrl;
+        },
+        buildPicUrl: function (img_key) {
+            var domain = $(".hidden_layout_wrap input[name=domain]").val();
+            var prefix_url = $(".hidden_layout_wrap input[name=prefix_url]").val();
+            return domain + prefix_url + img_key;
+        },
+        orderClass: function (targetset, target) {
+            targetset.each(function () {
+                // 根据班级名称排序
+                var perClass = $(this).find(target);
+                var classCount = perClass.length;
+                var reg = /\d+/;
 
-            for (let i = 0; i < classCount - 1; i++) {
-                for (let j = 0; j < classCount - i - 1; j++) {
-                    var nextClass = $(perClass[j + 1]).find('span').first().html();
-                    if (reg.test(nextClass)) {
-                        var nextClassNum = parseInt(reg.exec(nextClass)[0]);
-                        var classNum = parseInt(reg.exec($(perClass[j]).find('span').first().html())[0]);
-                        if (classNum > nextClassNum) {
-                            $(perClass[j + 1]).after(perClass[j]);
-                            perClass = $(this).find(target)
+                for (let i = 0; i < classCount - 1; i++) {
+                    for (let j = 0; j < classCount - i - 1; j++) {
+                        var nextClass = $(perClass[j + 1]).find('span').first().html();
+                        if (reg.test(nextClass)) {
+                            var nextClassNum = parseInt(reg.exec(nextClass)[0]);
+                            var classNum = parseInt(reg.exec($(perClass[j]).find('span').first().html())[0]);
+                            if (classNum > nextClassNum) {
+                                $(perClass[j + 1]).after(perClass[j]);
+                                perClass = $(this).find(target)
+                            }
+                        }
+                    }
+                }
+            })
+        },
+        getStudentClass: function (schoolId, grade) {
+            // 根据学校和年级过滤班级
+            if (parseInt(grade) === 0 || !grade) {
+                grade = 7  // 7代表1年级
+            }
+            var classData = '';
+            if (grade != 0) {
+                $.ajax({
+                    url: "/api/v1/filter_stu_lass/",
+                    type: "get",
+                    async: false,
+                    data: {"school_id": schoolId, 'grade': grade},
+                    success: function (data) {
+                        classData = data;
+                    }
+                })
+            }
+            return classData
+        },
+        IsInArray: function (arr, val) {
+            // 判断字段是否被选中
+            var testStr = ',' + arr.join(",") + ",";
+            return testStr.indexOf("," + val + ",") != -1;
+        },
+        bindChangePicture: function (id) {
+            // 预览上传的图片
+            $("#" + id).change(function () {
+                var file_obj = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file_obj);
+                reader.onload = function () {
+                    $("#" + id + "_img").attr("src", reader.result)
+                };
+            })
+        },
+        getUrlParam: function (name) {
+            // 获取url中参数的值
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.toString().substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        },
+        replaceParamVal: function (domain, obj) {
+            // 替换Url中参数的值
+            var Url = domain.href.toString();
+            for (var key in obj) {
+                var re = eval('/(' + key + '=)([^&]*)/gi');
+                Url = Url.replace(re, key + '=' + obj[key]);
+            }
+            return Url
+        },
+        delParama: function (keys) {
+            // 删除Url中的参数
+            var search = window.location.search;
+            var url = window.location.href;
+            for (var j = 0; j <= keys.length; j++) {
+                if (search.indexOf(keys[j]) != -1) {
+                    search = search.substring(1);
+                    var search_arr = search.split('&');
+                    var url_arr = [];
+                    var temp = search_arr[keys[j]];
+                    for (var i = 0; i < search_arr.length; i++) {
+                        var temp = search_arr[i].split('=');
+                        if (keys[j] === temp[0]) {
+                            console.log(keys[j], temp[0], '111');
+                            url_arr.splice(search_arr[i]);
                         }
                     }
                 }
             }
-        })
-    },
-    getStudentClass: function (schoolId, grade) {
-        // 根据学校和年级过滤班级
-        if (parseInt(grade) === 0 || !grade) {
-            grade = 7  // 7代表1年级
-        }
-        var classData = '';
-        if (grade != 0) {
-            $.ajax({
-                url: "/api/v1/filter_stu_lass/",
-                type: "get",
-                async: false,
-                data: {"school_id": schoolId, 'grade': grade},
-                success: function (data) {
-                    classData = data;
-                }
-            })
-        }
-        return classData
-    },
-    IsInArray: function (arr, val) {
-        // 判断字段是否被选中
-        var testStr = ',' + arr.join(",") + ",";
-        return testStr.indexOf("," + val + ",") != -1;
-    },
-    bindChangePicture: function (id) {
-        // 预览上传的图片
-        $("#" + id).change(function () {
-            var file_obj = $(this)[0].files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file_obj);
-            reader.onload = function () {
-                $("#" + id + "_img").attr("src", reader.result)
-            };
-        })
-    },
-    getUrlParam: function (name) {
-        // 获取url中参数的值
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        var r = window.location.search.toString().substr(1).match(reg);
-        if (r != null) return decodeURI(r[2]);
-        return null;
-    },
-    replaceParamVal: function (domain, obj) {
-        // 替换Url中参数的值
-        var Url = domain.href.toString();
-        for (var key in obj) {
-            var re = eval('/(' + key + '=)([^&]*)/gi');
-            Url = Url.replace(re, key + '=' + obj[key]);
-        }
-        return Url
-    },
-    delParama: function (keys) {
-        // 删除Url中的参数
-        var search = window.location.search;
-        var url = window.location.href;
-        for (var j = 0; j <= keys.length; j++) {
-            if (search.indexOf(keys[j]) != -1) {
-                search = search.substring(1);
-                var search_arr = search.split('&');
-                var url_arr = [];
-                var temp = search_arr[keys[j]];
-                for (var i = 0; i < search_arr.length; i++) {
-                    var temp = search_arr[i].split('=');
-                    if (keys[j] === temp[0]) {
-                        console.log(keys[j], temp[0], '111');
-                        url_arr.splice(search_arr[i]);
-                    }
-                }
-            }
-        }
-        url = window.location.pathname + '?' + url_arr.join('&');
-        window.location.href = url;
-    },
+            url = window.location.pathname;
+            window.location.href = url;
+        },
 
 
-}
+    }
 ;
 
 $(document).ready(function () {
     common_ops.init();
+
 });
 
 // 对Date的扩展，将 Date 转化为指定格式的String

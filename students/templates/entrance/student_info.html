@@ -78,19 +78,19 @@
                 </div>
             {% elif field.fields__fieldName == '姓名' %}
                 <div class="mui-input-row flex_center box_sizing" id="zw_x">
-                    <label>中文姓：</label>
-                    <input type="text" id="last_name" class="mui-input-clear" placeholder="请输入用户名"
+                    <label>中文姓{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" id="last_name"  class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" placeholder="请输入用户名"
                            onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,'')" value="{{ student_obj.last_name }}">
                 </div>
                 <div class="mui-input-row flex_center box_sizing" id="zw_m">
-                    <label>中文名：</label>
-                    <input type="text" id="first_name" class="mui-input-clear" placeholder="请输入用户名"
+                    <label>中文名{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" id="first_name" class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" placeholder="请输入用户名"
                            onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,'')" value="{{ student_obj.first_name }}">
                 </div>
                 <div class="mui-input-row flex_center box_sizing" id="isName">
-                    <label>姓名：<br>
+                    <label>姓名{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：<br>
                         <span>name</span></label>
-                    <input type="text" id="name" class="mui-input-clear" placeholder="e.g.,Terry Rossio"
+                    <input type="text" id="name"  class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" placeholder="e.g.,Terry Rossio"
                            onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,'')" value="{{ student_obj.full_name }}">
                 </div>
             {% elif field.fields__fieldName == '照片' %}
@@ -104,8 +104,8 @@
                 </div>
             {% elif field.fields__fieldName == '性别' %}
                 <div class="mui-input-row flex_center box_sizing ">
-                    <label>性别：</label>
-                    <input type="text"  class="mui-input-clear" value="{{ student_obj.gender }}" id="gender">
+                    <label>性别{% if field.is_required == 1 %}<span>(必选)</span>{% else%}<span></span>{% endif %}：</label>
+                    <input type="text"  class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" value="{{ student_obj.gender }}" id="gender">
                     <div class="positionSex">
                         <img src="{% static 'entrance/images/male.png' %}" alt="" class="act" data-sex="1"/>
                         <img src="{% static 'entrance/images/female2.png' %}" alt="" data-sex="2"/>
@@ -113,27 +113,26 @@
                 </div>
             {% elif field.fields__fieldName == '身份证' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>身份证：</label>
-                    <input class="mui-input-clear" placeholder="请填写身份证号码" maxlength="18" id="id_card"
-                           onblur="isIDCard(this.value);">
+                    <label>身份证{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}"  placeholder="请填写身份证号码" maxlength="18" id="id_card">
                 </div>
             {% elif field.fields__fieldName == '民族' %}
                 <div class="mui-input-row flex_center box_sizing Nation" id="isNation">
-                    <label>民族：</label>
-                    <input type="text" class="" readonly="readonly" id="nation" value="汉族">
+                    <label>民族{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" class="{% if field.is_required == 1 %} required{% endif %}" readonly="readonly" id="nation" value="汉族">
                     <div class="right_pop flex_center">选择民族<span class="mui-icon mui-icon-arrowright"></span></div>
                 </div>
 
             {% elif field.fields__fieldName == '毕业园校' %}
                 <div class="mui-input-row flex_center box_sizing"  id="MschooiInput">
-                    <label>毕业园所：</label>
-                    <input type="text" class="mui-input-clear" placeholder="请填写毕业院校" data-id=""
+                    <label>毕业园所{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" placeholder="请填写毕业院校" data-id=""
                            onkeyup="school(this)" id="graduate_institutions">
                 </div>
             {% elif field.fields__fieldName == '户籍' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>户籍所在地：</label>
-                    <input type="text" class="mui-input-clear" placeholder="请选择户籍所在地" id='householdRegister'>
+                    <label>户籍所在地{% if field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear {% if field.is_required == 1 %} required{% endif %}" placeholder="请选择户籍所在地" id='householdRegister'>
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                         <div id='userResult' class="ui-alert" style="display: none;"></div>
@@ -141,8 +140,8 @@
                 </div>
             {% elif field.fields__fieldName == '生日' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>生日：</label>
-                    <input type="text" class="mui-input-clear Birthday" id='birthday'
+                    <label>生日{% if field.is_required == 1 %}<span data-name="required">(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear Birthday {% if field.is_required == 1 %} required{% endif %}" id='birthday'
                            data-options='{"type":"date","beginYear":"1990","endYear":""}'
                            placeholder="请选择日期" value="{{ student_obj.birthday|date:"Y-m-d"  }}">
                 </div>

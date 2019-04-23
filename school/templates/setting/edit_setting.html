@@ -92,6 +92,10 @@
                 <div class="panel-body body stu-info" id="" style="margin-top: 20px">
                     <div class="choice-wrap item">
                         <p class="is_choice"><span name='2' id='2'>国籍</span></p>
+                        <form class="layui-form" style="float: left; margin-left: 80px">
+                            <input type="radio" checked=checked name="required" value="1" title="必填">
+                            <input type="radio" name="required" value="2" title="选填">
+                        </form>
                         <div class="edit-bar">
                             <a class="move-up">上移</a>
                             <a class="move-down">下移</a>
@@ -100,6 +104,10 @@
 
                     <div class="choice-wrap item">
                         <p class="is_choice"><span name='10' id='10'>姓名</span></p>
+                        <form class="layui-form" style="float: left; margin-left: 80px">
+                            <input type="radio" checked=checked name="required" value="1" title="必填">
+                            <input type="radio" name="required" value="2" title="选填">
+                        </form>
                         <div class="edit-bar">
                             <a class="move-up">上移</a>
                             <a class="move-down">下移</a>
@@ -108,9 +116,16 @@
                     {% for stu_field in tb_info.field_dic.stu_field_list %}
                         {% if stu_field.fields__fieldName == '姓名' or stu_field.fields__fieldName == '国籍' %}
                         {% else %}
-                            <div class="choice-wrap item">
+                            <div class="choice-wrap item ">
                                 <p class="is_choice"><span
-                                        id='{{ stu_field.fields__pk }}'>{{ stu_field.fields__fieldName }}</span></p>
+                                        id='{{ stu_field.fields__pk }}'>{{ stu_field.fields__fieldName }}</span>
+                                </p>
+                                <form class="layui-form" style="float: left; margin-left: 80px">
+                                    <input type="radio" {% if stu_field.is_required == 1 %} checked=checked {% endif %}
+                                           name="required" value="1" title="必填">
+                                    <input type="radio" {% if stu_field.is_required == 2 %} checked=checked {% endif %}
+                                           name="required" value="2" title="选填">
+                                </form>
                                 <div class="edit-bar">
                                     <a class="move-up">上移</a>
                                     <a class="move-down">下移</a>
@@ -133,6 +148,12 @@
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ hel_field.fields__pk }}'>{{ hel_field.fields__fieldName }}</span></p>
+                            <form class="layui-form" style="float: left; margin-left: 80px">
+                                <input type="radio" {% if hel_field.is_required == 1 %} checked=checked {% endif %}
+                                       name="required" value="1" title="必填">
+                                <input type="radio" {% if hel_field.is_required == 2 %} checked=checked {% endif %}
+                                       name="required" value="2" title="选填">
+                            </form>
                             <div class="edit-bar">
                                 <a class="move-up">上移</a>
                                 <a class="move-down">下移</a>
@@ -154,6 +175,12 @@
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ fam_field.fields__pk }}'>{{ fam_field.fields__fieldName }}</span></p>
+                            <form class="layui-form" style="float: left; margin-left: 80px">
+                                <input type="radio" {% if fam_field.is_required == 1 %} checked=checked {% endif %}
+                                       name="required" value="1" title="必填">
+                                <input type="radio" {% if fam_field.is_required == 2 %} checked=checked {% endif %}
+                                       name="required" value="2" title="选填">
+                            </form>
                             <div class="edit-bar">
                                 <a class="move-up">上移</a>
                                 <a class="move-down">下移</a>
@@ -175,6 +202,12 @@
                         <div class="choice-wrap item">
                             <p class="is_choice"><span
                                     id='{{ par_field.fields__pk }}'>{{ par_field.fields__fieldName }}</span></p>
+                            <form class="layui-form" style="float: left; margin-left: 80px">
+                                <input type="radio" {% if par_field.is_required == 1 %} checked=checked {% endif %}
+                                       name="required" value="1" title="必填">
+                                <input type="radio" {% if par_field.is_required == 2 %} checked=checked {% endif %}
+                                       name="required" value="2" title="选填">
+                            </form>
                             <div class="edit-bar">
                                 <a class="move-up">上移</a>
                                 <a class="move-down">下移</a>
@@ -204,7 +237,8 @@
                                         <tr>
                                             <td class="des"></td>
                                             {% for option_des in item.options.all %}
-                                                <td align="center" class="des" optins-id="{{ option_des.pk }}">{{ option_des.des }}</td>
+                                                <td align="center" class="des"
+                                                    optins-id="{{ option_des.pk }}">{{ option_des.des }}</td>
                                             {% endfor %}
 
                                         </tr>
@@ -221,7 +255,8 @@
                                         {% for titel in item.line_title.all %}
                                             <tr>
                                                 <th align="left"
-                                                    style="border-bottom: 1px solid #efefef" line-title-id="{{ titel.pk }}">{{ titel.des }}</th>
+                                                    style="border-bottom: 1px solid #efefef"
+                                                    line-title-id="{{ titel.pk }}">{{ titel.des }}</th>
                                                 <td style="border-bottom: 1px solid #efefef" align="center">
                                                     <a href="###" class="jqRadio" style="position:static;"></a>
                                                     <input style="display: none" type="radio">
@@ -332,7 +367,8 @@
                                             {% for des in item.opdes.all %}
                                                 <li style="width: 99%" class="op-des">
                                                     <a href="###" class="jqRadio" style="position: static"></a>
-                                                    <label style="vertical-align:middle;padding-left:2px;" option-id="{{ des.pk }}">{{ des.des }}</label>
+                                                    <label style="vertical-align:middle;padding-left:2px;"
+                                                           option-id="{{ des.pk }}">{{ des.des }}</label>
                                                 </li>
                                             {% endfor %}
 
@@ -391,11 +427,13 @@
                                         {% for checkbox in item.choice_type_choice %}
                                             {% if item.choice_type == checkbox.0 %}
                                                 <label for="single">{{ checkbox.1 }}</label>
-                                                <input type="radio" name="{{ item.pk }}{{ item.title }}" value="{{ checkbox.0 }}"
+                                                <input type="radio" name="{{ item.pk }}{{ item.title }}"
+                                                       value="{{ checkbox.0 }}"
                                                        checked="checked">
                                             {% else %}
                                                 <label for="single">{{ checkbox.1 }}</label>
-                                                <input type="radio" name="{{ item.pk }}{{ item.title }}"  value="{{ checkbox.0 }}" >
+                                                <input type="radio" name="{{ item.pk }}{{ item.title }}"
+                                                       value="{{ checkbox.0 }}">
                                             {% endif %}
                                         {% endfor %}
 
