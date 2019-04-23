@@ -116,9 +116,6 @@ class StudentToParentsSerializers(serializers.ModelSerializer):
     class Meta:
         model = StudentToParents
         fields = "__all__"
-        extra_kwargs = {
-                         'is_main_contact': {"error_messages": {"required": "请选择是否为主要联系人"}},
-                        }
 
 
 class StuClassSerializers(serializers.ModelSerializer):

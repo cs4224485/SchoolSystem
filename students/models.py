@@ -207,7 +207,7 @@ class StudentToParents(models.Model):
     parents_wxinfo = models.ForeignKey(verbose_name='家长的微信信息', to='weixinApp.WechatUserInfo', on_delete=models.CASCADE,
                                        null=True, blank=True, related_name='stu_parent')
     parents = models.ForeignKey(verbose_name='家长ID', to='StudentParents', on_delete=models.CASCADE, null=True,
-                                blank=True)
+                                blank=True, related_name='parent')
     relation_choice = ((1, '父亲'), (2, '母亲'), (3, '爷爷'), (4, '奶奶'), (5, '外公'), (6, '外婆'), (7, '其他长辈'), (8, '其他平辈'))
     relation = models.IntegerField(verbose_name='与学生关系', choices=relation_choice)
     is_main_contact = models.BooleanField(verbose_name='是否为主要接送人', null=True, blank=True)

@@ -209,7 +209,6 @@ class RecordsOfStudents(views.View):
             student_obj = record_obj.student
             # 量表信息
             scale = stu_models.ScaleValue.objects.filter(scale_stu=record_obj.scale_table)
-            print(record_obj.teacher.full_name, record_obj.teacher.identity.title)
             return render(request, 'show_record.html',
                           {'student': student_obj, 'scale_item': scale, 'record': record_obj})
         else:

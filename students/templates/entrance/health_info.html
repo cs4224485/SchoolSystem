@@ -63,11 +63,11 @@
             {% elif hel_field.fields__fieldName == "视力" %}
                 <div class="mui-input-row flex_center box_sizing">
                     <label>左眼：</label>
-                    <input type="number" name="vision_left" class="mui-input-clear" placeholder="暂不清楚可不填写" onkeyup="num(this,'name')" size="6">
+                    <input type="number" name="vision_left" class="mui-input-clear vision" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
                 </div>
                 <div class="mui-input-row flex_center box_sizing">
                     <label>右眼：</label>
-                    <input type="number" name="vision_right" class="mui-input-clear" placeholder="暂不清楚可不填写" onkeyup="num(this,'name')" size="6">
+                    <input type="number" name="vision_right" class="mui-input-clear vision" placeholder="暂不清楚可不填写" onblur="num(this,'name')" size="6">
                 </div>
 
             {% elif hel_field.fields__fieldName == '视力状况' %}

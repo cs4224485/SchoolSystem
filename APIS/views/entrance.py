@@ -244,42 +244,50 @@ class HealthInfoViewSet(BaseViewSet):
     def create(self, request, *args, **kwargs):
 
         # print(request_data)
-        student_id = request.data.get('student')
-        height = request.data.get('height')
-        weight = request.data.get('weight')
-        vision_left = request.data.get('vision_left')
-        vision_right = request.data.get('vision_right')
-        vision_status = request.data.get('vision_status')
-        allergy = request.data.get('allergy') if request.data.get('allergy') else 1
-        InheritedDisease = request.data.get('InheritedDisease', 1)
-        blood_type = request.data.get('blood_type', None)
-        disability = request.data.get('disability') if request.data.get('disability') else 1
-        health_info_query = HealthInfo.objects.filter(student_id=student_id)
-        health_info = health_info_query.first()
+        try:
+            student_id = request.data.get('student')
+            height = request.data.get('height')
+            weight = request.data.get('weight')
+            vision_left = request.data.get('vision_left')
+            vision_right = request.data.get('vision_right')
+            vision_status = request.data.get('vision_status')
+            allergy = request.data.get('allergy') if request.data.get('allergy') else 1
+            InheritedDisease = request.data.get('InheritedDisease', 1)
+            blood_type = request.data.get('blood_type', None)
+            disability = request.data.get('disability') if request.data.get('disability') else 1
+            health_info_query = HealthInfo.objects.filter(student_id=student_id)
+            health_info = health_info_query.first()
+            extra = {}
+            if blood_type:
+                extra['blood_type'] = blood_type
+            if health_info:
+                health_info_query.update(allergy_id=allergy, InheritedDisease_id=InheritedDisease,
+                                         disability=disability,
+                                         **extra)
+            else:
+                health_info = HealthInfo.objects.create(allergy_id=allergy, InheritedDisease_id=InheritedDisease,
+                                                        disability=disability, student_id=student_id, **extra)
+            record_dict = {'health_info': health_info}
+            if height:
+                record_dict['height'] = height
+            if weight:
+                record_dict['weight'] = weight
+            if vision_right:
+                record_dict['vision_left'] = vision_left
+                record_dict['vision_right'] = vision_right
+            if vision_status:
+                record_dict['vision_status'] = vision_status
 
-        # 如果之前有健康记录
-        if health_info:
-            health_info_query.update(allergy_id=allergy, InheritedDisease_id=InheritedDisease, disability=disability,
-                                     blood_type=blood_type)
-        else:
-            health_info = HealthInfo.objects.create(allergy_id=allergy, InheritedDisease_id=InheritedDisease,
-                                                    disability=disability, student_id=student_id, blood_type=blood_type)
-        record_dict = {'health_info': health_info}
-        if height:
-            record_dict['height'] = height
-        if weight:
-            record_dict['weight'] = weight
-        if vision_right:
-            record_dict['vision_left'] = vision_left
-            record_dict['vision_right'] = vision_right
-        if vision_status:
-            record_dict['vision_status'] = vision_status
-        health_record = HealthRecord.objects.create(**record_dict)
-        if health_record:
-            self.message['state'] = True
-            self.message['msg'] = '创建成功'
-            self.message['data'].append({'student_id': student_id})
-        else:
+            health_record = HealthRecord.objects.create(**record_dict)
+            if health_record:
+                self.message['state'] = True
+                self.message['msg'] = '创建成功'
+                self.message['data'].append({'student_id': student_id})
+            else:
+                self.message['state'] = False
+                self.message['msg'] = '创建失败'
+        except Exception as e:
+            print(e)
             self.message['state'] = False
             self.message['msg'] = '创建失败'
         return Response(self.message)
@@ -353,21 +361,30 @@ class StudentParentsViewSet(BaseViewSet):
         request_data = request.data.get('parents')
         request_data = json.loads(request_data)
         for key, item in request_data.items():
-            parents_serialize = StudentParentsSerializers(data=item)
+            student_id = item['student']
+            relation = item['relation']
+            parents_obj = StudentParents.objects.filter(parent__student=student_id, parent__relation=relation).first()
+            if parents_obj:
+                parents_serialize = StudentParentsSerializers(data=item, instance=parents_obj)
+            else:
+                parents_serialize = StudentParentsSerializers(data=item)
             if parents_serialize.is_valid():
                 with transaction.atomic():
                     # 创建家长信息
                     parents_obj = parents_serialize.save()
-                    item['parents'] = parents_obj.pk
-                    stu_to_parents = StudentToParentsSerializers(data=item)
-                    if stu_to_parents.is_valid():
+                    stu_to_parents_data = {'student_id': student_id, 'parents': parents_obj, 'relation': relation,
+                                           'is_main_contact': item['is_main_contact']}
+                    stu_to_parents_obj = StudentToParents.objects.filter(student_id=student_id, relation=relation)
+                    if stu_to_parents_obj:
+                        stu_to_parents_obj.update(**stu_to_parents_data)
+                    else:
+                        stu_to_parents_obj = StudentToParents.objects.create(**stu_to_parents_data)
+                    if stu_to_parents_obj:
                         # 创建家长与学生的对应关系
-                        stu_to_parents.save()
                         self.message['state'] = True
                         self.message['msg'] = '创建成功'
                     else:
-                       # print('stu_to_parents_error', stu_to_parents.errors)
-                        self.response_error(stu_to_parents.errors)
+                        self.message['state'] = False
                         return Response(self.message)
             else:
                 # print('parents_errors', parents_serialize.errors)

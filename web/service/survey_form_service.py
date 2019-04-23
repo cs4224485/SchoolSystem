@@ -80,6 +80,8 @@ class SurveyFormService(object):
         wx_user_queryset = WechatUserInfo.objects.filter(user_type__in=fill_range, bind_info__school__in=school)
         if is_update:
             target = obj.notification.first()
+            if not target:
+                target = IndexNotification.objects.create(event=3, content_object=obj)
             target.associated_users.set(wx_user_queryset)
         else:
             target = IndexNotification.objects.create(event=3, content_object=obj)
