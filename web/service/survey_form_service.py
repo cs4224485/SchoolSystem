@@ -160,6 +160,7 @@ class SurveyFormService(object):
             if not table_id:
                 obj = models.ChoiceTable.objects.create(title=table_title, choice_type=choice_type,
                                                         setting_table=setting_obj)
+                # 选项
                 for op_item in options:
                     models.ChoiceOptionsDes.objects.create(des=op_item.get('contents'), choice_table=obj)
                 choice_l.append(obj.pk)
@@ -179,9 +180,17 @@ class SurveyFormService(object):
                         else:
                             new_option_ids.append(int(option_id))
                             models.ChoiceOptionsDes.objects.filter(id=int(option_id)).update(des=content)
+                # 删除选项
                 del_option_ids = list(set(old_option_ids).difference(new_option_ids))
-                for item_id in del_option_ids:
-                    models.ChoiceOptionsDes.objects.filter(id=item_id).delete()
+                if del_option_ids:
+                    for item_id in del_option_ids:
+                        models.ChoiceOptionsDes.objects.filter(id=item_id).delete()
+
+                # 更新单选多选类型
+                query = models.ChoiceTable.objects.filter(id=table_id)
+                if choice_type != query.first().choice_type:
+                    query.update(choice_type=choice_type)
+
         old_table = models.ChoiceTable.objects.filter(setting_table=setting_obj).only('id')
         old_table_ids = [item.id for item in old_table]
         del_table_ids = list(set(old_table_ids).difference(choice_l))

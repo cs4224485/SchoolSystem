@@ -133,21 +133,19 @@
             var area = $('#area').val();
             var city = $('#city').val();
             var province = $('#province').val();
-            var domain = document.location;
-            if (param) {
-                var locationObj = {'province': province, 'city': city, 'area': area};
-                window.location.href = common_ops.replaceParamVal(domain, locationObj)
-            } else {
-                var currentUrl = domain.href;
-                if (domain.search) {
-                    currentUrl += '&';
-                } else {
-                    currentUrl += '?';
+            var targetUrl = document.location.href;
+            $.ajax({
+                url: targetUrl,
+                data:{'area':area, 'city':city, 'province':province},
+                type:'get',
+                dataType:'Json',
+                success:function (res) {
+                    console.log(res);
+                    if(res.state == 200){
+                        window.location.href = res.url
+                    }
                 }
-                setTimeout(function () {
-                    window.location.href = currentUrl + 'province=' + province + '&' + 'city=' + city + '&' + 'area=' + area
-                }, 100)
-            }
+            })
         });
     });
     // 点击layui生成radio时更新input值

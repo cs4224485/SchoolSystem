@@ -129,10 +129,23 @@ class TableSettingsConfig(StarkConfig):
         :return:
         '''
         nid = kwargs.get('pk')
-        setting_obj = models.TableSettings.objects.filter(id=nid).first()
-        qrfile = os.path.join('/media/school/Qrcode/', setting_obj.Qrcode)
-        url = '%s/student/student_info/%s/' % (settings.DOMAIN_NAME, nid)
-        return render(request, 'setting/release.html', {'qrfile': qrfile, "url": url})
+        if request.method == "GET":
+            setting_obj = models.TableSettings.objects.filter(id=nid).first()
+            qrfile = os.path.join('/media/school/Qrcode/', setting_obj.Qrcode)
+            url = '%s/student/student_info/%s/' % (settings.DOMAIN_NAME, nid)
+            status = setting_obj.status
+            description = setting_obj.description
+            title = setting_obj.title
+            return render(request, 'setting/release.html',
+                          {'qrfile': qrfile, "url": url, 'status': status, 'description': description, 'title': title})
+        title = request.POST.get('title')
+        switch = request.POST.get('switch')
+        description = request.POST.get('description')
+        query = models.TableSettings.objects.filter(id=nid)
+        state = query.update(title=title, status=switch, description=description)
+        if state:
+            return JsonResponse({'msg': '设置成功', 'code': 200})
+        return JsonResponse({'msg': '设置失败', 'code': 500})
 
     list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release,
                     display_edit]

@@ -144,6 +144,9 @@ class FamilyInfo(models.Model):
     def __str__(self):
         return self.student.full_name + "家庭信息"
 
+    class Meta:
+        unique_together = (('student', 'create_time'),)
+
 
 class FamilyMember(models.Model):
     '''
