@@ -80,7 +80,7 @@ class StudentInfo(views.View):
         student_obj = stu_models.StudentInfo.objects.filter(id=student_id).first()
         stu_field_list = sc_models.SettingToField.objects.order_by('order').filter(setting=setting_obj,
                                                                                    fields__field_type=1).values(
-            'fields__fieldName', 'fields__pk')
+            'fields__fieldName', 'fields__pk', 'is_required')
         if stu_field_list:
             return render(request, 'entrance/student_info.html',
                           {'stu_field_list': stu_field_list, 'pk': setting_obj.pk, 'student_obj': student_obj,
@@ -89,7 +89,7 @@ class StudentInfo(views.View):
 
     def health_page(self, request, setting_obj):
         hel_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=2).values(
-            'fields__fieldName', 'fields__pk')
+            'fields__fieldName', 'fields__pk', 'is_required')
         if hel_field_list:
             return render(request, 'entrance/health_info.html',
                           {'hel_field_list': hel_field_list, 'pk': setting_obj.pk})
@@ -97,7 +97,7 @@ class StudentInfo(views.View):
 
     def family_page(self, request, setting_obj):
         fam_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=3).values(
-            'fields__fieldName', 'fields__pk')
+            'fields__fieldName', 'fields__pk', 'is_required')
         if fam_field_list:
             school_district = setting_obj.school_range.values('province', 'city', 'region').first()
             return render(request, 'entrance/family_info.html',
@@ -107,7 +107,7 @@ class StudentInfo(views.View):
 
     def parents_page(self, request, setting_obj):
         par_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=4).values(
-            'fields__fieldName', 'fields__pk')
+            'fields__fieldName', 'fields__pk', 'is_required')
 
         if par_field_list:
             par_field_json = []

@@ -212,6 +212,10 @@ function choiceField() {
             var stringTag = `
                      <div class="choice-wrap item">
                           <p class="is_choice"><span name='${field}' id='${fieldId}'>${ field }</span></p>
+                          <form class="layui-form" style="float: left; margin-left: 80px">
+                                <input type="radio" checked=checked name="required" value="1" title="必填">
+                                <input type="radio"  name="required" value="2" title="选填">
+                          </form>
                             <div class="edit-bar">
                                 <a class="move-up">上移</a>
                                 <a class="move-down">下移</a>

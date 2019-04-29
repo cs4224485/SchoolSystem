@@ -1,16 +1,85 @@
 {% extends "layout.html" %}
+{% block css %}
+    <style>
+        .inner-box {
+            width: 850px;
+            overflow: auto;
+        }
 
+        .labels {
+            width: 100px;
+            font-size: 14px;
+            color: black;
+            padding: 3px 16px;
+            text-align: left;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <div class="layui-body">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md6 layui-col-md-offset3">
+                <div class="layui-card inner-box">
+                    <div class="layui-card-header">发布链接</div>
+                    <div class="layui-card-body ">
+                        <div class="">
+                            <img src="https://down.wjx.com/handler/qrcode.ashx?chs=120x120&amp;chl=https%3a%2f%2fwww.wjx.cn%2fm%2f31028287.aspx"
+                                 id="ctl02_ContentPlaceHolder1_imgQrcode" class="pull-left" alt="二维码" width="140"
+                                 height="140">
+                            <div class="detailed-box pull-left" style="margin-top: 30px">
+                                <span class="pull-left strong" style="width:130px;">问卷链接与二维码</span>
+                                <div id="divCopyMsg" style="color: red; font-size: 14px;width:120px;padding-left:10px;"
+                                     class="pull-left"></div>
+                                <span class="pull-left" style="margin-bottom: 0px;">
+                                        <input name="ctl02$ContentPlaceHolder1$txtLink" type="text"
+                                               id="ctl02_ContentPlaceHolder1_txtLink" class="link-input pull-left"
+                                               style="width:250px;" value="https://www.wjx.cn/jq/31028287.aspx">
+                                        <a href="https://www.wjx.cn/jq/31028287.aspx" id="hrefOpenLink" target="_blank"
+                                           class="layui-btn layui-btn-sm" style="margin-left: 10px">打开</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-card inner-box" style="width: 850px">
+                        <div class="layui-card-header">表单设置</div>
+                        <div class="layui-card-body">
+                            <form class="layui-form" action="" method="post">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labels">标题</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                               placeholder="请输入标题" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labels">发布开关</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" checked="" name="open" lay-skin="switch"
+                                               lay-filter="switchTest" lay-text="ON|OFF">
+                                        <div class="layui-unselect layui-form-switch layui-form-onswitch"
+                                             lay-skin="_switch"><em>ON</em><i></i></div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label labels">表单描述信息</label>
+                                    <div class="layui-input-block">
+                                        <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                                </div>
+                            </form>
 
-            <div>链接分享</div>
-            <p>{{ url }}</p>
-
-            <div>二维码分享</div>
-            <p>
-                <img src="{{ qrfile }}">
-            </p>
-
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+
 
 {% endblock %}

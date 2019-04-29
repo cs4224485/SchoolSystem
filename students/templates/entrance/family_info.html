@@ -36,8 +36,8 @@
         {% for  fam_field in fam_field_list %}
             {% if fam_field.fields__fieldName == '居住地址' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>现居住地址：</label>
-                    <input type="text" value="{{ school_district.province }}{{ school_district.city }}{{ school_district.region }}" class="mui-input-clear"  placeholder="默认显示学校所在的区，可选择" id='householdRegister'>
+                    <label>现居住地址{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span></span>{% endif %}：</label>
+                    <input type="text" value="{{ school_district.province }}{{ school_district.city }}{{ school_district.region }}" class="mui-input-clear {% if fam_field.is_required == 1 %} required{% endif %}"  placeholder="默认显示学校所在的区，可选择" id='householdRegister'>
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                         <div id='userResult' class="ui-alert" style="display: none;"></div>
@@ -45,20 +45,20 @@
                 </div>
                 <div class="mui-input-row flex_center box_sizing">
                     <label style="opacity: 0;">现居住地址：</label>
-                    <input type="text" id='address' class="mui-input-clear" placeholder="街道、楼牌号等">
+                    <input type="text" id='address' class="mui-input-clear {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="街道、楼牌号等">
                 </div>
             {% elif fam_field.fields__fieldName == '居住条件' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>居住环境：</label>
-                    <input type="text" class="mui-input-clear" placeholder="请选择居住环境" id='living_condition' readonly="readonly">
+                    <label>居住环境{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span></span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请选择居住环境" id='living_condition' readonly="readonly">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
                 </div>
             {% elif fam_field.fields__fieldName == '居住类型' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>居所属性：</label>
-                    <input type="text" class="mui-input-clear" placeholder="请选择居所属性" id='living_type'
+                    <label>居所属性{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span></span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请选择居所属性" id='living_type'
                            readonly="readonly">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
@@ -66,8 +66,8 @@
                 </div>
             {% elif fam_field.fields__fieldName == '家庭语言' %}
                 <div class="mui-input-row flex_center box_sizing">
-                    <label>家庭主要<br>交流语言：</label>
-                    <input type="text" class="mui-input-clear" placeholder="请选择交流语言" id='language' readonly="readonly">
+                    <label>家庭主要<br>交流语言{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span></span>{% endif %}：</label>
+                    <input type="text" class="mui-input-clear {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请选择交流语言" id='language' readonly="readonly">
                     <div class="right_pop flex_center">
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>

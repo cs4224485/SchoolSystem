@@ -65,11 +65,14 @@ a {
     text-align: center;
     font-size: 20px;
     border-radius: 4px;
+    width: 700px;
+    float: left
 }
 
 .choice-wrap {
     padding: 15px;
     position: relative;
+    overflow:hidden
 }
 
 .choice-wrap:hover {

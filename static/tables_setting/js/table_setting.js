@@ -5,7 +5,9 @@ $(function () {
     operation();
     filterSchool();
     choicedSchool();
-    deleteSelectedSchool()
+    deleteSelectedSchool();
+
+
 });
 
 function choiceField() {
@@ -294,12 +296,18 @@ function choiceField() {
             var stringTag = `
                      <div class="choice-wrap item">
                           <p class="is_choice"><span name='${field}' id='${fieldId}'>${ field }</span></p>
-                            <div class="edit-bar">
+                           <form class="layui-form" style="float: left; margin-left: 80px">
+                                <input type="radio" checked=checked name="required" value="1" title="必填">
+                                <input type="radio"  name="required" value="2" title="选填">
+                           </form>
+                         
+                           <div class="edit-bar">
                                 <a class="move-up">上移</a>
                                 <a class="move-down">下移</a>
                                 <a class="remove">删除</a>
-                            </div>
+                           </div>
                      </div>`;
+
             // $('.' + field_type).append(stringTag);
             selectField.push(field);
             if (field == '身份证') {
@@ -307,6 +315,7 @@ function choiceField() {
             }
         }
         $('.' + field_type).append(stringTag);
+        form.render();
     });
 }
 
@@ -368,7 +377,6 @@ function createDate() {
                 scaleDes.push({id: $(this).attr('optins-id'), text: $(this).text()})
             }
         });
-
         var lineTitle = [];
         $($(this).find('.div_table_radio_question').find('th')).each(function (index) {
             // 获取量表行标题
@@ -376,6 +384,8 @@ function createDate() {
                 lineTitle.push({id: $(this).attr('line-title-id'), text: $(this).text()})
             }
         });
+
+
         scaleObj.id = $(this).attr('scale_id');
         scaleObj.scaleTitle = scaleTitle;
         scaleObj.scaleDes = scaleDes;
@@ -386,9 +396,11 @@ function createDate() {
 
     $('.contents span').each(function (index) {
         // 获取选中的字段信息
+
         var id = parseInt($(this).attr('id'));
         if (id) {
-            choiceId.push($(this).attr('id'));
+            var required = $(this).parents('.choice-wrap').find("input[name=required]:checked").val();
+            choiceId.push({id: id, 'required': required});
         }
     });
 
@@ -490,8 +502,8 @@ function sendData(data) {
             if (data.state) {
                 alert('保存成功');
                 var nid = data.setting_obj_id;
-                location.href = '/stark/school/tablesettings/'+ nid +'/release/'
-            }else {
+                location.href = '/stark/school/tablesettings/' + nid + '/release/'
+            } else {
                 alert('请求出错');
             }
 

@@ -193,14 +193,14 @@ mui("#input_information").on('tap', '.Submission', function () {
             $("#isName input").val("name")
         } else {
 
-            $("#zw_x input").val("name")
+            $("#zw_x input").val("name");
             $("#zw_m input").val("name")
         }
-
+        console.log($(this));
         //若当前input为空，则alert提醒
         if (!this.value || this.value.trim() == "") {
             var label = this.previousElementSibling;
-            let msg = label.innerText || "照片："
+            let msg = label.innerText || "照片：";
             mui.alert(msg + "不允许为空");
             check = false;
             return false;
