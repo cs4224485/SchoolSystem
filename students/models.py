@@ -50,6 +50,9 @@ class StudentInfo(models.Model):
     def __str__(self):
         return self.full_name
 
+    class Meta:
+        db_table = 'StudentInfo'
+
 
 class GraduateInstitutions(models.Model):
     '''
@@ -60,6 +63,9 @@ class GraduateInstitutions(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'GraduateInstitutions'
 
 
 class Country(models.Model):
@@ -72,6 +78,9 @@ class Country(models.Model):
 
     def __str__(self):
         return self.country_name
+
+    class Meta:
+        db_table = 'Country'
 
 
 class HealthInfo(models.Model):
@@ -89,6 +98,9 @@ class HealthInfo(models.Model):
     def __str__(self):
         return self.student.first_name + "健康信息"
 
+    class Meta:
+        db_table = 'HealthInfo'
+
 
 class HealthRecord(models.Model):
     '''
@@ -105,6 +117,9 @@ class HealthRecord(models.Model):
     measure_type_choice = ((1, '校测'), (2, '自测'))
     measure_type = models.IntegerField(verbose_name='测试类型', default=1, choices=measure_type_choice, null=True, blank=True)
 
+    class Meta:
+        db_table = 'HealthRecord'
+
 
 class Allergy(models.Model):
     '''
@@ -114,6 +129,9 @@ class Allergy(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'Allergy'
 
 
 class InheritedDisease(models.Model):
@@ -145,6 +163,7 @@ class FamilyInfo(models.Model):
         return self.student.full_name + "家庭信息"
 
     class Meta:
+        db_table = 'FamilyInfo'
         unique_together = (('student', 'create_time'),)
 
 
@@ -155,6 +174,9 @@ class FamilyMember(models.Model):
     relations = models.CharField(verbose_name='家庭关系', max_length=16)
     Is_living = models.BooleanField(verbose_name='是否共同居住')
     handle_shuttle = models.BooleanField(verbose_name='是否为主要接送人')
+
+    class Meta:
+        db_table = 'FamilyMember'
 
 
 class FamilyStatus(models.Model):
@@ -167,6 +189,9 @@ class FamilyStatus(models.Model):
     def __str__(self):
         return self.get_status_display()
 
+    class Meta:
+        db_table = 'FamilyStatus'
+
 
 class HomeAddress(models.Model):
     '''
@@ -178,6 +203,9 @@ class HomeAddress(models.Model):
     address = models.CharField(verbose_name='详细地址', max_length=128, null=True, blank=True)
     record_time = models.DateField(verbose_name='日期', auto_now=True)
     family = models.ForeignKey('FamilyInfo', verbose_name='家庭', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'HomeAddress'
 
 
 class StudentParents(models.Model):
@@ -199,6 +227,9 @@ class StudentParents(models.Model):
 
     def __str__(self):
         return self.first_name + self.last_name
+
+    class Meta:
+        db_table = 'StudentParents'
 
 
 class StudentToParents(models.Model):
@@ -222,6 +253,7 @@ class StudentToParents(models.Model):
             return "学生：%s 家长微信：%s" % (self.student.full_name, self.parents_wxinfo)
 
     class Meta:
+        db_table = 'StudentToParents'
         unique_together = (('student', 'parents_wxinfo'),)
 
 
@@ -235,6 +267,7 @@ class ScaleQuestion(models.Model):
     # question = models.ForeignKey(verbose_name='对应的自定制问题表', to='CustomizationQuestion', on_delete=models.CASCADE)
 
     class Meta:
+        db_table = 'ScaleQuestion'
         unique_together = (('student', 'scale'),)
 
     def __str__(self):
@@ -250,6 +283,9 @@ class ScaleValue(models.Model):
     scale_stu = models.ForeignKey(verbose_name='对相应的学生量表', to='ScaleQuestion', on_delete=models.CASCADE,
                                   related_name='scale_value')
 
+    class Meta:
+        db_table = 'ScaleValue'
+
 
 class ChoiceQuestion(models.Model):
     '''
@@ -261,6 +297,7 @@ class ChoiceQuestion(models.Model):
     values = models.ManyToManyField(verbose_name='对应选择的值', to='school.ChoiceOptionsDes')
 
     class Meta:
+        db_table = 'ChoiceQuestion'
         unique_together = (('student', 'choice_table'),)
 
     def __str__(self):

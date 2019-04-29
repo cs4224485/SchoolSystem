@@ -24,6 +24,7 @@ class TeacherInfo(models.Model):
         return self.last_name + self.first_name
 
     class Meta:
+        db_table = 'TeacherInfo'
         unique_together = (("first_name", "last_name", 'birthday', 'telephone', 'wechat'),)
 
 
@@ -32,6 +33,9 @@ class Identity(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'Identity'
 
 
 class ClassToTeacher(models.Model):
@@ -47,4 +51,5 @@ class ClassToTeacher(models.Model):
     def __str__(self):
         return "关联老师:%s 班级: %s" % (self.teacher, self.stu_class.name)
 
-
+    class Meta:
+        db_table = 'ClassToTeacher'
