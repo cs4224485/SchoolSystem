@@ -30,7 +30,7 @@ class SchoolTeacherConfig(TeacherInfoConfig):
 
     def get_extra_content(self, *args, **kwargs):
         add_teacher_url = self.reverse_commons_url('add_teacher', *args, **kwargs)
-        return {'add': add_teacher_url,}
+        return {'add': add_teacher_url}
 
     def get_list_display(self):
         display_list = []
