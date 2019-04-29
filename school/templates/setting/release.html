@@ -23,18 +23,16 @@
                     <div class="layui-card-header">发布链接</div>
                     <div class="layui-card-body ">
                         <div class="">
-                            <img src="https://down.wjx.com/handler/qrcode.ashx?chs=120x120&amp;chl=https%3a%2f%2fwww.wjx.cn%2fm%2f31028287.aspx"
+                            <img src="{{ qrfile }}"
                                  id="ctl02_ContentPlaceHolder1_imgQrcode" class="pull-left" alt="二维码" width="140"
                                  height="140">
                             <div class="detailed-box pull-left" style="margin-top: 30px">
                                 <span class="pull-left strong" style="width:130px;">问卷链接与二维码</span>
                                 <div id="divCopyMsg" style="color: red; font-size: 14px;width:120px;padding-left:10px;"
                                      class="pull-left"></div>
-                                <span class="pull-left" style="margin-bottom: 0px;">
-                                        <input name="ctl02$ContentPlaceHolder1$txtLink" type="text"
-                                               id="ctl02_ContentPlaceHolder1_txtLink" class="link-input pull-left"
-                                               style="width:250px;" value="https://www.wjx.cn/jq/31028287.aspx">
-                                        <a href="https://www.wjx.cn/jq/31028287.aspx" id="hrefOpenLink" target="_blank"
+                                <span class="pull-left" style="margin-bottom: 0;">
+                                        <input  type="text" class="link-input pull-left" style="width:250px;" value="{{ url }}">
+                                        <a href="{{ url }}" id="hrefOpenLink" target="_blank"
                                            class="layui-btn layui-btn-sm" style="margin-left: 10px">打开</a>
                                 </span>
                             </div>
@@ -49,27 +47,31 @@
                                 <div class="layui-form-item">
                                     <label class="layui-form-label labels">标题</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="title" lay-verify="title" autocomplete="off"
-                                               placeholder="请输入标题" class="layui-input">
+                                        <input type="text" name="title" id='title' lay-verify="title" autocomplete="off"
+                                               placeholder="请输入标题" value="{{ title }}" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label class="layui-form-label labels">发布开关</label>
                                     <div class="layui-input-block">
-                                        <input type="checkbox" checked="" name="open" lay-skin="switch"
-                                               lay-filter="switchTest" lay-text="ON|OFF">
-                                        <div class="layui-unselect layui-form-switch layui-form-onswitch"
-                                             lay-skin="_switch"><em>ON</em><i></i></div>
+                                        <input type="checkbox" id="switch" {% if status == 1 %}checked=""
+                                               value="1" {% endif %}
+                                               name="status"
+                                               lay-skin="switch" lay-text="ON|OFF">
+                                        <div class="layui-unselect layui-form-switch " lay-skin="_switch">
+                                            <em>OFF</em><i></i></div>
                                     </div>
                                 </div>
+
                                 <div class="layui-form-item layui-form-text">
                                     <label class="layui-form-label labels">表单描述信息</label>
                                     <div class="layui-input-block">
-                                        <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                                        <textarea placeholder="请输入内容" name="des" id="description"
+                                                  class="layui-textarea">{{ description }}</textarea>
                                     </div>
                                 </div>
                                 <div class="layui-input-block">
-                                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                                    <span class="layui-btn" lay-filter="demo1" id="submit">立即提交</span>
                                 </div>
                             </form>
 
@@ -82,4 +84,65 @@
 
 
 
+{% endblock %}
+
+{% block js %}
+    <script>
+        layui.use('form', function () {
+            let form = layui.form;
+            form.on('switch', function (data) {
+                let inputValue = '';
+                if (!data.elem.checked) {
+                    inputValue = 2
+                } else {
+                    inputValue = 1
+                }
+
+                $('#switch').val(inputValue)
+            });
+        });
+        let formSetting = {
+            init: function () {
+                this.submitData();
+
+            },
+            createData: function () {
+                let title = $('#title').val();
+                let on_off = $('#switch').val();
+                let description = $('#description').val();
+                return {'title': title, 'switch': on_off, 'description': description};
+
+            },
+            submitData: function () {
+                $("#submit").click(function () {
+                    let data = formSetting.createData();
+                    $.ajax({
+                        url: '',
+                        type: 'post',
+                        data: data,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.state) {
+                                location.href = ''
+                            } else {
+                                layer.alert(data.msg);
+                            }
+                        },
+                        error: function () {
+                            common_ops.alert('请求出错', function () {
+                                window.location.href = ''
+                            })
+                        }
+                    })
+                })
+            }
+
+        };
+
+
+        $(document).ready(function () {
+            formSetting.init();
+        });
+
+    </script>
 {% endblock %}

@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from school import models
 from school.views import school_information
 from school.forms.school import SchoolAddForm, SchoolEditModelForm
+from django.http import JsonResponse
 
 
 class SchoolInfoConfig(StarkConfig):
@@ -22,6 +23,24 @@ class SchoolInfoConfig(StarkConfig):
                             self.wrapper(school_information.SchoolTimeTable.as_view()),
                             name='school_timetables'))
         return temp
+
+    def list_view(self, request, *args, **kwargs):
+        # 如果请求是ajax(用于过滤学校)返回新的url
+        if request.is_ajax():
+            # 保留搜索条件
+            province = request.GET.get('province')
+            city = request.GET.get('city')
+            area = request.GET.get('area')
+            arg = self.request.GET
+            if 'area' in arg:
+                arg._mutable = True
+                arg['area'] = area
+                arg['province'] = province
+                arg['city'] = city
+            param = arg.urlencode()
+            url = '%s?%s' % (reverse(self.site.namespace + ':' + self.get_list_url_name), param)
+            return JsonResponse({'state': 200, 'url': url})
+        return super().list_view(request, *args, **kwargs)
 
     def display_school_name(self, row=None, header=False):
         if header:

@@ -2,6 +2,16 @@
 var common_ops = {
         init: function () {
         },
+        alert: function (msg, cb) {
+            layer.alert(msg, {
+                yes: function (index) {
+                    if (typeof cb == "function") {
+                        cb();
+                    }
+                    layer.close(index);
+                }
+            });
+        },
         confirm: function (msg, callback) {
             callback = (callback != undefined) ? callback : {'ok': null, 'cancel': null};
             layer.confirm(msg, {

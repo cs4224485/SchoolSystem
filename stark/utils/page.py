@@ -3,7 +3,7 @@
 
 
 class Pagination:
-    def __init__(self, data_num, current_page, params,  url_prefix,  per_page=10, max_show=11):
+    def __init__(self, data_num, current_page, params, url_prefix, per_page=10, max_show=11):
         """
         进行初始化.
         :param data_num: 数据总数
@@ -55,8 +55,7 @@ class Pagination:
                     self.page_start = self.current_page - self.half_show
                     self.page_end = self.current_page + self.half_show
 
-        import copy
-        self.params = params # {"page":"12","title_startwith":"py","id__gt":"5"}
+        self.params = params  # {"page":"12","title_startwith":"py","id__gt":"5"}
 
     @property
     def start(self):
@@ -85,7 +84,8 @@ class Pagination:
         for i in range(self.page_start, self.page_end + 1):
             self.params['page'] = i
             if i == self.current_page:
-                tmp = '<li class="active"><a href="{}?{}">{}</a></li>'.format(self.url_prefix, self.params.urlencode(), i)
+                tmp = '<li class="active"><a href="{}?{}">{}</a></li>'.format(self.url_prefix, self.params.urlencode(),
+                                                                              i)
             else:
                 tmp = '<li><a href="{}?{}">{}</a></li>'.format(self.url_prefix, self.params.urlencode(), i)
             l.append(tmp)
