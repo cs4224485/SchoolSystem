@@ -69,7 +69,6 @@ class StudentInfo(views.View):
 
     def start_page(self, request, setting_obj):
         school_obj = setting_obj.school_range.first()
-
         return render(request, 'entrance/landing.html', {'setting_obj': setting_obj, 'school_obj': school_obj})
 
     def stu_info_page(self, request, setting_obj):
@@ -136,6 +135,5 @@ class StudentInfo(views.View):
         student_id = request.GET.get('student_id')
         end_time = time.time() - self.start_time[0]
         sc_models.TableInfo.objects.create(table=setting_obj, finish_time=int(end_time), student_id=student_id)
-        return render(request, 'entrance/table_finish.html')
-
-
+        peroration = setting_obj.peroration
+        return render(request, 'entrance/table_finish.html', {'peroration': peroration})

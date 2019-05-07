@@ -370,6 +370,7 @@ class TableSettings(models.Model):
     status_choice = ((1, '已发布'), (2, '未发布'))
     status = models.SmallIntegerField(verbose_name='状态', choices=status_choice, default=1)
     description = models.TextField(verbose_name='表单描述', default=None, null=True, blank=True)
+    peroration = models.CharField(verbose_name='结束语', null=True, blank=True, max_length=128)
 
     def __str__(self):
         return self.title

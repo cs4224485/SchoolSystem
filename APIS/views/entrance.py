@@ -387,7 +387,7 @@ class StudentParentsViewSet(BaseViewSet):
                         self.message['state'] = False
                         return Response(self.message)
             else:
-                # print('parents_errors', parents_serialize.errors)
+                print('parents_errors', parents_serialize.errors)
                 self.response_error(parents_serialize.errors)
                 return Response(self.message)
 

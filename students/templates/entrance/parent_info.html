@@ -78,7 +78,7 @@
 
                         {% elif fam_field.fields__fieldName == '职务' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>当前职务{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <label>当前职业{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
                                 <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的当前职务" name="job">
                             </div>
 

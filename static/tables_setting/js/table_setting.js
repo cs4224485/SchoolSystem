@@ -457,12 +457,10 @@ function operation() {
             if (check(data)) {
                 sendData(data)
             }
-
         } else if (action == '预览') {
             var url = '/stark/school/tablesettings/preview/?data=' + JSON.stringify(data);
             window.open(url)
         }
-
     })
 }
 
@@ -491,7 +489,6 @@ function check(data) {
 
 function sendData(data) {
     // 发送数据到后台
-    console.log(data, 'senddata');
     $.ajax({
         url: '',
         type: 'post',

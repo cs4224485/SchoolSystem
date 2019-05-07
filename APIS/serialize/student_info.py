@@ -4,7 +4,7 @@ from students.models import *
 student_error = {'last_name': {"error_messages": {"required": "请填写姓"}},
                  'first_name': {"error_messages": {"required": "请填写名"}},
                  'graduate_institutions': {
-                 "error_messages": {"required": '请填写毕业院校', "does_not_exist": '学校不存在', "incorrect_type": '学校输入有误'}}}
+                     "error_messages": {"required": '请填写毕业院校', "does_not_exist": '学校不存在', "incorrect_type": '学校输入有误'}}}
 
 
 class ChineseStudentSerializers(serializers.ModelSerializer):
@@ -85,11 +85,11 @@ class FamilyInfoSerializers(serializers.ModelSerializer):
         model = FamilyInfo
         fields = "__all__"
         extra_kwargs = {
-                         'living_condition': {"error_messages": {"required": "请选择居住条件"}},
-                         'living_type': {"error_messages": {"required": "请选择居住类型"}},
-                         'language': {"error_messages": {"required": "请选择语言"}},
-                         'family_status': {"error_messages": {"required": "请选择家庭状况"}},
-                        }
+            'living_condition': {"error_messages": {"required": "请选择居住条件"}},
+            'living_type': {"error_messages": {"required": "请选择居住类型"}},
+            'language': {"error_messages": {"required": "请选择语言"}},
+            'family_status': {"error_messages": {"required": "请选择家庭状况"}},
+        }
 
 
 class HomeAddressSerializers(serializers.ModelSerializer):
