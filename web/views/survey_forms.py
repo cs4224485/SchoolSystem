@@ -136,13 +136,16 @@ class TableSettingsConfig(StarkConfig):
             status = setting_obj.status
             description = setting_obj.description
             title = setting_obj.title
+            peroration = setting_obj.peroration
             return render(request, 'setting/release.html',
-                          {'qrfile': qrfile, "url": url, 'status': status, 'description': description, 'title': title})
+                          {'qrfile': qrfile, "url": url, 'status': status, 'description': description, 'title': title,
+                           'peroration': peroration})
         title = request.POST.get('title')
         switch = request.POST.get('switch')
+        peroration = request.POST.get('peroration')
         description = request.POST.get('description')
         query = models.TableSettings.objects.filter(id=nid)
-        state = query.update(title=title, status=switch, description=description)
+        state = query.update(title=title, status=switch, description=description, peroration=peroration)
         if state:
             return JsonResponse({'msg': '设置成功', 'code': 200})
         return JsonResponse({'msg': '设置失败', 'code': 500})

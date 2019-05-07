@@ -182,9 +182,8 @@ mui("#input_information").on('tap', '.Submission', function () {
             language: FamilyObj.language || '',    //家庭语言
             family_status: FamilyText || '',//家庭关系
             student: urlId,
-        }
+        };
 
-        console.log(data)
         mui.ajax({
             url: ajaxUrl + '/api/v1/family/',
             traditional: true,
@@ -205,9 +204,7 @@ mui("#input_information").on('tap', '.Submission', function () {
             },
             error: function (xhr, type, errorThrown) {
                 mui.alert("亲，请求出错了");
-                console.log(xhr);
-                console.log(type);
-                console.log(errorThrown);
+
             }
         })
 

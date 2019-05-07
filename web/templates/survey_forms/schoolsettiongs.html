@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+{% load tags %}
+{% load staticfiles %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'tables_setting/css/table_setting.css' %}">
+    <style>
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="x-body">
+        {% fields %}
+        <div class="layui-col-md10 layui-col-md-offset1 contents">
+            <div class="panel panel-default" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">设置信息
+                        <span class="pull-right"></span>
+                    </h3>
+                </div>
+                <div class="panel-body setting" id="" style="margin-top: 20px">
+                    <p>
+                        <label for="title">标题</label>
+                        <input class="form-control" type="text" name="title" id="title">
+                    </p>
+                    <p>
+                        <label for="start_date">开始日期</label>
+                        <input type="date" id="start_date" class="form-control">
+                    </p>
+
+                    <p>
+                        <label for="end_date">结束日期</label>
+                        <input type="date" id="end_date" class="form-control">
+                    </p>
+
+                    <div style="margin-bottom: 10px">
+                        <label for="school">学校范围</label>
+                        <div data-toggle="distpicker" class="row form-inline distpicker" style="margin-left: 1px">
+                            <select class="form-control location" id="province" data-province="---- 选择省 ----"></select>
+                            <select class="form-control location" id="city" data-city="---- 选择市 ----"></select>
+                            <select class="form-control location" id="region" data-district="---- 选择区 ----"></select>
+                            <select name="layer" id="layer" class="form-control">
+                                <option value="">--- 选择层次 ---</option>
+                                <option value="1">幼儿园</option>
+                                <option value="2">小学</option>
+                                <option value="3">中学</option>
+                            </select>
+                        </div>
+
+                        <div class="school-range checkbox">
+
+                        </div>
+
+                        <label>已选学校</label>
+                        <div class="choiced-school checkbox">
+
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label>填表范围</label>
+                        <div class="checkbox range">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="老师" value="1">家长
+                            </label>
+                            <label>
+                                <input type="checkbox" id="学生" value="2">老师
+                            </label>
+                            <label>
+                                <input type="checkbox" id="家长" value="3">学生
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-primary" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">学生信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body stu-info" id="" style="margin-top: 20px">
+                    <div class="choice-wrap item">
+                        <p class="is_choice"><span name='2' id='2'>国籍</span></p>
+                        <form class="layui-form" style="float: left; margin-left: 80px">
+                            <input type="radio" checked=checked name="required" value="1" title="必填">
+                            <input type="radio" name="required" value="2" title="选填">
+                        </form>
+
+                        <div class="edit-bar">
+                            <a class="move-up">上移</a>
+                            <a class="move-down">下移</a>
+                        </div>
+                    </div>
+
+                    <div class="choice-wrap item">
+                        <p class="is_choice"><span name='10' id='10'>姓名</span></p>
+                        <form class="layui-form" style="float: left; margin-left: 80px">
+                            <input type="radio" checked=checked name="required" value="1" title="必填">
+                            <input type="radio" name="required" value="2" title="选填">
+                        </form>
+                        <div class="edit-bar">
+                            <a class="move-up">上移</a>
+                            <a class="move-down">下移</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-success " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        健康信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body hel-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+            <div class="panel panel-warning " style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家庭信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body fam-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+            <div class="panel panel-danger" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        家长信息
+
+                    </h3>
+                </div>
+                <div class="panel-body body par-info" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+
+            <div class="panel panel-primary" style="margin-top: 20px">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        自定制信息
+                    </h3>
+                </div>
+                <div class="panel-body body customization" id="" style="margin-top: 20px">
+
+                </div>
+            </div>
+            <div class="actions">
+                <a class="pull-right btn-xs btn-success" style="padding: 3px 5px; margin-left: 6px">
+                    <span class="glyphicon glyphicon-check" id="preview">预览</span>
+                </a>
+                <a class="pull-right btn-xs btn-warning" style="padding: 3px 5px; ">
+                    <span class="glyphicon glyphicon-floppy-saved " id="save">保存</span>
+                </a>
+            </div>
+        </div>
+
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'plug/Distpicker/dist/distpicker.js' %}"></script>
+    <script src="{% static 'tables_setting/js/table_setting.js' %}"></script>
+    <script src="{% static 'tables_setting/js/edit_table.js' %}"></script>
+    <script>
+        let selectField = ['姓名', '国籍'];
+        addDeleteOption();
+
+
+    </script>
+
+{% endblock %}

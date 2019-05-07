@@ -159,8 +159,7 @@ function addDeleteOption() {
                     return
                 }
                 var index = tbody.find('tr').index($(this).parents('tr'));
-
-                $('.div_table_par').find('li').eq(index).remove();
+                $(this).parents('.div_question').find('.div_table_par ul li').eq(index).remove();
                 $(this).parents('tr').remove()
 
             })

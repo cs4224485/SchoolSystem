@@ -13,7 +13,6 @@ function formFunctionTap() {
         btns.each(function (i, btn) {
             btn.addEventListener('tap', function () {
                 var _self = this;
-                console.log(_self);
                 if (_self.picker) {
                     _self.picker.show(function (rs) {
 
@@ -140,7 +139,7 @@ mui("#input_information").on('tap', '.Submission', function () {
     }); //校验通过，继续执行业务逻辑
     if (check) {
         let input = mui('.mui-input-row input').input();
-        let obj = {}
+        let obj = {};
 
         mui("#input_information a.mui-navigate-right span").each(function (e) {
             let obj_name = $("#input_information a").eq(e).attr("data-name");
@@ -148,7 +147,6 @@ mui("#input_information").on('tap', '.Submission', function () {
             let is_main_contact = $("#input_information").find(".MUIradio").eq(e).attr("data-id");
             var education, relation, is_contact; //最高学历
 
-            console.log(is_main_contact)
             //return false
             switch (obj_name) {
                 case "父亲":
@@ -185,11 +183,10 @@ mui("#input_information").on('tap', '.Submission', function () {
             } else {
                 is_contact = false
             }
-            console.log(obj_name)
             obj[obj_name] = {
                 "last_name": $("input[name='last_name']").eq(e).val() || '', //姓
                 "first_name": $("input[name='first_name']").eq(e).val() || '', //名
-                "birthday": $("input[name='birthday']").eq(e).val() || '', //生日
+                "birthday": $("input[name='birthday']").eq(e).val() || '1900-01-01', //生日
                 "telephone": $("input[name='telephone']").eq(e).val() || "", //联系电话
                 "education": parseInt(education) || 7,  		//最高学历
                 "company": $("input[name='company']").eq(e).val() || "", 	//工作单位
@@ -201,11 +198,9 @@ mui("#input_information").on('tap', '.Submission', function () {
             }
 
 
-        })
+        });
 
-        console.log(obj)
-//						console.log(JSON.stringify(obj))
-//						var ss = JSON.stringify(obj)
+
 
         mui.ajax({
             url: ajaxUrl + '/api/v1/parents/',
@@ -272,8 +267,8 @@ document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener(
     add_radio_num++
     let radio_name = "add_radio" + add_radio_num;
     if (check) {
-        $(".pop_Choice").hide()
-        fieldList = JSON.parse($('#fields').attr('field'))
+        $(".pop_Choice").hide();
+        fieldList = JSON.parse($('#fields').attr('field'));
 
         var html = `<li class="mui-table-view-cell mui-collapse find_li" ">
                                 <button class="btnClose">×</button>

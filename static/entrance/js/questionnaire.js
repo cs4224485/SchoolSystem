@@ -85,7 +85,6 @@ mui(".mui-content").on('tap','.btnPrimary',function(){
             dataObj.choiceInfo.push({choice_id:choiceTableId, options:options_id})
         });
 
-        console.log(dataObj);
 
         $.ajax({
             url: ajaxUrl + '/api/v1/customization/',
@@ -94,7 +93,7 @@ mui(".mui-content").on('tap','.btnPrimary',function(){
             dataType: 'json',
             success: function (data) {
                 if (data.state) {
-                    mui.alert(data.msg);
+                    mui.alert('填表完成, 感谢参与');
                     var setting_pk = $('#setting_pk').attr('pk');
                     setTimeout(
                         function () {

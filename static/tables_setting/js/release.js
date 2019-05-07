@@ -14,14 +14,13 @@ layui.use('form', function () {
 let formSetting = {
     init: function () {
         this.submitData();
-
     },
     createData: function () {
         let title = $('#title').val();
         let on_off = $('#switch').val();
         let description = $('#description').val();
-        return {'title': title, 'switch': on_off, 'description': description};
-
+        let peroration = $('#peroration').val();
+        return {'title': title, 'switch': on_off, 'description': description, 'peroration':peroration};
     },
     submitData: function () {
         $("#submit").click(function () {
