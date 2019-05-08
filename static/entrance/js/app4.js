@@ -191,6 +191,7 @@ mui("#input_information").on('tap', '.Submission', function () {
                 "education": parseInt(education) || 7,  		//最高学历
                 "company": $("input[name='company']").eq(e).val() || "", 	//工作单位
                 "job": $("input[name='job']").eq(e).val() || "", 			//当前职务
+                "occupation": $("input[name='occupation']").eq(e).val() || "", 			//当前职业
                 "wechat": $("input[name='wechat']").eq(e).val() || "", 		   // 微信号
                 "is_main_contact": is_contact,   //是否是主要联系人
                 "relation": parseInt(relation), //与学生的关系

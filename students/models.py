@@ -224,6 +224,7 @@ class StudentParents(models.Model):
     wx_info = GenericRelation(to='weixinApp.WechatUserInfo')
     gender_choice = ((1, '男'), (2, '女'))
     gender = models.IntegerField(choices=gender_choice, verbose_name='性别', default=None, null=True, blank=True)
+    occupation = models.CharField(verbose_name='职业', max_length=32, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + self.last_name

@@ -360,6 +360,7 @@ class StudentParentsViewSet(BaseViewSet):
 
         request_data = request.data.get('parents')
         request_data = json.loads(request_data)
+        print(request_data)
         for key, item in request_data.items():
             student_id = item['student']
             relation = item['relation']
@@ -387,7 +388,6 @@ class StudentParentsViewSet(BaseViewSet):
                         self.message['state'] = False
                         return Response(self.message)
             else:
-                print('parents_errors', parents_serialize.errors)
                 self.response_error(parents_serialize.errors)
                 return Response(self.message)
 
