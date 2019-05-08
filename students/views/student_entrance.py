@@ -107,7 +107,7 @@ class StudentInfo(views.View):
 
     def parents_page(self, request, setting_obj):
         par_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=4).values(
-            'fields__fieldName', 'fields__pk', 'is_required')
+            'fields__fieldName', 'fields__pk', 'is_required').order_by('order')
 
         if par_field_list:
             par_field_json = []
