@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-
+from django.contrib.contenttypes.models import ContentType
 
 # from students.models import StudentInfo
 
@@ -494,8 +494,11 @@ class TableInfo(models.Model):
     finish_time = models.IntegerField(verbose_name='填表完成的时间(以秒为单位)')
     student = models.ForeignKey("students.StudentInfo", verbose_name='填表的学生', on_delete=models.CASCADE,
                                 related_name='for_student')
+    date = models.DateField(auto_now=True, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
-    # teacher = models.ForeignKey(to='TeacherInfo', verbose_name='填表老师', on_delete=models.CharField)
     class Meta:
         db_table = 'TableInfo'
 

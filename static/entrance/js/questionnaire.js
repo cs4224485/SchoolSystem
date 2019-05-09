@@ -1,4 +1,5 @@
 var studentId = $.getUrlParam('student_id');
+var parentId = $.getUrlParam('parentId');
 //选中
 mui("#input_information").on('tap', '.mui-radio', function () {
     $(this).find(".Pradio").addClass("act").parent(".mui-radio").siblings().find(".Pradio").removeClass("act");
@@ -97,7 +98,7 @@ mui(".mui-content").on('tap','.btnPrimary',function(){
                     var setting_pk = $('#setting_pk').attr('pk');
                     setTimeout(
                         function () {
-                            window.location.href = "/student/student_info/" + setting_pk + "/?step=finish_page&student_id=" + studentId
+                            window.location.href = "/student/student_info/" + setting_pk + "/?step=finish_page&student_id=" + studentId + "&parentId=" + parentId
                         },
                         1500)
                 } else {

@@ -8,7 +8,7 @@ from school import models
 from school.utils.common_utils import *
 from django.http import JsonResponse
 from web.service.survey_form_service import SurveyFormService
-
+from datetime import datetime
 
 class TableSettingsConfig(StarkConfig):
 
@@ -51,7 +51,9 @@ class TableSettingsConfig(StarkConfig):
     def display_count(self, row=None, header=False):
         if header:
             return '填表人数'
-        return row.table_info.all().count()
+        url = '/stark/school/tableinfo/%s/list/' % row.pk
+        tag = '<a href="%s">%s</a>' % (url, row.table_info.all().count())
+        return mark_safe(tag)
 
     def form_crate(self, request):
         '''
@@ -152,6 +154,50 @@ class TableSettingsConfig(StarkConfig):
 
     list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release,
                     display_edit]
+
+
+class DetailsOfFilling(StarkConfig):
+    '''
+    填表详情信息
+    '''
+
+    def get_urls(self):
+        urlpatterns = [
+            re_path(r'^(?P<pk>\d+)/list/$', self.wrapper(self.list_view), name=self.get_list_url_name),
+        ]
+        urlpatterns.extend(self.extra_urls())
+
+        return urlpatterns
+
+    def display_student(self, row=None, header=False, *args, **kwargs):
+        if header:
+            return '姓名'
+        return row.student.full_name
+
+    def display_date(self, row=None, header=False, *args, **kwargs):
+        if header:
+            return '填写日期'
+        return datetime.strftime(row.date, '%Y-%m-%d')
+
+    def display_preparer(self, row=None, header=False, *args, **kwargs):
+        if header:
+            return '填表人'
+        return row.content_object.parent.first().get_relation_display()
+
+    def get_add_btn(self):
+        return None
+
+    def get_list_display(self):
+        val = super().get_list_display()
+        val.remove(StarkConfig.display_edit)
+        val.remove(StarkConfig.display_del)
+        return val
+
+    def get_queryset(self, request, *args, **kwargs):
+        table_pk = kwargs.get('pk')
+        return self.model_class.objects.filter(table=table_pk)
+
+    list_display = [display_student, display_date, display_preparer]
 
 
 class TableSetting(object):

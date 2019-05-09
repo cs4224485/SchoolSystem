@@ -360,10 +360,10 @@ class StudentParentsViewSet(BaseViewSet):
 
         request_data = request.data.get('parents')
         request_data = json.loads(request_data)
-        print(request_data)
         for key, item in request_data.items():
             student_id = item['student']
             relation = item['relation']
+            is_main_contact = item['is_main_contact']
             parents_obj = StudentParents.objects.filter(parent__student=student_id, parent__relation=relation).first()
             if parents_obj:
                 parents_serialize = StudentParentsSerializers(data=item, instance=parents_obj)
@@ -384,13 +384,14 @@ class StudentParentsViewSet(BaseViewSet):
                         # 创建家长与学生的对应关系
                         self.message['state'] = True
                         self.message['msg'] = '创建成功'
+                    if is_main_contact:
+                        self.message['data'] = {"parent_id": parents_obj.pk}
                     else:
                         self.message['state'] = False
                         return Response(self.message)
             else:
                 self.response_error(parents_serialize.errors)
                 return Response(self.message)
-
         return Response(self.message)
 
 
