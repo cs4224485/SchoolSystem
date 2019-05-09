@@ -212,9 +212,10 @@ mui("#input_information").on('tap', '.Submission', function () {
                 console.log(data);
                 if (data.state) {
                     var setting_pk = $('#setting_pk').attr('pk');
+                    var parentId = data.data.parent_id;
                     setTimeout(
                         function () {
-                            window.location.href = "/student/student_info/" + setting_pk + "/?step=question_page&student_id=" + urlId
+                            window.location.href = "/student/student_info/" + setting_pk + "/?step=question_page&student_id=" + urlId + "&parentId=" + parentId
                         },
                         1500)
                 } else {
@@ -232,7 +233,7 @@ mui("#input_information").on('tap', '.Submission', function () {
 
     }
 
-})
+});
 
 
 //			
