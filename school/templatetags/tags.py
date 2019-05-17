@@ -7,7 +7,7 @@ from utils.common import *
 register = template.Library()
 
 
-@register.inclusion_tag('setting/fields.html')
+@register.inclusion_tag('survey_forms/fields.html')
 def fields():
     stu_info_choice = models.ChoiceField.objects.filter(field_type=1)
     hel_info_choice = models.ChoiceField.objects.filter(field_type=2)

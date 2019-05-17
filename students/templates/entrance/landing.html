@@ -58,36 +58,45 @@
     </ul>
 
     <div class="mui-input-group box_sizing" id="input_information">
+        {% for field in login_fields %}
+            {% if field.field_name == '学生姓名' %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>学生姓名：</label>
+                    <input type="text" class="mui-input-clear" placeholder="请输入" id="statureHeight">
+                </div>
+            {% endif %}
 
-        <div class="mui-input-row flex_center box_sizing">
-            <label>学生姓名：</label>
-            <input type="text" class="mui-input-clear" placeholder="请输入" id="statureHeight">
-        </div>
-        <div class="mui-input-row flex_center box_sizing">
-            <label>生日：</label>
-            <input type="text" class="mui-input-clear Birthday" id='result'
-                   data-options='{"type":"date","beginYear":"1990","endYear":""}'
-                   placeholder="请选择日期">
-            <div class="right_pop flex_center">
-                <span class="mui-icon mui-icon-arrowright"></span>
-            </div>
-        </div>
-        <div class="mui-input-row flex_center box_sizing">
-            <label>所在年级：</label>
-            <input type="text" class="mui-input-clear" placeholder="选择年级" id='BloodType' readonly="readonly">
-            <div class="right_pop flex_center">
-                <span class="mui-icon mui-icon-arrowright"></span>
-            </div>
-        </div>
+            {% if field.field_name == '生日'  %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>生日：</label>
+                    <input type="text" class="mui-input-clear Birthday" id='result'
+                           data-options='{"type":"date","beginYear":"1990","endYear":""}'
+                           placeholder="请选择日期">
+                    <div class="right_pop flex_center">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </div>
+            {% endif %}
+            {% if field.field_name == '所在年级'  %}
+                <div class="mui-input-row flex_center box_sizing">
+                    <label>所在年级：</label>
+                    <input type="text" class="mui-input-clear" placeholder="选择年级" id='BloodType' readonly="readonly">
+                    <div class="right_pop flex_center">
+                        <span class="mui-icon mui-icon-arrowright"></span>
+                    </div>
+                </div>
+            {% endif %}
 
-        <div class="mui-input-row flex_center box_sizing">
-            <label>亲子关系：</label>
-            <input type="text" class="mui-input-clear" placeholder="请选择" id='visionType' readonly="readonly">
-            <div class="right_pop flex_center">
-                <span class="mui-icon mui-icon-arrowright"></span>
+            {% if field.field_name == '亲子关系'  %}
+            <div class="mui-input-row flex_center box_sizing">
+                <label>亲子关系：</label>
+                <input type="text" class="mui-input-clear" placeholder="请选择" id='visionType' readonly="readonly">
+                <div class="right_pop flex_center">
+                    <span class="mui-icon mui-icon-arrowright"></span>
+                </div>
             </div>
-        </div>
-
+            {% endif %}
+         {% endfor %}
         <div class="mui-button-row" id="input_information">
             <button type="submit" class="mui-btn mui-btn-primary Submission mui-btn-block">登录</button>
         </div>

@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from web.service.survey_form_service import SurveyFormService
 from datetime import datetime
 
+
 class TableSettingsConfig(StarkConfig):
 
     def get_add_btn(self):
@@ -27,6 +28,7 @@ class TableSettingsConfig(StarkConfig):
             re_path(r'^settings/$', self.wrapper(self.form_crate), name='table_setting'),
             re_path(r'^(?P<pk>\d+)/setting_edit/$', self.wrapper(self.form_edit), name='edit_setting'),
             re_path(r'^(?P<pk>\d+)/release/$', self.wrapper(self.release), name='release'),
+            re_path(r'^(?P<pk>\d+)/bind_field$', self.wrapper(self.bind_login_field), name='bind_field'),
             re_path(r'^preview/$', self.wrapper(self.preview), name='preview'),
             re_path(r'^(?P<pk>\d+)/del/$', self.wrapper(self.delete_view), name=self.get_delete_url_name),
         ]
@@ -70,7 +72,7 @@ class TableSettingsConfig(StarkConfig):
             setting_obj = service.create_form()
             return JsonResponse({'setting_obj_id': setting_obj.pk, 'state': True})
 
-        return render(request, 'setting/schoolsettiongs.html', {'school_list': school_list})
+        return render(request, 'survey_forms/schoolsettiongs.html', {'school_list': school_list})
 
     def form_edit(self, request, *args, **kwargs):
         '''
@@ -108,7 +110,7 @@ class TableSettingsConfig(StarkConfig):
         # 单选多选表信息
         choice_tb_list = setting_obj.choice.all()
         tb_info = TableSetting(field_dict, selected_fields, scope_of_filling, setting_obj, scale_list, choice_tb_list)
-        return render(request, 'setting/edit_setting.html', {'tb_info': tb_info})
+        return render(request, 'survey_forms/edit_setting.html', {'tb_info': tb_info})
 
     def preview(self, request):
         '''
@@ -121,7 +123,7 @@ class TableSettingsConfig(StarkConfig):
         # hel_fields = models.ChoiceField.objects.filter(id__in=data['choiceFieldId'], field_type=2)
         # fam_fields = models.ChoiceField.objects.filter(id__in=data['choiceFieldId'], field_type=3)
         # par_fields = models.ChoiceField.objects.filter(id__in=data['choiceFieldId'], field_type=4)
-        return render(request, 'setting/perview.html', {'data': data})
+        return render(request, 'survey_forms/perview.html', {'data': data})
 
     def release(self, request, *args, **kwargs):
         '''
@@ -139,9 +141,12 @@ class TableSettingsConfig(StarkConfig):
             description = setting_obj.description
             title = setting_obj.title
             peroration = setting_obj.peroration
-            return render(request, 'setting/release.html',
+            login_fields = models.FormLoginFields.objects.all()
+            selected_fields = [item.id for item in setting_obj.login_fields.all()]
+            return render(request, 'survey_forms/release.html',
                           {'qrfile': qrfile, "url": url, 'status': status, 'description': description, 'title': title,
-                           'peroration': peroration})
+                           'peroration': peroration, 'login_fields': login_fields, 'form_id': setting_obj.pk,
+                           'selected_fields': selected_fields})
         title = request.POST.get('title')
         switch = request.POST.get('switch')
         peroration = request.POST.get('peroration')
@@ -151,6 +156,25 @@ class TableSettingsConfig(StarkConfig):
         if state:
             return JsonResponse({'msg': '设置成功', 'code': 200})
         return JsonResponse({'msg': '设置失败', 'code': 500})
+
+    def bind_login_field(self, request, *args, **kwargs):
+        '''
+        绑定登陆页面的字段
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+        nid = kwargs.get('pk')
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            field_id = request.POST.get('id')
+            query = models.TableSettings.objects.filter(id=nid).first()
+            if action == 'add':
+                query.login_fields.add(field_id)
+            else:
+                query.login_fields.remove(field_id)
+            return JsonResponse({'msg': '设置成功', 'code': 200})
 
     list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release,
                     display_edit]

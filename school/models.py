@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+
 # from students.models import StudentInfo
 
 # Create your models here.
@@ -371,12 +372,27 @@ class TableSettings(models.Model):
     status = models.SmallIntegerField(verbose_name='状态', choices=status_choice, default=1)
     description = models.TextField(verbose_name='表单描述', default=None, null=True, blank=True)
     peroration = models.CharField(verbose_name='结束语', null=True, blank=True, max_length=128)
+    login_fields = models.ManyToManyField(verbose_name='登陆字段', to='FormLoginFields')
 
     def __str__(self):
         return self.title
 
     class Meta:
         db_table = 'TableSettings'
+
+
+class FormLoginFields(models.Model):
+    '''
+    表单登陆字段设置
+    '''
+
+    field_name = models.CharField(verbose_name='字段名称', max_length=128)
+
+    def __str__(self):
+        return self.field_name
+
+    class Meta:
+        db_table = 'FormLoginFields'
 
 
 class SettingToField(models.Model):
@@ -516,4 +532,3 @@ class WXappSettings(models.Model):
 
     class Meta:
         db_table = 'WXappSettings'
-

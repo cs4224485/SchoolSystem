@@ -1,3 +1,4 @@
+let formId = $('#form_id').val();
 layui.use('form', function () {
     let form = layui.form;
     form.on('switch', function (data) {
@@ -7,9 +8,28 @@ layui.use('form', function () {
         } else {
             inputValue = 1
         }
-
         $('#switch').val(inputValue)
     });
+
+    form.on('switch(field)', function (data) {
+        let fieldId = data.value;
+        if (data.elem.checked) {
+            console.log(fieldId);
+            $.ajax({
+                url: "/stark/school/tablesettings/" + formId + "/bind_field",
+                type: 'POST',
+                data: {'action': 'add', 'id': fieldId},
+                dataType: 'json'
+            })
+        } else {
+            $.ajax({
+                url: "/stark/school/tablesettings/" + formId + "/bind_field",
+                type: 'POST',
+                data: {'action': 'del', 'id': fieldId},
+                dataType: 'json'
+            })
+        }
+    })
 });
 let formSetting = {
     init: function () {
@@ -20,7 +40,7 @@ let formSetting = {
         let on_off = $('#switch').val();
         let description = $('#description').val();
         let peroration = $('#peroration').val();
-        return {'title': title, 'switch': on_off, 'description': description, 'peroration':peroration};
+        return {'title': title, 'switch': on_off, 'description': description, 'peroration': peroration};
     },
     submitData: function () {
         $("#submit").click(function () {

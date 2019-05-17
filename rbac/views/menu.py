@@ -246,7 +246,6 @@ def multi_permissions(request):
             has_error = False
             for i in range(0, formset.total_form_count()):
                 row_dict = post_row_list[i]
-                print(row_dict)
                 try:
                     new_object = models.Permission(**row_dict)
                     new_object.validate_unique()
@@ -267,7 +266,6 @@ def multi_permissions(request):
             post_row_list = formset.cleaned_data
             for i in range(0, formset.total_form_count()):
                 row_dict = post_row_list[i]
-                print(row_dict)
                 permission_id = row_dict.pop('id')
                 try:
                     row_object = models.Permission.objects.filter(id=permission_id).first()

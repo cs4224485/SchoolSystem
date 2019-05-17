@@ -31,7 +31,8 @@ class StudentInfo(models.Model):
     chinese_zodiac_choice = ((1, '猴'), (2, '鸡'), (3, '狗'), (4, '猪'), (5, '鼠'),
                              (6, '牛'), (7, '虎'), (8, '兔'), (9, '龙'), (10, '蛇'), (11, '马'), (12, '羊'))
     id_card = models.CharField(verbose_name='身份证号码', null=True, db_index=True, max_length=32, blank=True)
-    student_code = models.CharField(verbose_name='学籍号', null=True, max_length=64, blank=True)
+    student_code = models.CharField(verbose_name='学籍号', null=True, max_length=64, blank=True, unique=True)
+    student_id = models.CharField(verbose_name='学号', null=True, max_length=32, blank=True, )
     telephone = models.CharField(verbose_name='电话号码', max_length=32, null=True, blank=True)
     chinese_zodiac = models.IntegerField(verbose_name='生肖', choices=chinese_zodiac_choice, null=True, blank=True)
     photo = models.FileField(upload_to='student/photo/', verbose_name='照片', null=True, blank=True)
@@ -52,6 +53,7 @@ class StudentInfo(models.Model):
 
     class Meta:
         db_table = 'StudentInfo'
+        unique_together = (('full_name', 'student_id', 'grade'),)
 
 
 class GraduateInstitutions(models.Model):

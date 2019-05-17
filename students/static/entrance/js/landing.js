@@ -101,7 +101,6 @@ var schoolId = $("#school_id").attr("pk");
     btns.each(function (i, btn) {
         btn.addEventListener('tap', function () {
             var _self = this;
-            console.log(_self)
             if (_self.picker) {
                 _self.picker.show(function (rs) {
                     result.value = rs.text;
@@ -112,7 +111,6 @@ var schoolId = $("#school_id").attr("pk");
                 var optionsJson = this.getAttribute('data-options') || '{}';
                 var options = JSON.parse(optionsJson);
                 var id = this.getAttribute('id');
-                console.log(options)
                 /*
                  * 首次显示时实例化组件
                  * 示例为了简洁，将 options 放在了按钮的 dom 上
