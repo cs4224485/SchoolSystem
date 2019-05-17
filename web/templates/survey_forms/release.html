@@ -84,11 +84,32 @@
 
                         </div>
                     </div>
+                    <div class="layui-card inner-box" style="width: 850px">
+                        <div class="layui-card-header">登陆设置</div>
+                        <div class="layui-card-body">
+                            <form class="layui-form" action="" method="post">
+                                {% for field in login_fields %}
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label labels">{{ field.field_name }}</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" class="filed" value="{{ field.id }}"  lay-filter="field" {% if field.id in selected_fields %}checked=""
+                                                {% endif %}
+                                               name="status"
+                                               lay-skin="switch" lay-text="ON|OFF">
+                                        <div class="layui-unselect layui-form-switch " lay-skin="_switch">
+                                            <em>OFF</em><i></i></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div><input type="hidden" id="form_id" value="{{ form_id }}"></div>
 
 
 {% endblock %}

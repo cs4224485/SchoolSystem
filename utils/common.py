@@ -19,6 +19,7 @@ def get_constellation(month, date):
     :param date:
     :return:
     '''
+    print(month, date, '000000')
     dates = (21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22)
     constellations = (
         (1, "摩羯"), (2, "水瓶"), (3, "双鱼"), (4, "白羊"), (5, "金牛"), (6, "双子"), (7, "巨蟹"), (8, "狮子"), (9, "处女"), (10, "天秤"),

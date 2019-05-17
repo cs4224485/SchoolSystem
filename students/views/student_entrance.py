@@ -29,18 +29,36 @@ class StudentInfo(views.View):
             return func(request, setting_obj)
 
     def post(self, request, nid, *args, **kwargs):
+        '''
+        提交登陆信息
+        :param request:
+        :param nid:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+
         self.message = {
             'state': False,
             'msg': '',
             'data': []
         }
+
         stu_name = request.POST.get('name')
         birthday = request.POST.get('birthday')
         grade = request.POST.get('classes')
         stu_class = request.POST.get('classess')
-        stu_obj = stu_models.StudentInfo.objects.filter(full_name=stu_name, birthday=birthday, grade=grade,
-                                                        stu_class=stu_class).first()
+        filter_condition = {}
+        if stu_name:
+            filter_condition['full_name'] = stu_name
+        if birthday:
+            filter_condition['birthday'] = birthday
+        if grade:
+            filter_condition['grade'] = grade
+        if stu_class:
+            filter_condition['stu_class'] = stu_class
 
+        stu_obj = stu_models.StudentInfo.objects.filter(**filter_condition).first()
         setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
 
         if not stu_obj:
@@ -56,8 +74,15 @@ class StudentInfo(views.View):
             return JsonResponse(self.message)
 
     def check(self, setting_obj):
+        '''
+        表单校验
+        :param setting_obj:
+        :return:
+        '''
         if not setting_obj:
             return HttpResponse('该表单不存在或已过期')
+        if setting_obj.status == 2:
+            return HttpResponse('表单暂未发布')
         start_time = setting_obj.stat_time
         end_time = setting_obj.end_time
         current_time = datetime.date.today()
@@ -68,10 +93,24 @@ class StudentInfo(views.View):
                 return HttpResponse('填表已结束')
 
     def start_page(self, request, setting_obj):
+        '''
+        登录页
+        :param request:
+        :param setting_obj:
+        :return:
+        '''
         school_obj = setting_obj.school_range.first()
-        return render(request, 'entrance/landing.html', {'setting_obj': setting_obj, 'school_obj': school_obj})
+        login_fields = setting_obj.login_fields.all()
+        return render(request, 'entrance/landing.html',
+                      {'setting_obj': setting_obj, 'school_obj': school_obj, 'login_fields': login_fields})
 
     def stu_info_page(self, request, setting_obj):
+        '''
+        学生信息页
+        :param request:
+        :param setting_obj:
+        :return:
+        '''
         school_obj = setting_obj.school_range.first()
         student_id = request.GET.get('student_id')
         if not student_id:
@@ -88,6 +127,12 @@ class StudentInfo(views.View):
         return self.health_page(request, setting_obj)
 
     def health_page(self, request, setting_obj):
+        '''
+        健康信息页
+        :param request:
+        :param setting_obj:
+        :return:
+        '''
         hel_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=2).values(
             'fields__fieldName', 'fields__pk', 'is_required')
         if hel_field_list:
@@ -96,6 +141,12 @@ class StudentInfo(views.View):
         return self.family_page(request, setting_obj)
 
     def family_page(self, request, setting_obj):
+        '''
+        家庭信息页
+        :param request:
+        :param setting_obj:
+        :return:
+        '''
         fam_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=3).values(
             'fields__fieldName', 'fields__pk', 'is_required')
         if fam_field_list:
@@ -106,6 +157,12 @@ class StudentInfo(views.View):
         return self.parents_page(request, setting_obj)
 
     def parents_page(self, request, setting_obj):
+        '''
+        家长信息页
+        :param request:
+        :param setting_obj:
+        :return:
+        '''
         par_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=4).values(
             'fields__fieldName', 'fields__pk', 'is_required').order_by('order')
 
@@ -139,7 +196,7 @@ class StudentInfo(views.View):
         sc_models.TableInfo.objects.get_or_create(
             defaults={'table': setting_obj, 'student_id': student_id, 'finish_time': int(end_time),
                       'content_object': parent_obj},
-                      table=setting_obj, student_id=student_id, )
+            table=setting_obj, student_id=student_id, )
 
         peroration = setting_obj.peroration
         return render(request, 'entrance/table_finish.html', {'peroration': peroration})
