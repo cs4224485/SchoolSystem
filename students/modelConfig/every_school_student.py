@@ -1,14 +1,18 @@
 import copy
-import xlrd, datetime
+import os
+import xlrd
+import mimetypes
+from django.conf import settings
 from utils.common import *
 from utils.checkinfo import *
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from school import models as sc_models
 from students import models as stu_models
 from students.forms.student_form import StudentModelForm
 from students.modelConfig.student import StudentConfig
 from django.urls import re_path
 from stark.service.stark import StarkConfig
+from django.http import FileResponse
 
 
 class SchoolStudentConfig(StudentConfig):
@@ -31,6 +35,10 @@ class SchoolStudentConfig(StudentConfig):
         urlpatterns.extend(self.extra_urls())
 
         return urlpatterns
+
+    def extra_urls(self):
+        url = [re_path('^tpl/$', self.wrapper(self.student_tpl), name='tpl_student')]
+        return url
 
     def get_queryset(self, request, *args, **kwargs):
         school_id = kwargs.get('school_id')
@@ -57,87 +65,99 @@ class SchoolStudentConfig(StudentConfig):
         :return:
         '''
         if request.method == 'GET':
-            return render(request, 'tables/student_import.html')
+            tpl_url = self.reverse_commons_url('tpl_student', *args, **kwargs)
+            return render(request, 'tables/student_import.html', {'url': tpl_url})
 
         context = {'status': True, 'msg': '导入成功'}
-        # try:
-        student_excel = request.FILES.get('student_excel')
-        """
-        打开上传的Excel文件，并读取内容
-        注：打开本地文件时，可以使用：workbook = xlrd.open_workbook(filename='本地文件路径.xlsx')
-        """
-        workbook = xlrd.open_workbook(file_contents=student_excel.file.read())
+        try:
+            student_excel = request.FILES.get('student_excel')
+            """
+            打开上传的Excel文件，并读取内容
+            注：打开本地文件时，可以使用：workbook = xlrd.open_workbook(filename='本地文件路径.xlsx')
+            """
+            workbook = xlrd.open_workbook(file_contents=student_excel.file.read())
 
-        # sheet = workbook.sheet_by_name('工作表1')
-        sheet = workbook.sheet_by_index(0)
-        row_map = {
-            0: {'text': '姓名', 'name': 'full_name'},
-            1: {'text': '姓', 'name': 'last_name'},
-            2: {'text': '名', 'name': 'first_name'},
-            3: {'text': '出生日期', 'name': 'birthday'},
-            4: {'text': '学号', 'name': 'student_id'},
-            5: {'text': '班级', 'name': 'stu_class'},
-            6: {'text': '年级', 'name': 'grade'},
-            7: {'text': '学籍号', 'name': 'student_code'},
-            8: {'text': '身份证号码', 'name': 'id_card'},
-        }
-        object_list = []
-        for row_num in range(1, sheet.nrows):
-            row = sheet.row(row_num)
-            row_dict = {}
-            for col_num, name_text in row_map.items():
-                ctype = sheet.cell(row_num, col_num).ctype  # 表格数据类型
-                cell = sheet.cell_value(row_num, col_num)
-                if col_num == 6:
-                    row_dict['grade'] = sc_models.Grade.objects.filter(grade_name=row[6].value).first()
-                    row_dict['stu_class'] = sc_models.StuClass.objects.filter(name=row[5].value,
-                                                                              grade=row_dict['grade']).first()
-                    # 届别
-                    row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
-                    continue
-                elif col_num == 5:
-                    continue
-                elif ctype == 3:
-                    date = datetime.datetime(*xlrd.xldate_as_tuple(cell, 0))
-                    row[3].value = date.strftime('%Y-%m-%d')
-                row_dict[name_text['name']] = row[col_num].value
-            # 所在学校
-            row_dict['school'] = sc_models.SchoolInfo.objects.filter(pk=school_id).first()
-            # 学生内部ID
-            import uuid
-            row_dict['interior_student_id'] = 'str:%s' % uuid.uuid4()
-            # 根据身份证计算信息
-            id_card = row[8].value
-            # 学籍号
-            row_dict['student_code'] = row[7].value if row[7].value else None
-            # 生日
-            row_dict['birthday'] = row[3].value
+            # sheet = workbook.sheet_by_name('工作表1')
+            sheet = workbook.sheet_by_index(0)
+            row_map = {
+                0: {'text': '姓名', 'name': 'full_name'},
+                1: {'text': '姓', 'name': 'last_name'},
+                2: {'text': '名', 'name': 'first_name'},
+                3: {'text': '出生日期', 'name': 'birthday'},
+                4: {'text': '学号', 'name': 'student_id'},
+                5: {'text': '班级', 'name': 'stu_class'},
+                6: {'text': '年级', 'name': 'grade'},
+                7: {'text': '学籍号', 'name': 'student_code'},
+                8: {'text': '身份证号码', 'name': 'id_card'},
+            }
+            object_list = []
+            for row_num in range(1, sheet.nrows):
+                row = sheet.row(row_num)
+                row_dict = {}
+                for col_num, name_text in row_map.items():
+                    ctype = sheet.cell(row_num, col_num).ctype  # 表格数据类型
+                    cell = sheet.cell_value(row_num, col_num)
+                    if col_num == 6:
+                        row_dict['grade'] = sc_models.Grade.objects.filter(grade_name=row[6].value).first()
+                        row_dict['stu_class'] = sc_models.StuClass.objects.filter(name=row[5].value,
+                                                                                  grade=row_dict['grade']).first()
+                        # 届别
+                        row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
+                        continue
+                    elif col_num == 5:
+                        continue
+                    elif ctype == 3:
+                        date = datetime.datetime(*xlrd.xldate_as_tuple(cell, 0))
+                        row[3].value = date.strftime('%Y-%m-%d')
+                    row_dict[name_text['name']] = row[col_num].value
+                # 所在学校
+                row_dict['school'] = sc_models.SchoolInfo.objects.filter(pk=school_id).first()
+                # 学生内部ID
+                import uuid
+                row_dict['interior_student_id'] = 'str:%s' % uuid.uuid4()
+                # 根据身份证计算信息
+                id_card = row[8].value
+                # 学籍号
+                row_dict['student_code'] = row[7].value if row[7].value else None
+                # 生日
+                row_dict['birthday'] = row[3].value
 
-            if id_card:
-                is_exist = check_id_exist(id_card)
-                if is_exist:
-                    continue
-                # 对身份证进行合法性校验
-                check_state, info = check_id_card(id_card)
-                if not check_state:
-                    continue
-                row_dict['birthday'] = info['birthday']
-                row_dict['gender'] = info['gender'][0]
-            # 如果有生日计算日龄 生肖 年龄等信息
-            if row_dict['birthday']:
-                y, m, d = row_dict['birthday'].split('-')
-                row_dict['constellation'] = get_constellation(int(m), int(d))[0]
-                row_dict['age'] = calculate_age(int(y))
-                row_dict['day_age'] = calculate_day_age(int(y), int(m), int(d))
-                row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
-            print(row_dict)
-            object_list.append(stu_models.StudentInfo(**row_dict))
-        stu_models.StudentInfo.objects.bulk_create(object_list, batch_size=20)
-        # except Exception as e:
-        #     context['status'] = False
-        #     context['msg'] = '导入失败'
-        #     print(e)
+                if id_card:
+                    is_exist = check_id_exist(id_card)
+                    if is_exist:
+                        continue
+                    # 对身份证进行合法性校验
+                    check_state, info = check_id_card(id_card)
+                    if not check_state:
+                        continue
+                    row_dict['birthday'] = info['birthday']
+                    row_dict['gender'] = info['gender'][0]
+                # 如果有生日计算日龄 生肖 年龄等信息
+                if row_dict['birthday']:
+                    y, m, d = row_dict['birthday'].split('-')
+                    row_dict['constellation'] = get_constellation(int(m), int(d))[0]
+                    row_dict['age'] = calculate_age(int(y))
+                    row_dict['day_age'] = calculate_day_age(int(y), int(m), int(d))
+                    row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
+                object_list.append(stu_models.StudentInfo(**row_dict))
+            stu_models.StudentInfo.objects.bulk_create(object_list, batch_size=20)
+        except Exception as e:
+            context['status'] = False
+            context['msg'] = '导入失败'
+            print(e)
         return render(request, 'tables/student_import.html', context)
+
+    def student_tpl(self, request):
+        """
+        下载批量导入Excel列表
+        :param request:
+        :return:
+        """
+        tpl_path = os.path.join(settings.BASE_DIR, 'web', 'files', '学生导入格式模板.xls')
+        content_type = mimetypes.guess_type(tpl_path)[0]
+        response = FileResponse(open(tpl_path, mode='rb'), content_type=content_type)
+        response['Content-Disposition'] = "attachment;filename=%s" % 'student_excel_tpl.xls'
+        return response
 
     def add_student(self, request, school_id):
         '''

@@ -236,3 +236,4 @@ class TableSetting(object):
         self.setting_obj = setting_obj
         self.scale = scale
         self.choice_tb = choice_tb
+
