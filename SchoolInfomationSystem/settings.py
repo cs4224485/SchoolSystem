@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
+import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'z90mwnm$m7@2zbr8*37w7lk0e$7%ka3cdo4_i@j#hs2jo)_su7'
-
+sys.path.insert(0, os.path.join(BASE_DIR, 'Django_apps'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -35,18 +35,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'students.apps.StudentsConfig',
-    'APIS.apps.ApisConfig',
+    'Django_apps.students.apps.StudentsConfig',
+    'Django_apps.APIS.apps.ApisConfig',
     'rest_framework',
     'corsheaders',
-    'school.apps.SchoolConfig',
-    'stark.apps.StarkConfig',
-    'teacher.apps.TeacherConfig',
-    'StudentMentalHealth',
-    'weixinApp',
+    'Django_apps.school.apps.SchoolConfig',
+    'Django_apps.stark.apps.StarkConfig',
+    'Django_apps.teacher.apps.TeacherConfig',
+    'Django_apps.StudentMentalHealth.apps.StudentmentalhealthConfig',
+    'Django_apps.weixinApp.apps.WeixinappConfig',
+    'Django_apps.rbac.apps.RbacConfig',
+    'Django_apps.web',
     'debug_toolbar.apps.DebugToolbarConfig',
-    'rbac.apps.RbacConfig',
-    'web',
 ]
 
 from corsheaders.middleware import CorsMiddleware

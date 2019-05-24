@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+{% load static %}
+<html class="ui-page-login">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title></title>
+    <link href="{% static 'pub/css/mui.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.picker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'pub/css/mui.poppicker.css' %}" rel="stylesheet"/>
+    <link href="{% static 'entrance/css/app.css' %}" rel="stylesheet"/>
+
+
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">监护人信息</h1>
+</header>
+<img src="{% static 'entrance/images/daxiang.png' %}" alt="" class="positionImgbj"/>
+<div class="mui-content">
+    <!--进度条-->
+    <div class="timeline">
+        <ul class="flex box_sizing">
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p></li>
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p></li>
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p></li>
+            <li class="act"><p><span class="mui-icon mui-icon-checkmarkempty"></span></p>
+                <p style="background: #D8D8D8;"></p></li>
+        </ul>
+
+    </div>
+    <!--表单-->
+    <div class="mui-input-group box_sizing" id="input_information">
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell mui-collapse mui-active find_li">
+            <button class="btnClose">×</button>
+                <a class="mui-navigate-right" href="#" data-name=""><span></span></a>
+                <div class="mui-collapse-content">
+                    {% for fam_field in fam_field_list %}
+                        {% if fam_field.fields__fieldName == '家长姓名' %}
+
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>中文姓{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的中文姓" name="last_name">
+                            </div>
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>中文名{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的中文名" name="first_name">
+                            </div>
+                        {% elif fam_field.fields__fieldName == '家长生日' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>生日{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear Birthday  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       data-options='{"type":"date","beginYear":"1940","endYear":""}'
+                                       placeholder="请选择日期" name="birthday">
+                                <div class="right_pop flex_center">
+                                    <span class="mui-icon mui-icon-arrowright"></span>
+                                </div>
+                            </div>
+                        {% elif fam_field.fields__fieldName == '学历' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>最高学历{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear visionType  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请选择最高学历" name='0'
+                                       readonly="readonly">
+                                <div class="right_pop flex_center">
+                                    <span class="mui-icon mui-icon-arrowright"></span>
+                                </div>
+                            </div>
+
+                        {% elif fam_field.fields__fieldName == '工作单位' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>工作单位{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的工作单位" name="company">
+                            </div>
+
+                        {% elif fam_field.fields__fieldName == '职业' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>当前职业{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的当前职业" name="occupation">
+                            </div>
+
+                        {% elif fam_field.fields__fieldName == '职务' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>当前职务{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的当前职务" name="job">
+                            </div>
+
+                        {% elif  fam_field.fields__fieldName == '家长微信' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>微信号{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="wechat">
+                            </div>
+
+                        {% elif  fam_field.fields__fieldName == '家长电话' %}
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>电话{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="wechat">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="mui-input-row flex box_sizing">
+                        <label class="flex_center" style=" height: 30px;">设为主要联络人：</label>
+                        <div class="flex_center">
+                            <div class="flex_center" style=" height: 30px;">
+                                <div class="MUIradio flex_center addMUIradio" data-id="0"><span></span></div>
+                                <label>是</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+
+        <div class="addPersonnel" id="addPersonnel"><span class="mui-icon mui-icon-plusempty"></span>添加其它监护人</div>
+        <div class="mui-button-row" id="input_information">
+            <button type="button" class="mui-btn mui-btn-primary Submission mui-btn-block">下一步</button>
+        </div>
+    </div>
+</div>
+<div id="setting_pk" pk="{{ pk }}"></div>
+<div id="fields" field="{{ par_field_json }}"></div>
+</div>
+
+
+<!--弹窗-->
+<div class="pop_Choice">
+    <div class="flex_center">
+        <div class="body box_sizing" style="position: relative;">
+            <ul class="mui-table-view mui-table-view-radio">
+                 <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right ">
+                        父亲
+                    </a>
+                </li> <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right ">
+                        母亲
+                    </a>
+                </li>
+
+                <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right ">
+                        爷爷
+                    </a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        奶奶
+                    </a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        外公
+                    </a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        外婆
+                    </a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        其它亲属
+                    </a>
+                </li>
+            </ul>
+            <div id="Close"><span class="mui-icon mui-icon-closeempty"></span></div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .mui-table-view-cell.mui-active {
+        background: #5ac3ca;
+        color: #fff;
+    }
+
+    .mui-table-view-cell label {
+        color: #333;
+    }
+
+    .mui-table-view-cell .mui-navigate-right {
+        text-align: center;
+    }
+
+    .mui-table-view-cell.mui-active .mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after {
+        color: #fff;
+    }
+
+    .addPersonnel {
+        background: #6fd4da;
+        color: #fff;
+        text-align: center;
+        line-height: 45px;
+    }
+
+    #Close {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        color: #2EB6BE;
+    }
+
+    #Close span {
+        font-weight: 666;
+        font-size: 30px;
+    }
+.btnClose{ position: absolute;top:10px; left: 10px; z-index: 9; width: 20px; height: 20px; border-radius: 50%; border:1px solid #007AFF; padding: 0; color: #f00;}
+
+</style>
+<script type="text/javascript" src="{% static 'pub/js/jQuery1.9.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/ajaxUrl.js' %}"></script>
+<script type="text/javascript" src="{% static 'pub/js/mui.min.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'entrance/js/rem.js' %}"></script>
+<script type="text/javascript" src="{% static 'pub/js/mui.picker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'pub/js/mui.poppicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'entrance/js/city.data.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/../../static/entrance/js/city.data-3.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'entrance/js/app4.js' %}"></script>
+<script type="text/javascript">
+
+</script>
+
+</body>
+
+</html>
+

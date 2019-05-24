@@ -17,9 +17,9 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
 from SchoolInfomationSystem import settings
-from APIS.views.entrance import *
+from Django_apps.APIS.views import *
 from stark.service.stark import site
-from web.views import account
+from Django_apps.web.views import account
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,10 +27,11 @@ urlpatterns = [
     path('login/', account.login, name='login'),
     # 后台登出
     path('logout/', account.logout, name='logout'),
-    re_path(r'^student/', include('students.urls')),
+    re_path(r'^student/', include('Django_apps.students.urls')),
     re_path(r'^school/', include('school.urls')),
+    # 学生心理健康相关URL
     re_path(r'^mental/', include('StudentMentalHealth.urls')),
-    re_path(r'api/', include('APIS.urls')),
+    re_path(r'api/', include('Django_apps.APIS.urls')),
     path('stark/', site.urls),
     re_path(r'^rbac/', include(('rbac.urls', 'rbac'), namespace='rbac'), ),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
