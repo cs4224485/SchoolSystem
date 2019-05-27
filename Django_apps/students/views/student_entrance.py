@@ -100,7 +100,7 @@ class StudentInfo(views.View):
         '''
         school_obj = setting_obj.school_range.first()
         login_fields = setting_obj.login_fields.all()
-        return render(request, 'entrance/../templates/entrance/landing.html',
+        return render(request, 'entrance/landing.html',
                       {'setting_obj': setting_obj, 'school_obj': school_obj, 'login_fields': login_fields})
 
     def stu_info_page(self, request, setting_obj):
@@ -120,7 +120,7 @@ class StudentInfo(views.View):
                                                                                    fields__field_type=1).values(
             'fields__fieldName', 'fields__pk', 'is_required')
         if stu_field_list:
-            return render(request, 'entrance/../templates/entrance/student_info.html',
+            return render(request, 'entrance/student_info.html',
                           {'stu_field_list': stu_field_list, 'pk': setting_obj.pk, 'student_obj': student_obj,
                            'school_obj': school_obj})
         return self.health_page(request, setting_obj)
@@ -135,7 +135,7 @@ class StudentInfo(views.View):
         hel_field_list = sc_models.SettingToField.objects.filter(setting=setting_obj, fields__field_type=2).values(
             'fields__fieldName', 'fields__pk', 'is_required')
         if hel_field_list:
-            return render(request, 'entrance/../templates/entrance/health_info.html',
+            return render(request, 'entrance/health_info.html',
                           {'hel_field_list': hel_field_list, 'pk': setting_obj.pk})
         return self.family_page(request, setting_obj)
 
@@ -150,7 +150,7 @@ class StudentInfo(views.View):
             'fields__fieldName', 'fields__pk', 'is_required')
         if fam_field_list:
             school_district = setting_obj.school_range.values('province', 'city', 'region').first()
-            return render(request, 'entrance/../templates/entrance/family_info.html',
+            return render(request, 'entrance/family_info.html',
                           {'fam_field_list': fam_field_list, 'pk': setting_obj.pk,
                            'school_district': json.dumps(school_district)})
         return self.parents_page(request, setting_obj)
@@ -169,7 +169,7 @@ class StudentInfo(views.View):
             par_field_json = []
             for item in par_field_list:
                 par_field_json.append(item.get('fields__fieldName'))
-            return render(request, 'entrance/../templates/entrance/parent_info.html',
+            return render(request, 'entrance/parent_info.html',
                           {'fam_field_list': par_field_list, 'pk': setting_obj.pk,
                            'par_field_json': json.dumps(par_field_json)})
 
@@ -182,7 +182,7 @@ class StudentInfo(views.View):
         multi_choice_list = setting_obj.choice.filter(choice_type=2)
 
         if scale_list or single_choice_list:
-            return render(request, 'entrance/../templates/entrance/questions.html', {'scale_list': scale_list, 'pk': setting_obj.pk,
+            return render(request, 'entrance/questions.html', {'scale_list': scale_list, 'pk': setting_obj.pk,
                                                                'single_choice_list': single_choice_list,
                                                                'multi_choice_list': multi_choice_list})
         return self.finish_page(request, setting_obj)
@@ -198,4 +198,4 @@ class StudentInfo(views.View):
             table=setting_obj, student_id=student_id, )
 
         peroration = setting_obj.peroration
-        return render(request, 'entrance/../templates/entrance/table_finish.html', {'peroration': peroration})
+        return render(request, 'entrance/table_finish.html', {'peroration': peroration})
