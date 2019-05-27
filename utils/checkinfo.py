@@ -1,4 +1,4 @@
-from students.models import *
+from Django_apps.students.models import *
 import re
 import datetime
 
