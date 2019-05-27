@@ -10,5 +10,7 @@ DATABASES = {
         'OPTIONS': {'init_command': "SET foreign_key_checks = 0;"}
     }
 }
+RELEASE_VERSION = '1.21'
+DOMAIN_NAME = 'http://dc.junji.vip'
 
-DEBUG = True 
+DEBUG = False
