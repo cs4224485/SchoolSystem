@@ -166,7 +166,7 @@ class SchoolStudentConfig(StudentConfig):
                     if col_num == 6:
                         row_dict['grade'] = Grade.objects.filter(grade_name=row[6].value).first()
                         row_dict['stu_class'] = StuClass.objects.filter(name=row[5].value,
-                                                                        grade=row_dict['grade']).first()
+                                                                        grade=row_dict['grade'],school=school_id).first()
                         # 届别
                         row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
                         continue
@@ -220,7 +220,7 @@ class SchoolStudentConfig(StudentConfig):
         :param request:
         :return:
         """
-        tpl_path = os.path.join(settings.BASE_DIR, 'web', 'files', '学生导入格式模板.xls')
+        tpl_path = os.path.join(settings.BASE_DIR, 'Django_apps', 'web', 'files', '学生导入格式模板.xls')
         content_type = mimetypes.guess_type(tpl_path)[0]
         response = FileResponse(open(tpl_path, mode='rb'), content_type=content_type)
         response['Content-Disposition'] = "attachment;filename=%s" % 'student_excel_tpl.xls'

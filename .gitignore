@@ -109,3 +109,7 @@ venv.bak/
 .idea/*
 __pycache__
 media/
+
+wsgi.py
+settings_product.py
+settings_dev.py

@@ -47,6 +47,7 @@ class StudentInfo(views.View):
         birthday = request.POST.get('birthday')
         grade = request.POST.get('classes')
         stu_class = request.POST.get('classess')
+
         filter_condition = {}
         if stu_name:
             filter_condition['full_name'] = stu_name
@@ -59,7 +60,7 @@ class StudentInfo(views.View):
 
         stu_obj = stu_models.StudentInfo.objects.filter(**filter_condition).first()
         setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
-
+        print(stu_obj)
         if not stu_obj:
             self.message['msg'] = '您好，你所填学生信息与学校记录不符，请查证后再填'
             return JsonResponse(self.message)
