@@ -60,7 +60,6 @@ class StudentInfo(views.View):
 
         stu_obj = stu_models.StudentInfo.objects.filter(**filter_condition).first()
         setting_obj = sc_models.TableSettings.objects.filter(id=nid).first()
-        print(stu_obj)
         if not stu_obj:
             self.message['msg'] = '您好，你所填学生信息与学校记录不符，请查证后再填'
             return JsonResponse(self.message)

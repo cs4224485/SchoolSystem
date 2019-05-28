@@ -155,6 +155,7 @@ class SchoolStudentConfig(StudentConfig):
                 6: {'text': '年级', 'name': 'grade'},
                 7: {'text': '学籍号', 'name': 'student_code'},
                 8: {'text': '身份证号码', 'name': 'id_card'},
+                9: {'text': '性别', 'name': 'gender'}
             }
             object_list = []
             for row_num in range(1, sheet.nrows):
@@ -166,7 +167,8 @@ class SchoolStudentConfig(StudentConfig):
                     if col_num == 6:
                         row_dict['grade'] = Grade.objects.filter(grade_name=row[6].value).first()
                         row_dict['stu_class'] = StuClass.objects.filter(name=row[5].value,
-                                                                        grade=row_dict['grade'],school=school_id).first()
+                                                                        grade=row_dict['grade'],
+                                                                        school=school_id).first()
                         # 届别
                         row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
                         continue
@@ -179,7 +181,6 @@ class SchoolStudentConfig(StudentConfig):
                 # 所在学校
                 row_dict['school'] = SchoolInfo.objects.filter(pk=school_id).first()
                 # 学生内部ID
-
                 row_dict['interior_student_id'] = 'str:%s' % uuid.uuid4()
 
                 # 根据身份证计算信息
@@ -191,8 +192,8 @@ class SchoolStudentConfig(StudentConfig):
 
                 if id_card:
                     is_exist = check_id_exist(id_card)
-                    if is_exist:
-                        continue
+                    # if is_exist:
+                    #     continue
                     # 对身份证进行合法性校验
                     check_state, info = check_id_card(id_card)
                     if not check_state:
@@ -206,9 +207,17 @@ class SchoolStudentConfig(StudentConfig):
                     row_dict['age'] = calculate_age(int(y))
                     row_dict['day_age'] = calculate_day_age(int(y), int(m), int(d))
                     row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
+                student_obj = StudentInfo.objects.filter(full_name=row_dict['full_name'], school_id=school_id,
+                                                         birthday=row_dict['birthday'])
+                if not row_dict['gender']:row_dict['gender'] = None
+                if student_obj:
+                    row_dict.pop('interior_student_id')
+                    student_obj.update(**row_dict)
+                    continue
                 object_list.append(StudentInfo(**row_dict))
             StudentInfo.objects.bulk_create(object_list, batch_size=20)
         except Exception as e:
+            print(e)
             context['status'] = False
             context['msg'] = '导入失败'
 

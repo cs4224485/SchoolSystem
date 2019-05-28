@@ -20,6 +20,7 @@ from Django_apps.APIS.views.school_info.timetable_api import *
 from Django_apps.APIS.views.filters import FilterSchoolByCity, FilterStuClass
 from Django_apps.APIS.views.entrance import *
 from Django_apps.APIS.views.mental import AppointmentInfoViewSet, GetPerClassStudent
+from APIS.views.surver_forms import SchoolInfoViewSet, GradeAndClassViewSet, PerClassStudentListViewSet
 
 routers = routers.DefaultRouter()
 routers.register(r'student', StudentInfoViewSet)
@@ -42,6 +43,11 @@ urlpatterns = [
     re_path(r"(?P<version>[v1]+)/filter_school/$", FilterSchoolByCity.as_view()),
     # 根据年级过滤班级
     re_path(r"(?P<version>[v1]+)/filter_stu_lass/$", FilterStuClass.as_view()),
-    re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls))
-
+    re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls)),
+    # 获取学校信息
+    re_path(r"(?P<version>[v1|v2]+)/school_info/$", SchoolInfoViewSet.as_view()),
+    # 获取班级信息
+    re_path(r"(?P<version>[v1|v2]+)/grade_class_info/$", GradeAndClassViewSet.as_view()),
+    # 获取每个班级的学生列表
+    re_path(r"(?P<version>[v1|v2]+)/per_class_students/$", PerClassStudentListViewSet.as_view()),
 ]
