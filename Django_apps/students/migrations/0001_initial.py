@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                 ('region', models.CharField(max_length=16, verbose_name='区县')),
                 ('address', models.CharField(max_length=128, verbose_name='详细地址')),
                 ('record_time', models.DateField(auto_now=True, verbose_name='日期')),
-                ('family', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.FamilyInfo', verbose_name='家庭')),
+                ('family', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.FamilyInfo', verbose_name='家庭')),
             ],
         ),
         migrations.CreateModel(
@@ -124,10 +124,10 @@ class Migration(migrations.Migration):
                 ('wechat', models.CharField(blank=True, max_length=32, null=True, verbose_name='微信')),
                 ('create_time', models.DateField(auto_now=True, verbose_name='创建日期')),
                 ('period', models.IntegerField(verbose_name='届别')),
-                ('country', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.Country', verbose_name='国籍')),
-                ('graduate_institutions', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.GraduateInstitutions', verbose_name='毕业园校')),
+                ('country', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='students.Country', verbose_name='国籍')),
+                ('graduate_institutions', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.GraduateInstitutions', verbose_name='毕业园校')),
                 ('school', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.SchoolInfo', verbose_name='所在学校')),
-                ('stu_class', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StuClass', verbose_name='所在班级')),
+                ('stu_class', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StuClass', verbose_name='所在班级')),
             ],
         ),
         migrations.CreateModel(
@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('interior_student_id', models.CharField(max_length=255, unique=True, verbose_name='内部学生ID')),
-                ('student', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentInfo')),
+                ('student', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='students.StudentInfo')),
             ],
         ),
         migrations.CreateModel(
@@ -160,7 +160,7 @@ class Migration(migrations.Migration):
                 ('id_card', models.CharField(db_index=True, max_length=32, null=True, unique=True, verbose_name='身份证号码')),
                 ('student_code', models.IntegerField(null=True, verbose_name='学籍号')),
                 ('telephone', models.CharField(max_length=32, null=True, verbose_name='电话号码')),
-                ('student_detail', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='student_privacy', to='Django_apps.students.StudentInfo', verbose_name='学生详细信息')),
+                ('student_detail', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='student_privacy', to='students.StudentInfo', verbose_name='学生详细信息')),
             ],
         ),
         migrations.CreateModel(
@@ -169,8 +169,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('relation', models.IntegerField(choices=[(1, '父亲'), (2, '母亲'), (3, '爷爷'), (4, '奶奶'), (5, '外公'), (6, '外婆')], verbose_name='与学生关系')),
                 ('is_main_contact', models.BooleanField(verbose_name='是否为主要接送人')),
-                ('parents', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentParents', verbose_name='家长ID')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentPrivacy', verbose_name='学生ID')),
+                ('parents', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentParents', verbose_name='家长ID')),
+                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentPrivacy', verbose_name='学生ID')),
             ],
         ),
         migrations.CreateModel(
@@ -183,31 +183,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='studentparents',
             name='wechat_open_id',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.WechatOpenID', verbose_name='openID'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.WechatOpenID', verbose_name='openID'),
         ),
         migrations.AddField(
             model_name='healthinfo',
             name='InheritedDisease',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.InheritedDisease', verbose_name='遗传病'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.InheritedDisease', verbose_name='遗传病'),
         ),
         migrations.AddField(
             model_name='healthinfo',
             name='allergy',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.Allergy', verbose_name='过敏源'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.Allergy', verbose_name='过敏源'),
         ),
         migrations.AddField(
             model_name='healthinfo',
             name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentInfo'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentInfo'),
         ),
         migrations.AddField(
             model_name='familyinfo',
             name='family_status',
-            field=models.ManyToManyField(to='Django_apps.students.FamilyStatus', verbose_name='家庭状况'),
+            field=models.ManyToManyField(to='students.FamilyStatus', verbose_name='家庭状况'),
         ),
         migrations.AddField(
             model_name='familyinfo',
             name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentPrivacy', verbose_name='学生'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentPrivacy', verbose_name='学生'),
         ),
     ]

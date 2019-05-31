@@ -27,3 +27,13 @@ class StudentSerializers(serializers.ModelSerializer):
     class Meta:
         model = StudentInfo
         fields = ['id', 'full_name']
+
+
+class StudentDetailSerializes(serializers.ModelSerializer):
+    stu_class = serializers.CharField(source='stu_class.name')
+    grade = serializers.CharField(source='stu_class.grade.get_grade_name_display')
+
+    class Meta:
+        model = StudentInfo
+        fields = ['id', 'full_name', 'stu_class', 'grade']
+

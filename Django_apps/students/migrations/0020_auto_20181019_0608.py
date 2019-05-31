@@ -55,6 +55,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='studentinfo',
             name='grade',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.Grade', verbose_name='年级'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.Grade', verbose_name='年级'),
         ),
     ]

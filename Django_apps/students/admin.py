@@ -9,7 +9,7 @@ admin.site.register(Allergy)
 admin.site.register(InheritedDisease)
 
 admin.site.register(GraduateInstitutions)
-admin.site.register(FamilyStatus)
+# admin.site.register(FamilyStatus)
 admin.site.register(FamilyInfo)
 admin.site.register(StudentParents)
 admin.site.register(StudentToParents)

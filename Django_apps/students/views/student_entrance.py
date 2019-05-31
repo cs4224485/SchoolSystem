@@ -190,12 +190,17 @@ class StudentInfo(views.View):
     def finish_page(self, request, setting_obj):
         student_id = request.GET.get('student_id')
         parent_id = request.GET.get('parentId')
-        parent_obj = StudentParents.objects.filter(id=parent_id).first()
         end_time = time.time() - self.start_time[0]
-        sc_models.TableInfo.objects.get_or_create(
-            defaults={'table': setting_obj, 'student_id': student_id, 'finish_time': int(end_time),
-                      'content_object': parent_obj},
-            table=setting_obj, student_id=student_id, )
+        create_dict = {
+            'table': setting_obj, 'student_id': student_id, 'finish_time': int(end_time),
+
+        }
+        if parent_id and parent_id != 'null':
+            print(parent_id)
+            parent_obj = StudentParents.objects.filter(id=parent_id).first()
+            create_dict['content_object'] = parent_obj
+
+        sc_models.TableInfo.objects.get_or_create(defaults=create_dict, table=setting_obj, student_id=student_id)
 
         peroration = setting_obj.peroration
         return render(request, 'entrance/table_finish.html', {'peroration': peroration})

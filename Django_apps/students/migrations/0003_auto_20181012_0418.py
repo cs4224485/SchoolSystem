@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='studentinfo',
             name='stu_class',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StuClass', verbose_name='所在班级'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='students.StuClass', verbose_name='所在班级'),
         ),
     ]

@@ -17,14 +17,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('scale', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.ScaleSetting', verbose_name='对应量表')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentInfo', verbose_name='对应学生')),
+                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentInfo', verbose_name='对应学生')),
             ],
         ),
         migrations.CreateModel(
             name='ScaleValue',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('scale_stu', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.ScaleQuestion', verbose_name='对相应的学生量表')),
+                ('scale_stu', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.ScaleQuestion', verbose_name='对相应的学生量表')),
                 ('title', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.ScaleLineTitle', verbose_name='对应的行标题')),
                 ('value', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='school.ScaleOptionDes', verbose_name='对应的值')),
             ],

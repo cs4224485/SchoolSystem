@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='familyinfo',
             name='family_status',
-            field=models.ManyToManyField(blank=True, null=True, to='Django_apps.students.FamilyStatus', verbose_name='家庭状况'),
+            field=models.ManyToManyField(blank=True, null=True, to='students.FamilyStatus', verbose_name='家庭状况'),
         ),
     ]

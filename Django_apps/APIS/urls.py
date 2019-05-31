@@ -20,7 +20,8 @@ from Django_apps.APIS.views.school_info.timetable_api import *
 from Django_apps.APIS.views.filters import FilterSchoolByCity, FilterStuClass
 from Django_apps.APIS.views.entrance import *
 from Django_apps.APIS.views.mental import AppointmentInfoViewSet, GetPerClassStudent
-from APIS.views.surver_forms import SchoolInfoViewSet, GradeAndClassViewSet, PerClassStudentListViewSet
+from APIS.views.surver_forms import SchoolInfoViewSet, GradeAndClassViewSet, PerClassStudentListViewSet, \
+    SchoolScaleAvgViewSet, StudentScaleAvgViewSet, TableInfoViewSet, StudentDetailInfo
 
 routers = routers.DefaultRouter()
 routers.register(r'student', StudentInfoViewSet)
@@ -50,4 +51,12 @@ urlpatterns = [
     re_path(r"(?P<version>[v1|v2]+)/grade_class_info/$", GradeAndClassViewSet.as_view()),
     # 获取每个班级的学生列表
     re_path(r"(?P<version>[v1|v2]+)/per_class_students/$", PerClassStudentListViewSet.as_view()),
+    # 全校量表平均值数据
+    re_path(r"(?P<version>[v1|v2]+)/school_scale_avg/$", SchoolScaleAvgViewSet.as_view()),
+    # 学生量表平均值数据
+    re_path(r"(?P<version>[v1|v2]+)/student_scale_avg/$", StudentScaleAvgViewSet.as_view()),
+    # 表单信息
+    re_path(r"(?P<version>[v1|v2]+)/table_info/$", TableInfoViewSet.as_view()),
+    # 学生详细信息
+    re_path(r"(?P<version>[v1|v2]+)/student_detail/$", StudentDetailInfo.as_view()),
 ]

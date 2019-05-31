@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='familyinfo',
             name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Django_apps.students.StudentInfo', verbose_name='学生'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='students.StudentInfo', verbose_name='学生'),
         ),
         migrations.AlterField(
             model_name='studenttoparents',
             name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='student', to='Django_apps.students.StudentInfo', verbose_name='学生ID'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='student', to='students.StudentInfo', verbose_name='学生ID'),
         ),
     ]

@@ -158,7 +158,7 @@ class FamilyInfo(models.Model):
     language = models.IntegerField(verbose_name='家庭语言', choices=language_choice, default=1, null=True, blank=True)
     create_time = models.DateField(verbose_name='创建日期', auto_now=True)
     # member_of_family = models.ManyToManyField('FamilyMember', verbose_name='家庭成员', blank=True)
-    family_status = models.ManyToManyField('FamilyStatus', verbose_name='家庭状况', blank=True, null=True)
+    family_status = models.ManyToManyField(to='FamilyStatus', verbose_name='家庭状况', blank=True, null=True)
     student = models.ForeignKey('StudentInfo', verbose_name='学生', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -185,6 +185,7 @@ class FamilyStatus(models.Model):
     '''
     家庭状况表
     '''
+
     status_choice = ((1, '再婚'), (2, '离异'), (3, '留守'), (4, '领养'), (5, '单亲'), (6, '其他'))
     status = models.IntegerField(verbose_name='家庭状况', choices=status_choice)
 

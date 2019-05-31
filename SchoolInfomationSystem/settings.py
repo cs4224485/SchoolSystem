@@ -35,8 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Django_apps.students.apps.StudentsConfig',
-    'Django_apps.APIS.apps.ApisConfig',
     'rest_framework',
     'corsheaders',
     'Django_apps.school.apps.SchoolConfig',
@@ -46,6 +44,8 @@ INSTALLED_APPS = [
     'Django_apps.weixinApp.apps.WeixinappConfig',
     'Django_apps.rbac.apps.RbacConfig',
     'Django_apps.web',
+    'Django_apps.students.apps.StudentsConfig',
+    'Django_apps.APIS.apps.ApisConfig',
     'debug_toolbar.apps.DebugToolbarConfig',
 ]
 

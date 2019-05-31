@@ -28,8 +28,8 @@ class Migration(migrations.Migration):
                 ('url', models.CharField(max_length=128, verbose_name='含正则的URL')),
                 ('icon', models.CharField(blank=True, max_length=32, null=True, verbose_name='图标')),
                 ('name', models.CharField(max_length=32, unique=True, verbose_name='URL别名')),
-                ('menu', models.ForeignKey(blank=True, help_text='null表示不是菜单', null=True, on_delete=django.db.models.deletion.CASCADE, to='Django_apps.rbac.Menu', verbose_name='所属一级菜单')),
-                ('pid', models.ForeignKey(blank=True, help_text='对于非菜单权限需要选择一个可以成为菜单的权限,用户做默认展开和选中菜单', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='parents', to='Django_apps.rbac.Permission', verbose_name='关联权限')),
+                ('menu', models.ForeignKey(blank=True, help_text='null表示不是菜单', null=True, on_delete=django.db.models.deletion.CASCADE, to='rbac.Menu', verbose_name='所属一级菜单')),
+                ('pid', models.ForeignKey(blank=True, help_text='对于非菜单权限需要选择一个可以成为菜单的权限,用户做默认展开和选中菜单', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='parents', to='rbac.Permission', verbose_name='关联权限')),
             ],
         ),
         migrations.CreateModel(
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=32, verbose_name='角色名称')),
-                ('permissions', models.ManyToManyField(blank=True, to='Django_apps.rbac.Permission', verbose_name='拥有的所有权限')),
+                ('permissions', models.ManyToManyField(blank=True, to='rbac.Permission', verbose_name='拥有的所有权限')),
             ],
         ),
         migrations.CreateModel(
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=32, verbose_name='用户名')),
                 ('password', models.CharField(max_length=64, verbose_name='密码')),
                 ('email', models.CharField(max_length=32, verbose_name='邮箱')),
-                ('roles', models.ManyToManyField(blank=True, to='Django_apps.rbac.Role', verbose_name='拥有的所有角色')),
+                ('roles', models.ManyToManyField(blank=True, to='rbac.Role', verbose_name='拥有的所有角色')),
             ],
         ),
     ]

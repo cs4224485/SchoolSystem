@@ -413,21 +413,28 @@ class CustomizationQuestionViewSet(BaseViewSet):
             for scale_item in scale_info:
                 for scale_pk, des_info in scale_item.items():
                     save_data = {'student': student_id, 'scale': scale_pk}
+                    # 如果之前填写过则更新
+                    scale_question_obj = ScaleQuestion.objects.filter(**save_data).first()
                     scale_serialize = ScaleQuestionSerializers(data=save_data)
+                    if scale_question_obj:
+                        scale_serialize = ScaleQuestionSerializers(data=save_data, instance=scale_question_obj)
                     if scale_serialize.is_valid():
                         scale_obj = scale_serialize.save()
                         # 保存量表描述信息
                         for item in des_info:
                             for key, value in item.items():
-                                ScaleValue.objects.create(title_id=key, value_id=value, scale_stu=scale_obj)
+                                ScaleValue.objects.update_or_create(defaults={'title_id': key, 'value_id': value},
+                                                                    scale_stu=scale_obj, title_id=key)
                     else:
                         self.response_error(scale_serialize.errors)
                         return Response(self.message)
             # 添加单选多选信息
             for choice_item in choice_table:
-                obj = stu_models.ChoiceQuestion.objects.create(student_id=student_id,
-                                                               choice_table_id=choice_item.get('choice_id'))
-                obj.values.add(*choice_item.get('options'))
+                obj, is_crate = stu_models.ChoiceQuestion.objects.get_or_create(
+                    defaults={'student_id': student_id, 'choice_table_id': choice_item.get('choice_id')},
+                    student_id=student_id,
+                    choice_table_id=choice_item.get('choice_id'))
+                obj.values.set(choice_item.get('options'))
             self.message['state'] = True
             self.message['msg'] = '创建成功'
             return Response(self.message)
