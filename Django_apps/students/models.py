@@ -156,7 +156,6 @@ class FamilyInfo(models.Model):
     living_type = models.IntegerField(verbose_name='居住类型', choices=living_condition_choice, null=True, blank=True)
     language_choice = ((1, '中文普通话'), (2, '中文方言'), (3, '英语'), (4, '其他外语'))
     language = models.IntegerField(verbose_name='家庭语言', choices=language_choice, default=1, null=True, blank=True)
-    create_time = models.DateField(verbose_name='创建日期', auto_now=True)
     # member_of_family = models.ManyToManyField('FamilyMember', verbose_name='家庭成员', blank=True)
     family_status = models.ManyToManyField(to='FamilyStatus', verbose_name='家庭状况', blank=True, null=True)
     student = models.ForeignKey('StudentInfo', verbose_name='学生', on_delete=models.CASCADE)
@@ -166,7 +165,6 @@ class FamilyInfo(models.Model):
 
     class Meta:
         db_table = 'FamilyInfo'
-        unique_together = (('student', 'create_time'),)
 
 
 class FamilyMember(models.Model):
@@ -206,6 +204,7 @@ class HomeAddress(models.Model):
     address = models.CharField(verbose_name='详细地址', max_length=128, null=True, blank=True)
     record_time = models.DateField(verbose_name='日期', auto_now=True)
     family = models.ForeignKey('FamilyInfo', verbose_name='家庭', on_delete=models.CASCADE)
+    create_time = models.DateField(verbose_name='创建日期', auto_now=True)
 
     class Meta:
         db_table = 'HomeAddress'

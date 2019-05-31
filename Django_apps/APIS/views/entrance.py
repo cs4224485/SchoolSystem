@@ -324,12 +324,25 @@ class FamilyInfoViewSet(BaseViewSet):
 
     def create(self, request, *args, **kwargs):
         request_data = copy.deepcopy(request.data)
-        family_info_serialize = FamilyInfoSerializers(data=request_data)
+        student_id = request_data.get('student')
+        family_exist = FamilyInfo.objects.filter(student_id=student_id).first()
+        instance = None
+        if family_exist:
+            instance = family_exist
+        family_info_serialize = FamilyInfoSerializers(data=request_data, instance=instance)
         if family_info_serialize.is_valid():
             # 创建家庭信息
             family_obj = family_info_serialize.save()
             request_data['family'] = family_obj.pk
-            home_add_serialize = HomeAddressSerializers(data=request_data)
+            province = request_data.get('province', None)
+            city = request_data.get('city', None)
+            region = request_data.get('region', None)
+            address = request_data.get('address', None)
+            home_exist = HomeAddress.objects.filter(province=province, city=city, region=region, address=address).first()
+            home_instance = None
+            if home_exist:
+                home_instance = home_exist
+            home_add_serialize = HomeAddressSerializers(data=request_data, instance=home_instance)
             if home_add_serialize.is_valid():
                 # 创建家庭住址
                 home_add_serialize.save()

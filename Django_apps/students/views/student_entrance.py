@@ -50,7 +50,7 @@ class StudentInfo(views.View):
 
         filter_condition = {}
         if stu_name:
-            filter_condition['full_name'] = stu_name
+            filter_condition['full_name'] = stu_name.strip()
         if birthday:
             filter_condition['birthday'] = birthday
         if grade:
