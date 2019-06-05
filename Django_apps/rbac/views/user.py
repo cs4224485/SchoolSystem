@@ -32,6 +32,7 @@ def user_add(request):
     post_data = request.POST
     post_data._mutable = True
     post_data['password'] = gen_md5_password(post_data['password'])
+    post_data['confirm_password'] = gen_md5_password(post_data['confirm_password'])
     form = UserModelForm(data=request.POST)
     if form.is_valid():
         form.save()

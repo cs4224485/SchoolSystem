@@ -206,7 +206,7 @@ class DetailsOfFilling(StarkConfig):
     def display_preparer(self, row=None, header=False, *args, **kwargs):
         if header:
             return '填表人'
-        parent = row.content_object.parent.first()
+        parent = row.content_object
         if parent:
             return row.content_object.parent.first().get_relation_display()
         return ''
