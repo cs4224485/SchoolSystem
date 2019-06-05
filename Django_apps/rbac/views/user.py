@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from Django_apps.rbac.form.user import UserModelForm, UpdateUserModelForm, ResetPasswordUserModelForm
 from Django_apps.web.models import UserInfo
+from utils.common import gen_md5_password
 
 
 def user_list(request):
@@ -28,7 +29,9 @@ def user_add(request):
     if request.method == 'GET':
         form = UserModelForm()
         return render(request, 'rbac/change.html', {'form': form})
-
+    post_data = request.POST
+    post_data._mutable = True
+    post_data['password'] = gen_md5_password(post_data['password'])
     form = UserModelForm(data=request.POST)
     if form.is_valid():
         form.save()
@@ -72,7 +75,10 @@ def user_reset_pwd(request, pk):
     if request.method == 'GET':
         form = ResetPasswordUserModelForm()
         return render(request, 'rbac/change.html', {'form': form})
-
+    post_data = request.POST
+    post_data._mutable = True
+    post_data['password'] = gen_md5_password(post_data['password'])
+    post_data['confirm_password'] = gen_md5_password(post_data['confirm_password'])
     form = ResetPasswordUserModelForm(instance=obj, data=request.POST)
     if form.is_valid():
         form.save()

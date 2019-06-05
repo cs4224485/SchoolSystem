@@ -206,8 +206,10 @@ class DetailsOfFilling(StarkConfig):
     def display_preparer(self, row=None, header=False, *args, **kwargs):
         if header:
             return '填表人'
-
-        return row.content_object.parent.first().get_relation_display()
+        parent = row.content_object.parent.first()
+        if parent:
+            return row.content_object.parent.first().get_relation_display()
+        return ''
 
     def get_add_btn(self):
         return None
@@ -237,4 +239,3 @@ class TableSetting(object):
         self.setting_obj = setting_obj
         self.scale = scale
         self.choice_tb = choice_tb
-

@@ -1,13 +1,14 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from Django_apps.rbac import models
+from Django_apps.web.models import UserInfo
 
 
 class UserModelForm(forms.ModelForm):
     confirm_password = forms.CharField(label='确认密码')
 
     class Meta:
-        model = models.UserInfo
+        model = UserInfo
         fields = ['name', 'email', 'password', 'confirm_password']
         '''
         手动设置提示信息

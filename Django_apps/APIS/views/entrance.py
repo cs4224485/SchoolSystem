@@ -338,7 +338,8 @@ class FamilyInfoViewSet(BaseViewSet):
             city = request_data.get('city', None)
             region = request_data.get('region', None)
             address = request_data.get('address', None)
-            home_exist = HomeAddress.objects.filter(province=province, city=city, region=region, address=address).first()
+            home_exist = HomeAddress.objects.filter(province=province, city=city, region=region,
+                                                    address=address.strip()).first()
             home_instance = None
             if home_exist:
                 home_instance = home_exist
