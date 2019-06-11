@@ -20,6 +20,7 @@ from SchoolInfomationSystem import settings
 from Django_apps.APIS.views import *
 from stark.service.stark import site
 from Django_apps.web.views import account
+from web.views.PiYue import homework, question_bank
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,10 +36,13 @@ urlpatterns = [
     path('stark/', site.urls),
     re_path(r'^rbac/', include(('rbac.urls', 'rbac'), namespace='rbac'), ),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
+    re_path(r"homework/$", homework, name='homework'),
+    re_path(r"questions/$", question_bank, name='question')
 ]
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+                      path('__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns

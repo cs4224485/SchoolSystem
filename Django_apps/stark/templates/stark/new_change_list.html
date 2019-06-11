@@ -155,6 +155,32 @@
             </div>
 
         {% endif %}
+        {% if extra == 'filter_student' %}
+            <div>
+                <form method="get" class="layui-form x-so">
+                    <div class="layui-form-item" id="x-city">
+                        <div class="layui-input-inline">
+                            <select name="school" lay-filter="school" id="school">
+                                <option value="">请选学校</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="grade" lay-filter="grade" id="grade">
+                                <option value="">请选年级</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="_class" lay-filter="_class" id="_class">
+                                <option value="">请选择班级</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-btn-normal">搜索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
 
         {% table2 cl %}
 
@@ -170,9 +196,13 @@
 {% endblock %}
 
 {% block js %}
+  {% if extra == 'filter_student' %}
+    <script src="{% static 'student/js/student_filter.js' %}"></script>
     <script>
-
-
+            $(document).ready(
+                student_ops.init()
+            );
     </script>
+    {% endif %}
 
 {% endblock %}

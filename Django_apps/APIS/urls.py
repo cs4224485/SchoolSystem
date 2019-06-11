@@ -20,8 +20,10 @@ from Django_apps.APIS.views.school_info.timetable_api import *
 from Django_apps.APIS.views.filters import FilterSchoolByCity, FilterStuClass
 from Django_apps.APIS.views.entrance import *
 from Django_apps.APIS.views.mental import AppointmentInfoViewSet, GetPerClassStudent
-from APIS.views.surver_forms import SchoolInfoViewSet, GradeAndClassViewSet, PerClassStudentListViewSet, \
+from APIS.views.surver_forms import SchoolInfoViewSet,PerClassStudentListViewSet, \
     SchoolScaleAvgViewSet, StudentScaleAvgViewSet, TableInfoViewSet, StudentDetailInfo
+from APIS.views.common import GetAllSchoolViewSet, FilterGradeAndClassViewSet
+from APIS.views.PiYue import TeacherLoginViewSet, TeacherInfoViewSet
 
 routers = routers.DefaultRouter()
 routers.register(r'student', StudentInfoViewSet)
@@ -47,8 +49,8 @@ urlpatterns = [
     re_path(r"(?P<version>[v1|v2]+)/", include(routers.urls)),
     # 获取学校信息
     re_path(r"(?P<version>[v1|v2]+)/school_info/$", SchoolInfoViewSet.as_view()),
-    # 获取班级信息
-    re_path(r"(?P<version>[v1|v2]+)/grade_class_info/$", GradeAndClassViewSet.as_view()),
+    # 获取班级或年级信息
+    re_path(r"(?P<version>[v1|v2]+)/grade_class_info/$", FilterGradeAndClassViewSet.as_view()),
     # 获取每个班级的学生列表
     re_path(r"(?P<version>[v1|v2]+)/per_class_students/$", PerClassStudentListViewSet.as_view()),
     # 全校量表平均值数据
@@ -59,4 +61,10 @@ urlpatterns = [
     re_path(r"(?P<version>[v1|v2]+)/table_info/$", TableInfoViewSet.as_view()),
     # 学生详细信息
     re_path(r"(?P<version>[v1|v2]+)/student_detail/$", StudentDetailInfo.as_view()),
+    # 获取所有的学校
+    re_path(r"(?P<version>[v1|v2]+)/all_school/$", GetAllSchoolViewSet.as_view()),
+    # 批阅系统教师登陆
+    re_path(r"(?P<version>[v1|v2]+)/piyue/login$", TeacherLoginViewSet.as_view()),
+    # 批阅系统教师信息
+    re_path(r"(?P<version>[v1|v2]+)/teacher_info$", TeacherInfoViewSet.as_view())
 ]

@@ -9,12 +9,14 @@ from stark.forms.widgets import DateTimePickerInput
 class StudentEditForm(forms.ModelForm):
     gender = Ffields.ChoiceField(required=True, choices=((1, '男'), (2, '女')), widget=Fwidgets.RadioSelect())
     birthday = Ffields.DateField(required=False, widget=DateTimePickerInput(
-        attrs={ 'type': 'date', 'style': 'width: 600px'}))
+        attrs={'type': 'date', 'style': 'width: 600px'}))
+    status = Ffields.ChoiceField(required=True, widget=Fwidgets.RadioSelect(), initial=1,
+                                 choices=stumodels.StudentInfo.status_choice)
 
     class Meta:
         model = stumodels.StudentInfo
         fields = ("last_name", 'first_name', 'full_name', "gender", "birthday", 'period', 'school', 'period',
-                  'age', 'day_age', 'constellation', 'chinese_zodiac', 'school')
+                  'age', 'day_age', 'constellation', 'chinese_zodiac', 'school', 'status')
         widgets = {
             "last_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),
             "first_name": Fwidgets.TextInput(attrs={'class': 'form-control', 'style': 'width: 600px'}),

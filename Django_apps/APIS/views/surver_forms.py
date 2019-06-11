@@ -1,11 +1,10 @@
 from rest_framework.viewsets import ViewSetMixin
 from rest_framework.views import APIView, Response
-from school.models import ScaleSetting, SchoolInfo, StuClass, Grade, ScaleOptionDes, ScaleLineTitle, TableInfo
+from school.models import ScaleSetting, SchoolInfo,  ScaleOptionDes, ScaleLineTitle, TableInfo
 from Django_apps.students.models import StudentInfo, ScaleQuestion, ScaleValue
-from APIS.serialize.surver_form import SchoolSerializers, GradeSerializers, ClassSerializers, StudentSerializers, \
-    StudentDetailSerializes
+from APIS.serialize.surver_form import SchoolSerializers, StudentSerializers, StudentDetailSerializes
 from utils.base_response import BaseResponse
-from utils.common import order_by_class
+
 import pandas as pd
 
 
@@ -30,38 +29,6 @@ class SchoolInfoViewSet(APIView):
         except Exception as e:
             res.code = 500
             res.msg = '获取错误'
-        return Response(res.get_dict)
-
-
-class GradeAndClassViewSet(APIView):
-    '''
-    获取班级或者年级
-    '''
-
-    def get(self, request, *args, **kwargs):
-        res = BaseResponse()
-        school_id = request.query_params.get('school_id')
-        grade = request.query_params.get('grade')
-        try:
-            if not school_id:
-                res.code = 403
-                res.msg = '请提供学校id'
-                return Response(res.get_dict)
-
-            if not grade:
-                grade_queryset = Grade.objects.filter(stuclass__school_id=school_id).all().distinct()
-                grade_se = GradeSerializers(grade_queryset, many=True)
-                res.data = {'grade': grade_se.data}
-                res.code = 200
-            else:
-                class_queryset = list(StuClass.objects.filter(grade=grade, school_id=school_id).all().distinct())
-                class_queryset = order_by_class(class_queryset)
-                class_se = ClassSerializers(class_queryset, many=True)
-                res.data = {'_class': class_se.data}
-                res.code = 200
-        except Exception as e:
-            res.code = 500
-            res.msg = '获取失败'
         return Response(res.get_dict)
 
 

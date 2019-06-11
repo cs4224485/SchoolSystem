@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load my_tags %}
+{% load static %}
 
 {% block css %}
     <style>
@@ -109,9 +110,29 @@
                 <a class="layui-btn layui-btn-warm" href="{{ extra.import }}">导入学生</a>
                 <a class="layui-btn layui-btn-danger" href="{{ extra.import }}">导出学生</a>
             </div>
-         </div>
+        </div>
+        <div>
+            <form method="get" class="layui-form x-so">
+                <div class="layui-form-item" id="x-city">
 
-        {% if cl.list_filter%}
+
+                    <div class="layui-input-inline">
+                        <select name="grade" lay-filter="grade" id="grade">
+                            <option value="">请选年级</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="_class" lay-filter="_class" id="_class">
+                            <option value="">请选择班级</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn layui-btn-normal">搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if cl.list_filter %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-filter" aria-hidden="true"></i> 快速筛选
@@ -141,4 +162,21 @@
 
     </div>
 
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "student/js/student_filter.js" %}"></script>
+    <script>
+        $(document).ready(
+            layui.use('form', function () {
+                let layuiForm = layui.form;
+                var reg = "/(\\d+)/";
+                var url = window.location.href;
+                var schoolId = url.match(reg)[1];
+                let gradeId = parseInt(common_ops.getUrlParam('grade'));
+                student_ops.renderGrade(layuiForm, schoolId);
+                student_ops.renderClass(layuiForm, schoolId, gradeId)
+            })
+        )
+    </script>
 {% endblock %}

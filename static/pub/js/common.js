@@ -149,7 +149,50 @@ var common_ops = {
             url = window.location.pathname;
             window.location.href = url;
         },
-
+        getAllSchool: function () {
+            let schoolData = '';
+            $.ajax({
+                url: "/api/v1/all_school/",
+                type: "get",
+                async: false,
+                success: function (data) {
+                    if (data.code = 200) {
+                        schoolData = data.data.school;
+                    }
+                }
+            });
+            return schoolData
+        },
+        getSchoolGrade: function (schoolId) {
+            let gradeData = '';
+            $.ajax({
+                url: '/api/v1/grade_class_info/',
+                type: "get",
+                async: false,
+                data: {'school_id': schoolId},
+                success: function (data) {
+                    if (data.code = 200 && data.data.grade) {
+                        gradeData = data.data.grade
+                    }
+                }
+            });
+            return gradeData
+        },
+        getSchoolClass: function (schoolID, gradeId) {
+            let classData = '';
+            $.ajax({
+                url: '/api/v1/grade_class_info/',
+                type: "get",
+                async: false,
+                data: {'school_id':schoolID, 'grade': gradeId},
+                success: function (data) {
+                    if (data.code = 200) {
+                        classData= data.data._class
+                    }
+                }
+            });
+            return classData
+        }
 
     }
 ;

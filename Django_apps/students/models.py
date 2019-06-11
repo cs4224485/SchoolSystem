@@ -47,6 +47,8 @@ class StudentInfo(models.Model):
     school = models.ForeignKey(verbose_name='所在学校', to=SchoolInfo, on_delete=models.CASCADE)
     stu_class = models.ForeignKey(verbose_name='所在班级', to=StuClass, on_delete=models.CASCADE, null=True,
                                   related_name='student_class')
+    status_choice = ((1, '在校'), (2, '本校借读'), (3, '保留学籍'), (4, '转学'), (5, '留级'), (6, '休学'), (7, '游学'))
+    status = models.SmallIntegerField(verbose_name='当前状态', choices=status_choice, default=1)
 
     def __str__(self):
         return self.full_name
@@ -115,9 +117,11 @@ class HealthRecord(models.Model):
     vision_status_choice = ((1, '正常'), (2, '远视'), (3, '近视'), (4, '散光'), (5, '其他'))
     vision_status = models.IntegerField(verbose_name='视力情况', null=True)
     record_date = models.DateField(verbose_name='记录日期', auto_now=True)
-    health_info = models.ForeignKey(to='HealthInfo', verbose_name='健康信息', on_delete=models.CASCADE, related_name='record')
+    health_info = models.ForeignKey(to='HealthInfo', verbose_name='健康信息', on_delete=models.CASCADE,
+                                    related_name='record')
     measure_type_choice = ((1, '校测'), (2, '自测'))
-    measure_type = models.IntegerField(verbose_name='测试类型', default=1, choices=measure_type_choice, null=True, blank=True)
+    measure_type = models.IntegerField(verbose_name='测试类型', default=1, choices=measure_type_choice, null=True,
+                                       blank=True)
 
     class Meta:
         db_table = 'HealthRecord'

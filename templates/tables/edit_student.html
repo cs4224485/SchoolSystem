@@ -64,6 +64,12 @@
                 <span class="pull-right error">{{ form.errors.stu_class.0 }}</span>
             </div>
 
+            <div class="form-group">
+                <label>当前状态:</label>
+                {{ form.status }}
+                <span class="pull-right error">{{ form.errors.stu_class.0 }}</span>
+            </div>
+
             <div class="pull-right" style="margin-top: 10px">
                 <button class="btn btn-primary">提交</button>
             </div>
@@ -119,8 +125,6 @@
                 }
             }
         }
-
-
 
 
     </script>

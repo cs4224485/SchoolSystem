@@ -9,19 +9,6 @@ class SchoolSerializers(serializers.ModelSerializer):
         fields = ['school_name', 'logo', 'address', 'province', 'city', 'region']
 
 
-class GradeSerializers(serializers.ModelSerializer):
-    grade_name = serializers.CharField(source='get_grade_name_display')
-
-    class Meta:
-        model = Grade
-        fields = ['id', 'grade_name']
-
-
-class ClassSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = StuClass
-        fields = ['id', 'name']
-
 
 class StudentSerializers(serializers.ModelSerializer):
     class Meta:

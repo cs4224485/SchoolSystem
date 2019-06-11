@@ -17,8 +17,24 @@ from school.models import StuClass, Grade
 
 class StudentConfig(StarkConfig):
 
+    def get_extra_content(self, *args, **kwargs):
+        return 'filter_student'
+
     def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         return StudentEditForm
+
+    def get_queryset(self, request, *args, **kwargs):
+        school_id = request.GET.get('school')
+        grade_id = request.GET.get('grade')
+        _class = request.GET.get('_class')
+        filter_condition = {}
+        if school_id:
+            filter_condition['school_id'] = school_id
+        if grade_id:
+            filter_condition['grade_id'] = grade_id
+        if _class:
+            filter_condition['stu_class_id'] = _class
+        return self.model_class.objects.filter(**filter_condition)
 
     def get_form(self, model_form, request, modify=False, *args, **kwargs):
         if modify:
@@ -108,7 +124,14 @@ class SchoolStudentConfig(StudentConfig):
 
     def get_queryset(self, request, *args, **kwargs):
         school_id = kwargs.get('school_id')
-        return self.model_class.objects.filter(school_id=school_id)
+        grade_id = request.GET.get('grade')
+        _class = request.GET.get('_class')
+        filter_condition = {'school_id': school_id}
+        if grade_id:
+            filter_condition['grade_id'] = grade_id
+        if _class:
+            filter_condition['stu_class_id'] = _class
+        return self.model_class.objects.filter(**filter_condition)
 
     def get_extra_content(self, *args, **kwargs):
         add_student_url = self.reverse_commons_url('add_student', *args, **kwargs)
@@ -209,7 +232,7 @@ class SchoolStudentConfig(StudentConfig):
                     row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
                 student_obj = StudentInfo.objects.filter(full_name=row_dict['full_name'], school_id=school_id,
                                                          birthday=row_dict['birthday'])
-                if not row_dict['gender']:row_dict['gender'] = None
+                if not row_dict['gender']: row_dict['gender'] = None
                 if student_obj:
                     row_dict.pop('interior_student_id')
                     student_obj.update(**row_dict)
