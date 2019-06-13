@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from django.shortcuts import render
 from stark.service.stark import StarkConfig
 from django.urls import re_path
@@ -8,7 +9,9 @@ from school import models
 from school.utils.common_utils import *
 from django.http import JsonResponse
 from Django_apps.web.service.survey_form_service import SurveyFormService
-from datetime import datetime
+from Django_apps.students.models import StudentInfo, ScaleLineTitle, ScaleQuestion, HealthRecord, HealthInfo, \
+    FamilyInfo, HomeAddress, StudentParents, ChoiceQuestion
+from utils.file_handler import ExcelFileHandler
 
 
 class TableSettingsConfig(StarkConfig):
@@ -31,6 +34,7 @@ class TableSettingsConfig(StarkConfig):
             re_path(r'^(?P<pk>\d+)/bind_field$', self.wrapper(self.bind_login_field), name='bind_field'),
             re_path(r'^preview/$', self.wrapper(self.preview), name='preview'),
             re_path(r'^(?P<pk>\d+)/del/$', self.wrapper(self.delete_view), name=self.get_delete_url_name),
+            re_path(r'^(?P<pk>\d+)/export/$', self.wrapper(self.export), name="form_export"),
         ]
         urlpatterns.extend(self.extra_urls())
 
@@ -56,6 +60,98 @@ class TableSettingsConfig(StarkConfig):
         url = '/stark/school/tableinfo/%s/list/' % row.pk
         tag = '<a href="%s">%s</a>' % (url, row.table_info.all().count())
         return mark_safe(tag)
+
+    def display_export(self, row=None, header=False):
+        if header:
+            return "导出数据"
+        url = self.reverse_commons_url("form_export", row.pk)
+        tag = '<a href="%s">导出</a>' % url
+        return mark_safe(tag)
+
+    def export(self, request, *args, **kwargs):
+        '''
+        导出填表数据
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+
+        form_id = kwargs.get("pk")
+        fields_queryset = models.SettingToField.objects.filter(setting_id=form_id). \
+            values('fields__fieldName',
+                   'fields__field_english').all().order_by(
+            'order')
+        school_range = models.TableSettings.objects.filter(id=form_id).values_list('school_range')
+        school_range = [item[0] for item in school_range]
+        # 表的字段
+        fields = ['年级', '班级']
+        field_name_list = [item['fields__fieldName'] for item in fields_queryset]
+        fields.extend(field_name_list)
+        student_queryset = StudentInfo.objects.filter(school_id__in=school_range, for_student__isnull=False).order_by(
+            'stu_class', 'grade')
+        data_list = []
+        for student in student_queryset:
+            grade = student.grade.get_grade_name_display()
+            _class = student.stu_class.name
+            student_data_row = [grade, _class, student.country.country_name, student.full_name]
+            health_info = HealthInfo.objects.filter(student_id=student.id).first()
+            health_record = HealthRecord.objects.filter(health_info=health_info).order_by("record_date").first()
+            family_info = FamilyInfo.objects.filter(student=student).first()
+            parent = StudentParents.objects.filter(parent__student=student).first()
+            # 根据选中填写的字段导出数据
+            for field in field_name_list:
+                try:
+                    if field == '民族':
+                        student_data_row.append(student.nation)
+                    if field == '生日':
+                        student_data_row.append(student.birthday.strftime('%Y-%m-%d'))
+                    if field == '身高':
+                        height = health_record.height
+                        student_data_row.append(height)
+                    if field == '居住地址':
+                        home = HomeAddress.objects.filter(family=family_info).first()  # type:HomeAddress
+                        address = home.province + home.city + home.region + home.address
+                        student_data_row.append(address)
+                    if field == '家长姓名':
+                        student_data_row.append(parent.last_name + parent.first_name)
+                    if field == '职业':
+                        student_data_row.append(parent.occupation)
+                    if field == "家长电话":
+                        print(parent.phone)
+                        student_data_row.append(parent.phone)
+                except AttributeError:
+                    student_data_row.append("")
+                    continue
+
+            # 学生量表填写情况
+            stu_scale = ScaleQuestion.objects.filter(student=student).all()
+            for per_scale in stu_scale:
+                for item in per_scale.scale_value.select_related():
+                    # print(item.value.des)
+                    line_title = item.title.des
+                    line_value = item.value.des
+                    if line_title not in fields:
+                        fields.append(line_title)
+                    student_data_row.append(line_value)
+            # 学生填写单选多选情况
+            choice_question_queryset = ChoiceQuestion.objects.filter(student=student).all()
+            for item in choice_question_queryset:
+                choices = item.values.all()
+                title = item.choice_table.title
+                if title not in fields:
+                    fields.append(title)
+                choices_list = []
+                for i in choices:
+                    choices_list.append(i.des)
+                choice_value = ','.join(choices_list)
+                student_data_row.append(choice_value)
+            data_list.append(student_data_row)
+        # 创建Excel
+        excel_obj = ExcelFileHandler(fields)
+        response, file_path = excel_obj.down_load_file(data_list)
+        excel_obj.remove_file(file_path)
+        return response
 
     def form_crate(self, request):
         '''
@@ -177,7 +273,7 @@ class TableSettingsConfig(StarkConfig):
             return JsonResponse({'msg': '设置成功', 'code': 200})
 
     list_display = ['title', 'stat_time', 'end_time', 'school_range', 'fill_range', display_count, display_release,
-                    display_edit]
+                    display_edit, display_export]
 
 
 class DetailsOfFilling(StarkConfig):

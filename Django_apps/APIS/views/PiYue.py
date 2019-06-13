@@ -19,11 +19,12 @@ class TeacherLoginViewSet(APIView):
                 res.code = 403
                 res.msg = '请提供教师姓名'
                 return Response(res.get_dict)
+
             if not phone_number and not wechat:
                 res.code = 403
                 res.msg = "请提供手机后六位或微信"
                 return Response(res.get_dict)
-            if len(phone_number) < 6:
+            if phone_number and len(phone_number) < 6:
                 res.code = 402
                 res.msg = "手机号码不得小于六位"
                 return Response(res.get_dict)
@@ -55,18 +56,21 @@ class TeacherInfoViewSet(APIView):
 
     def get(self, request, *args, **kwargs):
         res = BaseResponse()
-
-        teacher_id = request.query_params.get('teacherId')
-        if not teacher_id:
-            res.code = 403
-            res.msg = '请提供教师ID'
-            return Response(res.get_dict)
-        teacher_obj = TeacherInfo.objects.filter(id=teacher_id).first()
-        if not teacher_obj:
-            res.code = 404
-            res.msg = "未查找到该教师"
-            return Response(res.get_dict)
-        teacher_se = TeacherInfoSerializers(teacher_obj)
-        res.data = {'teacher_info': teacher_se.data}
-        res.code = 200
+        try:
+            teacher_id = request.query_params.get('teacherId')
+            if not teacher_id:
+                res.code = 403
+                res.msg = '请提供教师ID'
+                return Response(res.get_dict)
+            teacher_obj = TeacherInfo.objects.filter(id=teacher_id).first()
+            if not teacher_obj:
+                res.code = 404
+                res.msg = "未查找到该教师"
+                return Response(res.get_dict)
+            teacher_se = TeacherInfoSerializers(teacher_obj)
+            res.data = {'teacher_info': teacher_se.data}
+            res.code = 200
+        except Exception:
+            res.code = 500
+            res.msg = "获取错误"
         return Response(res.get_dict)

@@ -97,7 +97,7 @@
                         {% elif  fam_field.fields__fieldName == '家长电话' %}
                             <div class="mui-input-row flex_center box_sizing">
                                 <label>电话{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="wechat">
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="telephone">
                             </div>
                         {% endif %}
                     {% endfor %}
