@@ -196,7 +196,6 @@ class StudentInfo(views.View):
 
         }
         if parent_id and parent_id != 'null':
-            print(parent_id)
             parent_obj = StudentParents.objects.filter(id=parent_id).first()
             create_dict['content_object'] = parent_obj
 

@@ -159,7 +159,7 @@ class SchoolStudentConfig(StudentConfig):
 
         context = {'status': True, 'msg': '导入成功'}
         try:
-            student_excel = request.FILES.get('student_excel')
+            student_excel = request.FILES.get('import_excel')
             """
             打开上传的Excel文件，并读取内容
             注：打开本地文件时，可以使用：workbook = xlrd.open_workbook(filename='本地文件路径.xlsx')

@@ -3,6 +3,7 @@
 from django import template
 from django.db.models import ManyToManyField
 from django.utils.safestring import mark_safe
+from utils import common
 register = template.Library()
 
 
@@ -40,7 +41,6 @@ def body_list(cl):
             else:
                   try:  # 如果filed __str__ 需要捕捉异常处理
                     field_obj = cl.config.model_class._meta.get_field(field)
-
                     # 多对多字段展示方法
                     if isinstance(field_obj, ManyToManyField):
                         ret = getattr(query_obj, field).all()
@@ -58,7 +58,7 @@ def body_list(cl):
                         if field in cl.config.list_display_links:
                             _url = cl.config.reverse_edit_url(query_obj.pk)
                             value = mark_safe("<a href='%s'>%s</a>" % (_url, value))
-                  except Exception:
+                  except Exception as e:
                       value = getattr(query_obj, field)
             row.append(value)
         body_list.append(row)

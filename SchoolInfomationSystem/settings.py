@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'z90mwnm$m7@2zbr8*37w7lk0e$7%ka3cdo4_i@j#hs2jo)_su9'
+SECRET_KEY = 'z90mwnm$m7@2zbr8*37w7lk0e$7%ka3cdo4_i@j#hs2jo)_su7'
 sys.path.insert(0, os.path.join(BASE_DIR, 'Django_apps'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +50,7 @@ INSTALLED_APPS = [
     'debug_toolbar.apps.DebugToolbarConfig',
 ]
 
-#from corsheaders.middleware import CorsMiddleware
+# from corsheaders.middleware import CorsMiddleware
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -141,9 +142,9 @@ REST_FRAMEWORK = {
 # 跨域添加忽略
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    '*'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     '*'
+# )
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -270,3 +271,6 @@ RBAC_USER_MODLE_CLASS = "app01.models.UserInfo"
 PERMISSION_SESSION_KEY = "luffy_permission_url_list_key"
 # 菜单在Session中存储的key
 MENU_SESSION_KEY = "luffy_permission_menu_key"
+
+DATE_FORMAT = 'Y/m/d'
+DATETIME_FORMAT = 'Y-m-d H:i:s'

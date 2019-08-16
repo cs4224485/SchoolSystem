@@ -32,12 +32,12 @@ class SchoolInfo(models.Model):
     school_layer = models.IntegerField(verbose_name='学校层级', choices=school_layer_choice, default=None, null=True,
                                        blank=True)
     create_time = models.DateField(verbose_name='创办时间', null=True)
-    province = models.CharField(verbose_name='所在省', max_length=32)
-    city = models.CharField(verbose_name='所在市', max_length=32)
-    region = models.CharField(verbose_name='所在区县', max_length=32)
+    province = models.CharField(verbose_name='所在省', max_length=32, null=True, blank=True)
+    city = models.CharField(verbose_name='所在市', max_length=32, null=True, blank=True)
+    region = models.CharField(verbose_name='所在区县', max_length=32, null=True, blank=True)
     street = models.CharField(verbose_name='所在街道办,乡镇', max_length=32, null=True)
     community = models.ForeignKey(verbose_name='所在居委会', to='Community', on_delete=models.Model, null=True)
-    address = models.CharField(verbose_name='校址', max_length=128)
+    address = models.CharField(verbose_name='校址', max_length=128, blank=True, null=True)
     main_campus_type = ((1, '本部'), (2, '分校或校区'))
     main_campus = models.IntegerField(verbose_name='是本部还是校区', choices=main_campus_type, default=None, null=True)
     campus_district = models.CharField(verbose_name='校区名称', max_length=32, null=True, blank=True)
@@ -361,9 +361,9 @@ class TableSettings(models.Model):
     '''
     学生调查表配置
     '''
-    stat_time = models.DateField(verbose_name='开始日期')
-    end_time = models.DateField(verbose_name='结束日期', null=True)
-    title = models.CharField(verbose_name='名称', max_length=64)
+    stat_time = models.DateField(verbose_name='开始日期', null=True, blank=True, default=None)
+    end_time = models.DateField(verbose_name='结束日期', null=True, blank=True, default=None)
+    title = models.CharField(verbose_name='名称', max_length=64, unique=True)
     school_range = models.ManyToManyField('SchoolInfo', verbose_name='学校范围', related_name='setting')
     Qrcode = models.CharField(verbose_name='二维码', null=True, max_length=255)
     fill_range = models.ManyToManyField('ScopeOfFilling', verbose_name='填表范围')
@@ -373,6 +373,7 @@ class TableSettings(models.Model):
     description = models.TextField(verbose_name='表单描述', default=None, null=True, blank=True)
     peroration = models.CharField(verbose_name='结束语', null=True, blank=True, max_length=128)
     login_fields = models.ManyToManyField(verbose_name='登陆字段', to='FormLoginFields')
+    Repeatable = models.BooleanField(verbose_name="是否能重复填写", blank=True, default=False)
 
     def __str__(self):
         return self.title
@@ -532,3 +533,5 @@ class WXappSettings(models.Model):
 
     class Meta:
         db_table = 'WXappSettings'
+
+

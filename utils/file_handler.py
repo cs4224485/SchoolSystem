@@ -1,4 +1,4 @@
-import xlwt, os
+import xlwt, xlrd, os
 import datetime
 import mimetypes
 from django.conf import settings
@@ -6,6 +6,9 @@ from django.http import FileResponse
 
 
 class ExcelFileHandler(object):
+    '''
+    Excel文件生成和下载
+    '''
 
     def __init__(self, header):
         self.header = header
@@ -42,9 +45,10 @@ class ExcelFileHandler(object):
         :return:
         '''
         self.create_header()
-        for i in range(len(data_list)):
-            for j in range(len(data_list[i])):
-                self.ws.write(i + 1, j, data_list[i][j])
+        if isinstance(data_list, list):
+            for i in range(len(data_list)):
+                for j in range(len(data_list[i])):
+                    self.ws.write(i + 1, j, data_list[i][j])
 
     def save_file(self, data_list):
         '''
@@ -60,6 +64,11 @@ class ExcelFileHandler(object):
         return file_path
 
     def down_load_file(self, data_list):
+        '''
+        下载生成的excel文件
+        :param data_list:
+        :return:
+        '''
         file_path = self.save_file(data_list)
         fp = open(file_path, 'rb')
         content_type = mimetypes.guess_type(file_path)[0]
@@ -70,3 +79,16 @@ class ExcelFileHandler(object):
     def remove_file(self, file_path):
         if os.path.exists(file_path):
             os.remove(file_path)
+
+
+class ExcelUploadHandler(object):
+    def __init__(self, file):
+        self.file = file
+
+    def open_excel(self):
+        workbook = xlrd.open_workbook(file_contents=self.file.file.read())
+        return workbook
+
+    def trans_datetime(self, cell):
+        time = datetime.datetime(*xlrd.xldate_as_tuple(cell, 0))
+        return time

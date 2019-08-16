@@ -1,59 +1,9 @@
-from rest_framework.viewsets import ViewSetMixin
 from rest_framework.views import APIView, Response
 from school.models import ScaleSetting, SchoolInfo,  ScaleOptionDes, ScaleLineTitle, TableInfo
 from Django_apps.students.models import StudentInfo, ScaleQuestion, ScaleValue
-from APIS.serialize.surver_form import SchoolSerializers, StudentSerializers, StudentDetailSerializes
 from utils.base_response import BaseResponse
 
 import pandas as pd
-
-
-class SchoolInfoViewSet(APIView):
-
-    def get(self, request, *args, **kwargs):
-        res = BaseResponse()
-        school_id = request.query_params.get('school_id')
-        try:
-            if not school_id:
-                res.code = 403
-                res.msg = '请提供学校id'
-                return Response(res.get_dict)
-            school_obj = SchoolInfo.objects.filter(id=school_id).first()
-            if not school_obj:
-                res.code = 404
-                res.msg = '该学校不存在'
-                return Response(res.get_dict)
-            school_se = SchoolSerializers(school_obj)
-            res.data = {'school': school_se.data}
-            res.code = 200
-        except Exception as e:
-            res.code = 500
-            res.msg = '获取错误'
-        return Response(res.get_dict)
-
-
-class PerClassStudentListViewSet(APIView):
-    '''
-    每个班级学生列表
-    '''
-
-    def get(self, request, *args, **kwargs):
-        res = BaseResponse()
-        try:
-            class_id = request.query_params.get('class_id')
-            if not class_id:
-                res.code = 403
-                res.msg = "请提供班级ID"
-                return Response(res.get_dict)
-
-            student_list = StudentInfo.objects.filter(stu_class_id=class_id).values('full_name', 'id').distinct()
-            student_se = StudentSerializers(student_list, many=True)
-            res.code = 200
-            res.data = {'students': student_se.data}
-        except Exception as e:
-            res.code = 500
-            res.msg = "获取错误"
-        return Response(res.get_dict)
 
 
 class StudentScaleAvgViewSet(APIView):
@@ -184,30 +134,6 @@ class TableInfoViewSet(APIView):
         res.data = {'title': table_info.first().table.title, 'filled_num': len(table_info)}
         res.code = 200
 
-        return Response(res.get_dict)
-
-
-class StudentDetailInfo(APIView):
-    '''
-    学生消息信息
-    '''
-
-    def get(self, request, *args, **kwargs):
-
-        res = BaseResponse()
-        try:
-            student_id = request.query_params.get('student_id')
-            if not student_id:
-                res.code = 403
-                res.msg = '请提供学生ID'
-                return Response(res.get_dict)
-            student_obj = StudentInfo.objects.filter(id=student_id).first()
-            student_se = StudentDetailSerializes(student_obj)
-            res.data = {'student': student_se.data}
-            res.code = 200
-        except Exception as e:
-            res.code = 500
-            res.msg = '获取失败'
         return Response(res.get_dict)
 
 

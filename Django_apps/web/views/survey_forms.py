@@ -12,6 +12,7 @@ from Django_apps.web.service.survey_form_service import SurveyFormService
 from Django_apps.students.models import StudentInfo, ScaleLineTitle, ScaleQuestion, HealthRecord, HealthInfo, \
     FamilyInfo, HomeAddress, StudentParents, ChoiceQuestion
 from utils.file_handler import ExcelFileHandler
+from utils import common
 
 
 class TableSettingsConfig(StarkConfig):
@@ -118,8 +119,7 @@ class TableSettingsConfig(StarkConfig):
                     if field == '职业':
                         student_data_row.append(parent.occupation)
                     if field == "家长电话":
-                        print(parent.phone)
-                        student_data_row.append(parent.phone)
+                        student_data_row.append(parent.telephone)
                 except AttributeError:
                     student_data_row.append("")
                     continue
@@ -288,6 +288,23 @@ class DetailsOfFilling(StarkConfig):
         urlpatterns.extend(self.extra_urls())
 
         return urlpatterns
+
+    def get_extra_content(self, *args, **kwargs):
+        table_pk = kwargs.get('pk')
+        table_obj = models.TableSettings.objects.filter(id=table_pk).first()
+        table_title = table_obj.title
+        school_list = [item.school_name for item in table_obj.school_range.select_related()]
+        info_dict = {"table_type": "form_detail",
+                     "title": table_title,
+                     "school_list": school_list
+                     }
+        if table_obj.stat_time and table_obj.end_time:
+            time_remaining = common.calculate_date(table_obj.end_time)
+            if int(time_remaining.days) < 1:
+                info_dict["time_remaining"] = "已过期"
+            else:
+                info_dict["time_remaining"] = "%s天" % time_remaining.days
+        return info_dict
 
     def display_student(self, row=None, header=False, *args, **kwargs):
         if header:

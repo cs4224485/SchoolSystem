@@ -95,6 +95,27 @@
 
     <div class="">
         <div style="overflow: hidden">
+            {% if extra.table_type == "form_detail" %}
+                <div>
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h3>统计信息</h3></div>
+                        <div class="layui-card-body">
+                            <span style="margin: 30px">表单名称：{{ extra.title }}</span>
+                            <span style="margin: 30px">关联学校：{% for school in extra.school_list  %}
+                                {{ school }}&nbsp;
+                            {% endfor %}
+                            </span>
+                            <span style="margin: 30px">剩余时间：{{ extra.time_remaining }}</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <span style="margin: 30px">表单名称:XXX表</span>
+                            <span style="margin: 30px">覆盖学校:发送到，水电费，水电费，舒服点</span>
+                            <span style="margin: 30px">剩余时间:10天</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             {% if cl.search_list %}
                 <div style="float: left">
                     <form method="get" class="layui-form x-so" style="width: 253px" action="">
@@ -153,8 +174,8 @@
 
                 </form>
             </div>
-
         {% endif %}
+
         {% if extra == 'filter_student' %}
             <div>
                 <form method="get" class="layui-form x-so">
@@ -196,13 +217,13 @@
 {% endblock %}
 
 {% block js %}
-  {% if extra == 'filter_student' %}
-    <script src="{% static 'student/js/student_filter.js' %}"></script>
-    <script>
+    {% if extra == 'filter_student' %}
+        <script src="{% static 'student/js/student_filter.js' %}"></script>
+        <script>
             $(document).ready(
                 student_ops.init()
             );
-    </script>
+        </script>
     {% endif %}
 
 {% endblock %}

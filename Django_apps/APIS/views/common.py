@@ -3,11 +3,12 @@
 '''
 from rest_framework.views import Response
 from rest_framework.views import APIView
-from school.models import SchoolInfo
-from APIS.serialize.common import SchoolSerializers, GradeSerializers, ClassSerializers
+from APIS.serialize.common import SchoolSerializers, GradeSerializers, ClassSerializers, StudentSerializers, \
+    StudentDetailSerializes, CourseSerializes
 from utils.base_response import BaseResponse
 from utils.common import order_by_class
-from school.models import SchoolInfo, StuClass, Grade
+from school.models import SchoolInfo, StuClass, Grade, Course
+from Django_apps.students.models import StudentInfo
 
 
 class GetAllSchoolViewSet(APIView):
@@ -25,6 +26,33 @@ class GetAllSchoolViewSet(APIView):
         except Exception as e:
             res.code = 500
             res.msg = '获取失败'
+        return Response(res.get_dict)
+
+
+class SchoolInfoViewSet(APIView):
+    '''
+    根据学校ID获取某一学校数据
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        school_id = request.query_params.get('school_id')
+        try:
+            if not school_id:
+                res.code = 403
+                res.msg = '请提供学校id'
+                return Response(res.get_dict)
+            school_obj = SchoolInfo.objects.filter(id=school_id).first()
+            if not school_obj:
+                res.code = 404
+                res.msg = '该学校不存在'
+                return Response(res.get_dict)
+            school_se = SchoolSerializers(school_obj)
+            res.data = {'school': school_se.data}
+            res.code = 200
+        except Exception as e:
+            res.code = 500
+            res.msg = '获取错误'
         return Response(res.get_dict)
 
 
@@ -57,4 +85,76 @@ class FilterGradeAndClassViewSet(APIView):
         except Exception as e:
             res.code = 500
             res.msg = '获取失败'
+        return Response(res.get_dict)
+
+
+class PerClassStudentListViewSet(APIView):
+    '''
+    获取每个班级学生列表
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        try:
+            class_id = request.query_params.get('class_id')
+            if not class_id:
+                res.code = 403
+                res.msg = "请提供班级ID"
+                return Response(res.get_dict)
+
+            student_list = StudentInfo.objects.filter(stu_class_id=class_id).values('full_name', 'id').distinct()
+            student_se = StudentSerializers(student_list, many=True)
+            res.code = 200
+            res.data = {'students': student_se.data}
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取错误"
+        return Response(res.get_dict)
+
+
+class StudentDetailInfo(APIView):
+    '''
+    获取学生详细信息
+    '''
+
+    def get(self, request, *args, **kwargs):
+
+        res = BaseResponse()
+        try:
+            student_id = request.query_params.get('student_id')
+            if not student_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+            student_obj = StudentInfo.objects.filter(id=student_id).first()
+            if not student_obj:
+                res.code = 404
+                res.msg = "未查找到该学生"
+                return Response(res.get_dict)
+            student_se = StudentDetailSerializes(student_obj)
+            res.data = {'student': student_se.data}
+            res.code = 200
+        except Exception as e:
+            res.code = 500
+            res.msg = '获取失败'
+        return Response(res.get_dict)
+
+
+class CourseViewSet(APIView):
+    '''
+    获取课程信息
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        try:
+            course_queryset = Course.objects.all()
+            course_se = CourseSerializes(course_queryset, many=True)
+            res.code = 200
+            res.msg = "获取成功"
+            res.data = course_se.data
+        except Exception as e:
+            print(e)
+            res.code = 500
+            res.msg = "获取失败"
         return Response(res.get_dict)

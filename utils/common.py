@@ -19,7 +19,6 @@ def get_constellation(month, date):
     :param date:
     :return:
     '''
-    print(month, date, '000000')
     dates = (21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22)
     constellations = (
         (1, "摩羯"), (2, "水瓶"), (3, "双鱼"), (4, "白羊"), (5, "金牛"), (6, "双子"), (7, "巨蟹"), (8, "狮子"), (9, "处女"), (10, "天秤"),
@@ -60,6 +59,7 @@ def calculate_day_age(y, m, d):
     :param d:
     :return:
     '''
+
     d1 = datetime.date(y, m, d)
     timestamp = time.mktime(d1.timetuple())
     return (int((int(time.time() - timestamp)) / 86400))
@@ -205,6 +205,11 @@ def date_to_datetime(date, date_format='%Y-%m-%d'):
     return datetime_obj
 
 
+def calculate_date(end_date, start_date=datetime.date.today()):
+    result = end_date - start_date
+    return result
+
+
 def get_week_day(date, date_format='%Y-%m-%d'):
     '''
     根据日期判断周几
@@ -243,7 +248,7 @@ def order_by_class(class_list):
         for j in range(0, len(class_list) - i - 1):
             # 如果届别（年级）不相对无需进行比较
             period_j = calculate_period(class_list[j].grade.get_grade_name_display())
-            period_next = calculate_period(class_list[j+1].grade.get_grade_name_display())
+            period_next = calculate_period(class_list[j + 1].grade.get_grade_name_display())
             if period_j != period_next:
                 continue
             match_class_num = re.search(regx, class_list[j].name)
@@ -268,4 +273,3 @@ def gen_md5_password(password):
     ha = hashlib.md5(b'jk3usodfjwkrsdf')
     ha.update(password.encode('utf-8'))
     return ha.hexdigest()
-

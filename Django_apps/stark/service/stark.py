@@ -317,8 +317,7 @@ class StarkConfig(object):
         # 处理搜索
         search_list, keyword, con = self.search_condition(request)
 
-        # ##### 处理分页 #####
-        from stark.utils.page import Pagination
+
         # 获取数据
         origin_queryset = self.get_queryset(request, *args, **kwargs)
         queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(
@@ -331,6 +330,7 @@ class StarkConfig(object):
         query_params._mutable = True
         # 请求的URL
         base_url = self.request.path
+        # ##### 处理分页 #####
         page = Pagination(total_set, request.GET.get('page'), query_params, base_url, per_page=20)
         # 获取组合搜索筛选
         list_filter = self.get_list_filter()

@@ -95,7 +95,7 @@ class HealthInfo(models.Model):
     disability = models.IntegerField(verbose_name='残疾', choices=disability_choice, default=1, null=True)
     blood_type_choice = ((1, 'A'), (2, 'B'), (3, 'O'), (4, 'AB'), (5, '不知道'))
     blood_type = models.IntegerField(verbose_name='血型', choices=blood_type_choice, null=True, blank=True)
-    student = models.ForeignKey('StudentInfo', on_delete=models.CASCADE, unique=True, db_index=True)
+    student = models.ForeignKey('StudentInfo', on_delete=models.CASCADE, db_index=True)
     allergy = models.ForeignKey('Allergy', verbose_name='过敏源', on_delete=models.CASCADE, null=True)
     InheritedDisease = models.ForeignKey('InheritedDisease', verbose_name='遗传病', on_delete=models.CASCADE, null=True)
 
@@ -307,3 +307,87 @@ class ChoiceQuestion(models.Model):
 
     def __str__(self):
         return '%s:%s' % (self.student.full_name, self.choice_table.title)
+
+
+class QualityAssessmentSource(models.Model):
+    '''
+    综合素质评估原始数据
+    '''
+
+    student = models.ForeignKey(verbose_name="学生", to="StudentInfo", on_delete=models.CASCADE)
+    school = models.ForeignKey(verbose_name="所在学校", to="school.SchoolInfo", on_delete=models.CASCADE)
+    test_content_choice = ((1, "主观测"), (2, "客户观测"), (3, "精细动作"), (4, "大动作"))
+    test_content = models.SmallIntegerField(verbose_name="测试内容1", choices=test_content_choice, null=True, blank=True)
+    dominant_hand_choice = ((1, "左手"), (2, "右手"))
+    dominant_hand = models.SmallIntegerField(verbose_name="优势手", choices=dominant_hand_choice, null=True, blank=True)
+    test_time = models.DateTimeField(verbose_name="测试时间", null=True, blank=True)
+    memo = models.CharField(max_length=128, null=True, blank=True, verbose_name="说明")
+    emotion_choice = ((1, '良好'), (2, '一般'), (3, '较差'))
+    emotion = models.SmallIntegerField(verbose_name="身体与情绪", choices=emotion_choice, null=True, blank=True)
+
+    def __str__(self):
+        return self.student.full_name
+
+    class Meta:
+        db_table = 'QualityAssessmentSource'
+        unique_together = (('student', 'test_time'),)
+
+
+# 基于导入Excel分页定义的维度
+level_1_dimension_choice = (("base_info", "基本数据"), ("sport", "大运动"), ("language", "语言表达"), ("observe", "观察与评估记录"),
+                            ("action", "精细动作"), ("language_comprehension", "语言理解"), ("associate", "联想"),
+                            ("cognition_of_number", "数的认知"), ("logic", "逻辑"), ("attention", "持续注意"),
+                            ("short_memory", "短时记忆"), ("science", "科学常识"), ("life", "生活常识"),
+                            ("habits_of_life", "生活习惯和卫生习惯"),
+                            ("safety_consciousness", "安全意识"), ("society", "社会"), ("art", "艺术素养"), ("interest", "兴趣爱好")
+                            )
+
+
+class Answers(models.Model):
+    '''
+    答题情况
+    '''
+    level_1_dimension = models.CharField(verbose_name="一级维度", choices=level_1_dimension_choice, max_length=64)
+    # 基于导入Excel每页数据整理定义的二级维度
+    level_2_dimension_choice = ((1, "力量"), (2, "平衡"), (3, "速度"), (4, "特殊问题"),
+                                (5, '安全意识和自我保护'), (6, '安定情绪'), (7, '规则意识'), (8, '情绪识别'), (9, '群体生活'),
+                                (10, '适应能力'), (11, '倾听与表达'), (12, "手眼协调"), (13, "动作灵活"), (14, "表现与创造"),
+                                (15, "动作灵活和表现与创造"), (16, "自理能力"), (17, "安全意识和自我保护"), (18, "群体生活"), (19, "规则意识"),
+                                (20, "自主表现"), (21, "尊重他人"), (22, "感受与欣赏"), (23, "表现与创造"), (24, "美术与书法"), (25, "音乐"),
+                                (26, "体育"), (27, "高科技产品"), (28, "逻辑思维"), (29, "科学探究"), (30, "社会"), (31, "法律与金融"),
+                                )
+    level_2_dimension = models.SmallIntegerField(verbose_name="二级维度", choices=level_2_dimension_choice, null=True,
+                                                 blank=True)
+    boole_answer = models.BooleanField(verbose_name="FT", null=True, blank=True)
+    choice_question_option = ((1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E"))
+    choice_question = models.SmallIntegerField(verbose_name="选择题答案", null=True, blank=True,
+                                               choices=choice_question_option)
+    score_answer = models.IntegerField(verbose_name="分数答案", null=True, blank=True)
+    number = models.SmallIntegerField(verbose_name="题目编号")
+    assessment = models.ForeignKey(verbose_name="评测信息", to="QualityAssessmentSource", on_delete=models.CASCADE)
+    float_score = models.DecimalField(verbose_name="浮点数记录", max_digits=4, decimal_places=2, null=True, blank=True)
+    excel_col_des = models.CharField(verbose_name="Excel字段对应得描述", null=True, blank=True, max_length=64)
+
+    class Meta:
+        db_table = 'Answers'
+        unique_together = (('level_1_dimension', 'number', 'assessment'),)
+
+
+class AssessmentScore(models.Model):
+    '''答题分数'''
+    top_dimension_choice = ((1, "科学"), (2, "语言"), (3, "社会"), (4, "健康"), (5, "艺术"), (6, "兴趣爱好"), (7, "其他"))
+    top_dimension = models.SmallIntegerField(verbose_name="一级维度", choices=top_dimension_choice)
+    level_2_dimension_choice = ((1, "大运动"), (2, "联想"), (3, "数的认知"), (4, "逻辑思维"), (5, "持续注意"), (6, "短时记忆"),
+                                (7, "科学常识"), (8, "生活常识"), (9, "语言理解"), (10, "语言表达"), (11, "群体生活"), (12, "规则意识"),
+                                (13, "尊重他人"), (14, "自主表现"), (15, "情绪识别"), (16, "生活习惯与卫生习惯"), (17, "安全意识和自我保护"),
+                                (18, "自理能力"), (19, "精细动作"), (20, "感受与欣赏"), (21, "表现与创造"), (22, "兴趣爱好"), (23, "美术与书法"),
+                                (24, "音乐"), (25, "体育"), (26, "高科技产品"), (27, "逻辑思维"), (28, "科学探究"), (29, "社会"),
+                                (30, "法律与金融"), (31, "力量"), (32, "平衡"), (33, "速度"), (34, "手眼协调"), (35, "动作灵活")
+                                )
+    level_2_dimension = models.SmallIntegerField(verbose_name="二级维度", choices=level_2_dimension_choice)
+    score = models.DecimalField(verbose_name="浮点数记录", max_digits=5, decimal_places=2)
+    assessment = models.ForeignKey(verbose_name="评测信息", to="QualityAssessmentSource", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'AssessmentScore'
+        unique_together = (('top_dimension', 'level_2_dimension', 'assessment', "score"),)
