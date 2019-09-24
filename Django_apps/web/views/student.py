@@ -190,8 +190,9 @@ class SchoolStudentConfig(StudentConfig):
                     cell = sheet.cell_value(row_num, col_num)
                     if col_num == 6:
                         grade = settings.GRADE_MAP.get(row[6].value)
+                        class_name = str(int(row[5].value)) + "班"
                         row_dict['grade'] = Grade.objects.filter(grade_name=grade).first()
-                        row_dict['stu_class'] = StuClass.objects.filter(name=row[5].value,
+                        row_dict['stu_class'] = StuClass.objects.filter(name=class_name,
                                                                         grade=grade,
                                                                         school=school_id).first()
                         # 届别
@@ -214,6 +215,7 @@ class SchoolStudentConfig(StudentConfig):
                 row_dict['student_code'] = row[7].value if row[7].value else None
                 # 生日
                 row_dict['birthday'] = row[3].value.strip()
+
                 if id_card:
                     is_exist = check_id_exist(id_card)
                     # if is_exist:
