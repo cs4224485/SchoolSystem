@@ -327,56 +327,60 @@ class ExportData(views.View):
     def get(self, request):
         field_name_list = ['姓名', '班级', '记录日期', '详细日期', '记录教师']
         data_list = []
-        record_queryset = mental_models.IndividualStudentRecord.objects.prefetch_related().distinct().order_by(
-            'student',
-            'record_time')
-        scale_table = record_queryset.first().scale_table.scale
-        # 取出量表行标题
-        for line in scale_table.line_title.all():
-            field_name_list.insert(-1, line.des)
+        try:
+            record_queryset = mental_models.IndividualStudentRecord.objects.prefetch_related().distinct().order_by(
+                'student',
+                'record_time')
+            scale_table = record_queryset.first().scale_table.scale
+            # 取出量表行标题
+            for line in scale_table.line_title.all():
+                field_name_list.insert(-1, line.des)
 
-        for item in record_queryset:
-            student = item.student
-            class_name = student.stu_class.grade.get_grade_name_display() + student.stu_class.name
-            record_date = item.record_time.strftime('%Y-%m-%d')
-            school_week = current_week(datetime.datetime.strptime(str(record_date), '%Y-%m-%d'))
-            detail_date = '%s第%s周' % (school_week[1], school_week[0])
-            row = [student.full_name, class_name, record_date, detail_date]
-            student_scale = item.scale_table
-            for scale in student_scale.scale_value.prefetch_related():
-                value = scale.value.des
-                row.append(value)
-            row.append(item.teacher.full_name)
-            data_list.append(row)
+            for item in record_queryset:
+                student = item.student
+                class_name = student.stu_class.grade.get_grade_name_display() + student.stu_class.name
+                record_date = item.record_time.strftime('%Y-%m-%d')
+                school_week = current_week(datetime.datetime.strptime(str(record_date), '%Y-%m-%d'))
+                detail_date = '%s第%s周' % (school_week[1], school_week[0])
+                row = [student.full_name, class_name, record_date, detail_date]
+                student_scale = item.scale_table
+                for scale in student_scale.scale_value.prefetch_related():
+                    value = scale.value.des
+                    row.append(value)
+                row.append(item.teacher.full_name)
+                data_list.append(row)
 
-        # 创建Excel
-        style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on')
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet('Sheet', cell_overwrite_ok=True)
-        # 创建表头
-        for i in range(len(field_name_list)):
-            ws.write(0, i, field_name_list[i], style0)
+            # 创建Excel
+            style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on')
+            wb = xlwt.Workbook()
+            ws = wb.add_sheet('Sheet', cell_overwrite_ok=True)
+            # 创建表头
+            for i in range(len(field_name_list)):
+                ws.write(0, i, field_name_list[i], style0)
 
-        # 写入每一行
-        for i in range(len(data_list)):
-            for j in range(len(data_list[i])):
-                ws.write(i + 1, j, data_list[i][j])
-        timestr = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        file_name = 'New-' + timestr + '.xls'
-        file_path = settings.MEDIA_ROOT + '/' + file_name
-        wb.save(file_path)
+            # 写入每一行
+            for i in range(len(data_list)):
+                for j in range(len(data_list[i])):
+                    ws.write(i + 1, j, data_list[i][j])
+            timestr = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            file_name = 'New-' + timestr + '.xls'
+            file_path = settings.MEDIA_ROOT + '/' + file_name
+            wb.save(file_path)
 
-        # 读取文件生成器
-        def file_iterator(file_name, chunk_size=512):
-            with open(file_name, 'rb') as f:
-                while True:
-                    c = f.read(chunk_size)
-                    if c:
-                        yield c
-                    else:
-                        break
-        # file = open(file_path, 'rb')
-        response = FileResponse(file_iterator(file_path))
-        response['Content-Type'] = 'application/octet-stream'
-        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(file_name)
+            # 读取文件生成器
+            def file_iterator(file_name, chunk_size=512):
+                with open(file_name, 'rb') as f:
+                    while True:
+                        c = f.read(chunk_size)
+                        if c:
+                            yield c
+                        else:
+                            break
+            # file = open(file_path, 'rb')
+            response = FileResponse(file_iterator(file_path))
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="{0}"'.format(file_name)
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
         return response

@@ -43,3 +43,6 @@ class CourseSerializes(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ["id", "course_des", "abbreviation"]
+
+class StudentHomeSerializes(serializers.ModelSerializer):
+    pass

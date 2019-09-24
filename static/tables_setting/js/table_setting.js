@@ -495,7 +495,6 @@ function sendData(data) {
         contentType: 'json',
         data: JSON.stringify({'data': data}),
         success: function (data) {
-            console.log(data)
             if (data.state) {
                 alert('保存成功');
                 var nid = data.setting_obj_id;

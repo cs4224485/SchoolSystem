@@ -8,7 +8,7 @@ from APIS.serialize.common import SchoolSerializers, GradeSerializers, ClassSeri
 from utils.base_response import BaseResponse
 from utils.common import order_by_class
 from school.models import SchoolInfo, StuClass, Grade, Course
-from Django_apps.students.models import StudentInfo
+from Django_apps.students.models import StudentInfo, FamilyInfo, HomeAddress
 
 
 class GetAllSchoolViewSet(APIView):
@@ -158,3 +158,20 @@ class CourseViewSet(APIView):
             res.code = 500
             res.msg = "获取失败"
         return Response(res.get_dict)
+
+
+class StudentHomeAddressViewSet(APIView):
+    '''
+    获取家庭地址
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        student_id = request.query_params.get('student_id')
+        if not student_id:
+            res.code = 403
+            res.msg = '请提供学生ID'
+            return Response(res.get_dict)
+        print(student_id)
+        home_obj = HomeAddress.objects.filter(family__student_id=student_id).first()
+        print(home_obj)

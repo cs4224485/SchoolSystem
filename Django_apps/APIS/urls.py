@@ -22,7 +22,7 @@ from Django_apps.APIS.views.entrance import *
 from Django_apps.APIS.views.mental import AppointmentInfoViewSet, GetPerClassStudent
 from APIS.views.surver_forms import SchoolScaleAvgViewSet, StudentScaleAvgViewSet, TableInfoViewSet
 from APIS.views.common import GetAllSchoolViewSet, FilterGradeAndClassViewSet, SchoolInfoViewSet, \
-    PerClassStudentListViewSet, StudentDetailInfo, CourseViewSet
+    PerClassStudentListViewSet, StudentDetailInfo, CourseViewSet, StudentHomeAddressViewSet
 from APIS.views.PiYue import TeacherLoginViewSet, TeacherInfoViewSet
 from APIS.views.assessment import BaseInfoViewSet, HealthViewSet, LanguageViewSet, ScienceViewSet, SocietyViewSet, \
     InterestViewSet, ArtViewSet
@@ -64,6 +64,8 @@ urlpatterns = [
     re_path(r"(?P<version>[v1|v2]+)/student_detail/$", StudentDetailInfo.as_view()),
     # 获取课程信息
     re_path(r"(?P<version>[v1|v2]+)/course/$", CourseViewSet.as_view()),
+    # 获取学生家庭信息
+    re_path(r"(?P<version>[v1|v2]+)/home/$", StudentHomeAddressViewSet.as_view()),
 
     # -----form表单接口------------------
     # 全校量表平均值数据

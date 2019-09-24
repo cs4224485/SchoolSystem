@@ -15,6 +15,7 @@ from django.http import FileResponse
 from school.models import StuClass, Grade
 
 
+
 class StudentConfig(StarkConfig):
 
     def get_extra_content(self, *args, **kwargs):
@@ -188,7 +189,8 @@ class SchoolStudentConfig(StudentConfig):
                     ctype = sheet.cell(row_num, col_num).ctype  # 表格数据类型
                     cell = sheet.cell_value(row_num, col_num)
                     if col_num == 6:
-                        row_dict['grade'] = Grade.objects.filter(grade_name=row[6].value).first()
+                        grade = settings.GRADE_MAP.get(row[6].value)
+                        row_dict['grade'] = Grade.objects.filter(grade_name=grade).first()
                         row_dict['stu_class'] = StuClass.objects.filter(name=row[5].value,
                                                                         grade=row_dict['grade'],
                                                                         school=school_id).first()
@@ -211,8 +213,8 @@ class SchoolStudentConfig(StudentConfig):
                 # 学籍号
                 row_dict['student_code'] = row[7].value if row[7].value else None
                 # 生日
-                row_dict['birthday'] = row[3].value
-
+                row_dict['birthday'] = row[3].value.strip()
+                print(row_dict['birthday'], row_dict['full_name'])
                 if id_card:
                     is_exist = check_id_exist(id_card)
                     # if is_exist:
@@ -245,7 +247,7 @@ class SchoolStudentConfig(StudentConfig):
             context['msg'] = '导入失败'
 
         return render(request, 'tables/student_import.html', context)
-
+    
     def student_tpl(self, request):
         """
         下载批量导入Excel列表

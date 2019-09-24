@@ -274,3 +274,10 @@ MENU_SESSION_KEY = "luffy_permission_menu_key"
 
 DATE_FORMAT = 'Y/m/d'
 DATETIME_FORMAT = 'Y-m-d H:i:s'
+
+# 年级映射
+GRADE_MAP = {'1年级': 1, '2年级': 2, '3年级': 3,
+             '4年级': 4, '5年级': 5, '6年级': 6,
+             "初一": 7, "初二": 8, "初三": 9,
+             "高一": 10, "高二": 11, "高三": 12,
+             '小班': 13, '中班': 14}
