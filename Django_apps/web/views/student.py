@@ -192,9 +192,11 @@ class SchoolStudentConfig(StudentConfig):
                         grade = settings.GRADE_MAP.get(row[6].value)
                         class_name = str(int(row[5].value)) + "班"
                         row_dict['grade'] = Grade.objects.filter(grade_name=grade).first()
+                        print(class_name, row_dict['grade'], school_id)
                         row_dict['stu_class'] = StuClass.objects.filter(name=class_name,
-                                                                        grade=grade,
+                                                                        grade=row_dict['grade'],
                                                                         school=school_id).first()
+
                         # 届别
                         row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
                         continue
