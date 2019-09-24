@@ -192,7 +192,7 @@ class SchoolStudentConfig(StudentConfig):
                         grade = settings.GRADE_MAP.get(row[6].value)
                         row_dict['grade'] = Grade.objects.filter(grade_name=grade).first()
                         row_dict['stu_class'] = StuClass.objects.filter(name=row[5].value,
-                                                                        grade=row_dict['grade'],
+                                                                        grade=grade,
                                                                         school=school_id).first()
                         # 届别
                         row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
@@ -214,7 +214,6 @@ class SchoolStudentConfig(StudentConfig):
                 row_dict['student_code'] = row[7].value if row[7].value else None
                 # 生日
                 row_dict['birthday'] = row[3].value.strip()
-                print(row_dict['birthday'], row_dict['full_name'])
                 if id_card:
                     is_exist = check_id_exist(id_card)
                     # if is_exist:
@@ -247,7 +246,7 @@ class SchoolStudentConfig(StudentConfig):
             context['msg'] = '导入失败'
 
         return render(request, 'tables/student_import.html', context)
-    
+
     def student_tpl(self, request):
         """
         下载批量导入Excel列表
