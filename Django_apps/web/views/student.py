@@ -2,6 +2,7 @@ import copy
 import os
 import xlrd
 import mimetypes
+import uuid
 from django.utils.safestring import mark_safe
 from Django_apps.web.forms.student_form import StudentEditForm
 from django.conf import settings
@@ -192,7 +193,6 @@ class SchoolStudentConfig(StudentConfig):
                         grade = settings.GRADE_MAP.get(row[6].value)
                         class_name = str(int(row[5].value)) + "班"
                         row_dict['grade'] = Grade.objects.filter(grade_name=grade).first()
-                        print(class_name, row_dict['grade'], school_id)
                         row_dict['stu_class'] = StuClass.objects.filter(name=class_name,
                                                                         grade=row_dict['grade'],
                                                                         school=school_id).first()
@@ -289,7 +289,6 @@ class SchoolStudentConfig(StudentConfig):
                 request_data['day_age'] = result.get('day_age')
         request_data['school'] = school_id
         request_data['full_name'] = request_data['last_name'] + request_data['first_name']
-        import uuid
         if grade_obj:
             request_data['period'] = calculate_period(grade_obj.get_grade_name_display())
         request_data['interior_student_id'] = 'str:%s' % uuid.uuid4()

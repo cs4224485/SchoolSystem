@@ -22,7 +22,8 @@ from Django_apps.APIS.views.entrance import *
 from Django_apps.APIS.views.mental import AppointmentInfoViewSet, GetPerClassStudent
 from APIS.views.surver_forms import SchoolScaleAvgViewSet, StudentScaleAvgViewSet, TableInfoViewSet
 from APIS.views.common import GetAllSchoolViewSet, FilterGradeAndClassViewSet, SchoolInfoViewSet, \
-    PerClassStudentListViewSet, StudentDetailInfo, CourseViewSet, StudentHomeAddressViewSet
+    PerClassStudentListViewSet, StudentDetailInfo, CourseViewSet, StudentHomeAddressViewSet, ParentInfoViewSet, \
+    FormInfoViewSet, ChoiceInfoViewSet, StudentListViewSet
 from APIS.views.PiYue import TeacherLoginViewSet, TeacherInfoViewSet
 from APIS.views.assessment import BaseInfoViewSet, HealthViewSet, LanguageViewSet, ScienceViewSet, SocietyViewSet, \
     InterestViewSet, ArtViewSet
@@ -66,6 +67,14 @@ urlpatterns = [
     re_path(r"(?P<version>[v1|v2]+)/course/$", CourseViewSet.as_view()),
     # 获取学生家庭信息
     re_path(r"(?P<version>[v1|v2]+)/home/$", StudentHomeAddressViewSet.as_view()),
+    # 学生父母信息
+    re_path(r"(?P<version>[v1|v2]+)/parent/$", ParentInfoViewSet.as_view()),
+    # 学生填表信息
+    re_path(r"(?P<version>[v1|v2]+)/form/$", FormInfoViewSet.as_view()),
+    # 学生填写选择题信息
+    re_path(r"(?P<version>[v1|v2]+)/choice/$", ChoiceInfoViewSet.as_view()),
+    # 学生列表
+    re_path(r"(?P<version>[v1|v2]+)/student_list/$", StudentListViewSet.as_view()),
 
     # -----form表单接口------------------
     # 全校量表平均值数据

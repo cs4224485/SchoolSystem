@@ -4,11 +4,12 @@
 from rest_framework.views import Response
 from rest_framework.views import APIView
 from APIS.serialize.common import SchoolSerializers, GradeSerializers, ClassSerializers, StudentSerializers, \
-    StudentDetailSerializes, CourseSerializes
+    StudentDetailSerializes, CourseSerializes, StudentHomeSerializes, StudentParentSerializes, StudentListSerializes
 from utils.base_response import BaseResponse
 from utils.common import order_by_class
 from school.models import SchoolInfo, StuClass, Grade, Course
-from Django_apps.students.models import StudentInfo, FamilyInfo, HomeAddress
+from Django_apps.students.models import StudentInfo, FamilyInfo, HomeAddress, StudentToParents, ScaleQuestion, \
+    ChoiceQuestion
 
 
 class GetAllSchoolViewSet(APIView):
@@ -135,6 +136,7 @@ class StudentDetailInfo(APIView):
             res.data = {'student': student_se.data}
             res.code = 200
         except Exception as e:
+            print(e)
             res.code = 500
             res.msg = '获取失败'
         return Response(res.get_dict)
@@ -168,10 +170,133 @@ class StudentHomeAddressViewSet(APIView):
     def get(self, request, *args, **kwargs):
         res = BaseResponse()
         student_id = request.query_params.get('student_id')
-        if not student_id:
-            res.code = 403
-            res.msg = '请提供学生ID'
-            return Response(res.get_dict)
-        print(student_id)
-        home_obj = HomeAddress.objects.filter(family__student_id=student_id).first()
-        print(home_obj)
+        try:
+            if not student_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+
+            home_obj = HomeAddress.objects.filter(family__student_id=student_id).first()
+            se = StudentHomeSerializes(home_obj).data
+            res.data = se
+            res.code = 200
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取失败"
+        return Response(res.get_dict)
+
+
+class ParentInfoViewSet(APIView):
+    '''
+    学生父母信息
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        student_id = request.query_params.get('student_id')
+        try:
+            if not student_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+
+            parent_queryset = StudentToParents.objects.filter(student_id=student_id)
+            se = StudentParentSerializes(parent_queryset, many=True)
+            res.data = se.data
+            res.code = 200
+
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取失败"
+
+        return Response(res.get_dict)
+
+
+class FormInfoViewSet(APIView):
+    '''
+    表单信息
+    '''
+
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        student_id = request.query_params.get('student_id')
+        try:
+            if not student_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+
+            data_list = []
+            # 获取填写矩阵量表相关信息
+            sc_query = ScaleQuestion.objects.filter(student_id=student_id)
+            for item in sc_query:
+                scale_title = item.scale.title
+                option_val = []
+                data_dict = {scale_title: {'options': [], 'line': []}}
+                for val in item.scale_value.all():
+                    data_dict[scale_title]['line'].append({val.title.des: val.value.des})
+                    option_val.append(val.value.des)
+                for options in item.scale.options.all():
+                    data_dict[scale_title]['options'].append(options.des)
+                data_list.append(data_dict)
+            res.code = 200
+            res.data = data_list
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取失败"
+
+        return Response(res.get_dict)
+
+
+class ChoiceInfoViewSet(APIView):
+    '''
+    选择题信息
+    '''
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        student_id = request.query_params.get('student_id')
+        try:
+            if not student_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+            data_list = []
+            choice_query = ChoiceQuestion.objects.filter(student_id=student_id)
+            for item in choice_query:
+                title = item.choice_table.title
+                data_dict = {title: {'options': [], 'selected': []}}
+                for op in item.choice_table.opdes.all():
+                    data_dict[title]['options'].append(op.des)
+                for val in item.values.all():
+                    data_dict[title]['selected'].append(val.des)
+                data_list.append(data_dict)
+            res.code = 200
+            res.data = data_list
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取失败"
+        return Response(res.get_dict)
+
+
+class StudentListViewSet(APIView):
+    '''
+    学生列表
+    '''
+    def get(self, request, *args, **kwargs):
+        res = BaseResponse()
+        school_id = request.query_params.get('school_id')
+        try:
+            if not school_id:
+                res.code = 403
+                res.msg = '请提供学生ID'
+                return Response(res.get_dict)
+            student_queryset = StudentInfo.objects.filter(school_id=school_id).order_by("grade", "stu_class").all()
+            student_se = StudentListSerializes(student_queryset, many=True).data
+
+            res.data = student_se
+            res.code = 200
+        except Exception as e:
+            res.code = 500
+            res.msg = "获取失败"
+        return Response(res.get_dict)
+
