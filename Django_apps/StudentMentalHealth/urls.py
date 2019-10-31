@@ -13,5 +13,8 @@ urlpatterns = [
     re_path('record_list/(?P<student_id>\d+)/$', views.RecordList.as_view()),
     re_path('add_record/(?P<student_id>\d+)/$', views.AddRecord.as_view()),
     re_path('appointment_manage/$', views.AppointmentManage.as_view()),
-    re_path('export', views.ExportData.as_view())
+    re_path('export', views.ExportData.as_view()),
+    re_path('record_performance/$', views.RecordPerformance.as_view()),
+    re_path('performance/$', views.Performance.as_view()),
+
 ]

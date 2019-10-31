@@ -13,13 +13,7 @@
         <h1 class="mui-title">教师</h1>
     </header>
     <div class="mui-content" style="position: relative">
-{#        <div class="public_logo flex">#}
-{#            <img src="{% static 'MentalHealth/images/logo.jpg' %}" alt=""/>#}
-{#            <div class="text">#}
-{#                <p class="p1"><b>曹光彪小学</b> <span>上海</span><span>黄埔</span></p>#}
-{#                <p class="p2">Cao Guangbiao primary school</p>#}
-{#            </div>#}
-{#        </div>#}
+
         {% get_school_head school_id %}
 
         <h3 class="component-title">选择要记录的学生</h3>
@@ -27,6 +21,7 @@
             <div class="btn-left" id="class_left"><p class="triangle-left"></p></div>
             <div class="name" id="class_name">{{ class }}</div>
             <div class="btn-right" id="class_right"><p class="triangle-right"></p></div>
+            <input type="hidden" id="pid" value="{{ pid }}">
         </div>
         <ul class="mui-table-view" id="StudentList">
 

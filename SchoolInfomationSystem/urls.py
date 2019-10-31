@@ -37,7 +37,7 @@ urlpatterns = [
     re_path(r'^rbac/', include(('rbac.urls', 'rbac'), namespace='rbac'), ),
     re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     re_path(r"homework/$", homework, name='homework'),
-    re_path(r"questions/$", question_bank, name='question'),
+    # re_path(r"questions/$", question_bank, name='question'),
     re_path(r"^web/", include("web.urls")),
 
 ]

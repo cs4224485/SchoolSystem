@@ -58,6 +58,15 @@ class StudentInfo(models.Model):
         unique_together = (('full_name', 'student_id', 'grade'),)
 
 
+class GraduatedStudent(models.Model):
+    from_school = models.ForeignKey(verbose_name='毕业学校', to=SchoolInfo, on_delete=models.CASCADE)
+    graduate = models.OneToOneField(verbose_name='毕业生信息', to="StudentInfo", on_delete=models.CASCADE,
+                                    related_name='graduate_student')
+
+    class Meta:
+        db_table = "GraduatedStudent"
+
+
 class GraduateInstitutions(models.Model):
     '''
     毕业机构表

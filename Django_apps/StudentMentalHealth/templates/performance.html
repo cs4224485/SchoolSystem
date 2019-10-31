@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mental_tag %}
+
+{% block title %}
+    主要表现
+{% endblock %}
+
+{% block content %}
+    <header class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">主要表现</h1>
+    </header>
+    <div class="mui-content">
+        {% get_school_head school_id %}
+        <h3 class="component-title">Ⅰ类</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" data-id="1">
+                <a class="mui-navigate-right" href="###">
+                    与年龄明显不符的集中困难
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="2">
+                <a class="mui-navigate-right" href="###">
+                    不能遵守课堂与学校的规则，如擅自离座、走动
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="3">
+                <a class="mui-navigate-right">
+                    行为冲动，如爱插嘴、攻击他人
+                </a>
+            </li>
+        </ul>
+        <h3 class="component-title">Ⅱ类</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" data-id="4">
+                <a class="mui-navigate-right" href="###">
+                    尖叫
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="5">
+                <a class="mui-navigate-right" href="###">
+                    情绪失控
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="6">
+                <a class="mui-navigate-right">
+                    与人缺乏眼神交流
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="7">
+                <a class="mui-navigate-right">
+                    动作刻板，环境刻板
+                </a>
+            </li>
+        </ul>
+        <h3 class="component-title">Ⅲ类</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" data-id="8">
+                <a class="mui-navigate-right" href="###">
+                    攻击他人
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="9">
+                <a class="mui-navigate-right" href="###">
+                    敌意
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="10">
+                <a class="mui-navigate-right">
+                    愤怒情绪
+                </a>
+            </li>
+        </ul>
+        <h3 class="component-title">Ⅳ类</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" data-id="11">
+                <a class="mui-navigate-right" href="###">
+                    拒绝身体接触
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="12">
+                <a class="mui-navigate-right" href="###">
+                    手脚配合笨拙，易跌倒
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="13">
+                <a class="mui-navigate-right">
+                    东西整理乱
+                </a>
+            </li>
+        </ul>
+        <h3 class="component-title">Ⅴ类</h3>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" data-id="14">
+                <a class="mui-navigate-right" href="###">
+                    阅读时必须手指指读读，容易漏字、漏行
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="15">
+                <a class="mui-navigate-right" href="###">
+                    b/d,p/q,w/m这类字母无法区分
+                </a>
+            </li>
+            <li class="mui-table-view-cell" data-id="16">
+                <a class="mui-navigate-right">
+                    手指精细动作有困难
+                </a>
+            </li>
+        </ul>
+
+        <!--。-->
+    </div>
+{% endblock %}
+<style>
+    .titBox {
+        background: #ffcd00;
+        color: #fff;
+        font-size: 16px;
+        text-align: center;
+        padding: 15px 0;
+    }
+</style>
+
+<!-- archivesLIist -->
+{% block js %}
+    <script type="text/javascript">
+        mui(".mui-table-view").on('tap', '.mui-table-view-cell', function () {
+            //$(this).find(".Pradio").addClass("act").parent(".mui-radio").siblings().find(".Pradio").removeClass("act");
+            console.log($(this).attr("data-id"));
+            window.location.href = "/mental/record_performance/?id=" + $(this).attr("data-id");
+        })
+
+    </script>
+{% endblock %}

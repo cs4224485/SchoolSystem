@@ -20,6 +20,7 @@ $(function () {
             }
         }
     });
+    createRecord()
 });
 
 function bindLeft(class_data) {
@@ -51,14 +52,44 @@ function bindRight(class_data) {
 }
 
 function createStudentHtml(class_data, index, key) {
+    let pid = $('#pid').val();
     for (let i = 0; i < class_data[index][key].length; i++) {
+        let target = `/mental/record_list/${class_data[index][key][i].id}/`;
+        let aEle = `<a href="${target}" class="mui-icon mui-icon-arrowright right"></a>`;
+        if(pid){
+            target = "javascript:;";
+            aEle = `<a href="${target}" class="mui-icon mui-icon-arrowright right performance"></a>`
+        }
         let htmlStr = `
-                                       <li class="mui-table-view-cell">
+                                       <li class="mui-table-view-cell stu">
                                             <span>${i + 1}</span>
                                             <span>${class_data[index][key][i].full_name}</span>
-                                            <a href="/mental/record_list/${class_data[index][key][i].id}/" class="mui-icon mui-icon-arrowright right"></a>
+                                            ${aEle}
                                        </li>
                                                       `;
         $('#StudentList').append(htmlStr)
     }
+}
+
+function createRecord() {
+    $('#StudentList').on("click", ".performance", function(e){
+        e.preventDefault();
+        let studID = $(this).prev().prev().text();
+        let pid = $('#pid').val();
+        $.ajax({
+            url:ajaxUrl + '/mental/record_performance/',
+            type: 'post',
+            dataType: 'json',
+            data:{'student_id':studID, "pid":pid},
+            success:function (data) {
+                console.log(data);
+                if(data.code === 200){
+                     mui.alert("记录成功");
+                }else {
+                    mui.alert("记录失败")
+                }
+            }
+        })
+    })
+
 }

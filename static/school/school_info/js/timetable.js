@@ -92,7 +92,7 @@ var schoolTimeTable = {
             }
             if (type === 0) {
 
-                let teacherId = $('#op-teacher').prop('data-id');
+                let teacherId = $('#select-teacher').val();
                 let courseId = $('#op-course').val();
                 let singleDoubleWeek = $('#single-double-week').find('input[type=radio]:checked').val();
                 data.singleDoubleWeek = singleDoubleWeek ? singleDoubleWeek : '';
@@ -145,7 +145,6 @@ var schoolTimeTable = {
                                             $(courseTdDiv).find('span').eq(0).text(res.data.course_name).attr('course-id', res.data.course_id).css('color', '#1E1E1E');
                                             $(courseTdDiv).find('span').eq(1).text(res.data.teacher_name).attr('course-id', res.data.teacher_id);
                                         }
-
                                     }
                                 } else if (res.data.info_type === 1) {
                                     // 处理其他事件
@@ -299,16 +298,20 @@ var schoolTimeTable = {
     },
     getCourseTeacher: function (courseId, classId) {
         // 根据课程获取代课老师
-        $("#op-teacher").children().remove();
+        $("#select-teacher").children().remove();
         $.ajax({
             url: ajaxUrl + '/api/v1/teacher_to_course/?courseId=' + courseId + '&classId=' + classId,
             method: "get",
             type: "json",
             success: function (res) {
                 if (res.code === 200) {
-                    $('#op-teacher').val(res.data.last_name + res.data.first_name).prop('data-id', res.data.id)
+                    // 选择老师的op盒子
+                    let selectOp = $('#select-teacher');
+                    for (var i = 0; i < res.data.length; i++) {
+                         let optionElement = `<option class="op-teacher" class="form-control" value="${res.data[i].id}">${res.data[i].last_name + res.data[i].first_name}</option>`;
+                        selectOp.append(optionElement);
+                    }
                 } else {
-                    $('#op-teacher').val('').prop('data-id', '');
                     alert(res.msg);
                 }
             }
@@ -321,7 +324,6 @@ var schoolTimeTable = {
             let courseId = $(this).val();
             if (parseInt(courseId) !== 0) {
                 let classId = $('#class-info').attr('class-id');
-                console.log(classId);
                 that.getCourseTeacher(courseId, classId)
             }
         })
@@ -330,7 +332,8 @@ var schoolTimeTable = {
         $('#course-edit').on('hidden.bs.modal', function () {
             // 清空之前模态对话框的数据
             $('#op-course').find('option').eq(0).prop('selected', 'selected');
-            $('#op-teacher').val('').prop('data-id', '');
+            $('#select-teacher').val('').children().remove();
+
         })
     },
     saveTime: function (timeValue, sourceTime) {
@@ -367,7 +370,7 @@ var schoolTimeTable = {
                     success: function (res) {
                         if (res.code === -1) {
                             alert(res.msg)
-                        }else if(res.code === 200){
+                        } else if (res.code === 200) {
                             $(that).parents('tr').remove()
                         }
                     }
@@ -467,9 +470,9 @@ var schoolTimeTable = {
             let trElement = that.parents('tr');
             let trIndex = $('tbody').find('tr').index(trElement);
             let totalTr = $('tbody').find('tr').length;
-            if (totalTr === trIndex+1 || totalTr-1 === trIndex+1){
+            if (totalTr === trIndex + 1 || totalTr - 1 === trIndex + 1) {
                 var scrollHeight = $('#wrap').prop("scrollHeight");
-                $('#wrap').animate({scrollTop:scrollHeight}, 100);
+                $('#wrap').animate({scrollTop: scrollHeight}, 100);
             }
             var Times = new TimeSelection();
             Times.init({

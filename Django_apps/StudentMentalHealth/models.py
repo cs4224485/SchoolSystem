@@ -60,3 +60,15 @@ class TeacherEditTime(models.Model):
 
     teacher = models.ForeignKey(to='teacher.TeacherInfo', verbose_name='对应的心理老师', on_delete=models.CASCADE,
                                 limit_choices_to={"id__in": [2]})
+
+
+class PerformanceRecord(models.Model):
+    student = models.ForeignKey(to='students.StudentInfo', verbose_name='对应学生', on_delete=models.CASCADE,
+                                related_name='stu_performance')
+    option_choice = ((1, '与年龄明显不符的集中困难'), (2, '不能遵守课堂与学校的规则，如擅自离座、走动'), (3, '行为冲动，如爱插嘴、攻击他人'),
+                     (4, '尖叫'), (5, '情绪失控'), (6, '与人缺乏眼神交流'), (7, '动作刻板，环境刻板'), (8, "攻击他人"), (9, "敌意"), (10, "愤怒情绪"),
+                     (11, "拒绝身体接触"), (12, "手脚配合笨拙，易跌倒"), (13, "东西整理乱"), (14, "阅读时必须手指指读读，容易漏字、漏行"),
+                     (15, "b/d,p/q,w/m这类字母无法区分"), (16, "手指精细动作有困难")
+                     )
+    options = models.SmallIntegerField(choices=option_choice, verbose_name="选项")
+    create_time = models.DateTimeField(auto_now=True, verbose_name="创建时间")

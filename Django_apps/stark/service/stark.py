@@ -317,7 +317,6 @@ class StarkConfig(object):
         # 处理搜索
         search_list, keyword, con = self.search_condition(request)
 
-
         # 获取数据
         origin_queryset = self.get_queryset(request, *args, **kwargs)
         queryset = origin_queryset.filter(con).filter(**self.get_list_filter_condition(request)).order_by(

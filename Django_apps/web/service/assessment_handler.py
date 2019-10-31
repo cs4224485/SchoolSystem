@@ -111,6 +111,7 @@ class AssessmentHandler(object):
                     last_name = row[1].value
                     gender = GENDER_MAP.get(row[3].value)
                     cell = sheet.cell_value(row_num, col_num + 4)
+
                     birthday = self.excel.trans_datetime(cell).date()
                     grade = GRADE_MAP.get(row[6].value)
                     _class = row[7].value
@@ -131,6 +132,7 @@ class AssessmentHandler(object):
             try:
                 obj = models.QualityAssessmentSource.objects.get(student=student_obj, test_time=test_time)
             except models.QualityAssessmentSource.DoesNotExist as e:
+                print(e)
                 object_list.append(models.QualityAssessmentSource(**row_dict))
         models.QualityAssessmentSource.objects.bulk_create(object_list)
 

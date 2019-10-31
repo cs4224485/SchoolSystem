@@ -319,6 +319,37 @@ class AppointmentManage(views.View):
         return JsonResponse(message.get_dict)
 
 
+class Performance(views.View):
+    def get(self, request, *args, **kwargs):
+        school_id = request.session.get('teacher_info').get('school')
+        return render(request, "performance.html", {'school_id': school_id})
+
+
+class RecordPerformance(views.View):
+    '''
+    行为表现
+    '''
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        teacher_info = request.session.get('teacher_info')
+        teacher_id = teacher_info.get('id')
+        school_id = teacher_info.get('school')
+        performance_id = request.GET.get('id')
+
+        return render(request, 'record_student_list.html',
+                      {'teacher_id': teacher_id, 'school_id': school_id, 'pid': performance_id})
+
+    def post(self, request, *args, **kwargs):
+        res = BaseResponse()
+        pid = request.POST.get('pid')
+        student_id = request.POST.get('student_id')
+        p_obj = mental_models.PerformanceRecord.objects.create(options=pid, student_id=student_id)
+        if p_obj:
+            res.code = 200
+
+        return JsonResponse(res.get_dict)
+
+
 class ExportData(views.View):
     '''
     导出记录
@@ -376,6 +407,7 @@ class ExportData(views.View):
                             yield c
                         else:
                             break
+
             # file = open(file_path, 'rb')
             response = FileResponse(file_iterator(file_path))
             response['Content-Type'] = 'application/octet-stream'

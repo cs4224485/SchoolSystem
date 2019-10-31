@@ -76,7 +76,7 @@ function addClass() {
         if (matchClassNumber){
             className = parseInt(matchClassNumber[0]) + 1;
         }else {
-            className =  parseInt($(this).parents('tr').find('.per-class').length) + 1
+            className =  parseInt($(this).parents('tr').find('.per-class').length) + 1;
             console.log(className, '1222')
         }
 

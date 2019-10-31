@@ -153,6 +153,9 @@ class SchoolInfoConfig(StarkConfig):
         return mark_safe(
             '<a href="%s" class="layui-btn" ><i class="layui-icon"></i>添加新的学校</a>' % self.reverse_add_url())
 
+    def get_extra_content(self, *args, **kwargs):
+        return {'filter': 'filter_school'}
+
     search_list = ['school_name']
     list_display = [display_school_name, 'school_type', 'school_layer', display_address, display_operation]
     list_filter = [Option('school_layer', is_choice=True, text_func=lambda x: x[1]),

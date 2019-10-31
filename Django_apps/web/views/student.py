@@ -16,7 +16,6 @@ from django.http import FileResponse
 from school.models import StuClass, Grade
 
 
-
 class StudentConfig(StarkConfig):
 
     def get_extra_content(self, *args, **kwargs):
@@ -196,7 +195,6 @@ class SchoolStudentConfig(StudentConfig):
                         row_dict['stu_class'] = StuClass.objects.filter(name=class_name,
                                                                         grade=row_dict['grade'],
                                                                         school=school_id).first()
-
                         # 届别
                         row_dict['period'] = calculate_period(row_dict['grade'].get_grade_name_display())
                         continue
@@ -235,8 +233,10 @@ class SchoolStudentConfig(StudentConfig):
                     row_dict['age'] = calculate_age(int(y))
                     row_dict['day_age'] = calculate_day_age(int(y), int(m), int(d))
                     row_dict['chinese_zodiac'] = get_ChineseZodiac(int(y))[0]
-                student_obj = StudentInfo.objects.filter(full_name=row_dict['full_name'], school_id=school_id,
+                student_obj = StudentInfo.objects.filter(full_name=row_dict['full_name'],
+                                                         school_id=school_id,
                                                          birthday=row_dict['birthday'])
+
                 if not row_dict['gender']: row_dict['gender'] = None
                 if student_obj:
                     row_dict.pop('interior_student_id')

@@ -535,3 +535,20 @@ class WXappSettings(models.Model):
         db_table = 'WXappSettings'
 
 
+# ------------- 题库系统 -------------
+
+class QuestionBank(models.Model):
+    '''
+    题库
+    '''
+
+    subject = models.TextField(verbose_name="题干", max_length=512)
+    question_type_choice = ((1, "单选"), (2, "多选"), (3, "判断"), (4, "填空"))
+    question_type = models.SmallIntegerField(choices=question_type_choice, verbose_name="题型")
+    crate_time = models.DateTimeField(auto_now=True, verbose_name="创建时间")
+    modify_time = models.DateTimeField(null=True, verbose_name="修改时间")
+    crate_user = models.ForeignKey('web.UserInfo', verbose_name="创建人", on_delete=models.CASCADE)
+    relate_course = models.ForeignKey('Course', verbose_name="关联课程", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "QuestionBank"

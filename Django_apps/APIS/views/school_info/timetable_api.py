@@ -15,7 +15,8 @@ class TeacherToCourseInfoViewSet(APIView):
             class_id = request.GET.get('classId')
             teacher_obj = tea_model.TeacherInfo.objects.filter(course=course_id,
                                                                teachers__stu_class=class_id).values('id', 'last_name',
-                                                                                                    'first_name').first()
+                                                                                                    'first_name').all().distinct()
+            print(teacher_obj)
 
             if not teacher_obj:
                 res.msg = "未能查询到代课老师"

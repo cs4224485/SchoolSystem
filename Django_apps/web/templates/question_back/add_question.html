@@ -1,0 +1,247 @@
+{% extends "layout.html" %}
+{% block css %}
+    <style type="text/css">
+
+        .batch-type {
+            width: 100%;
+            background-color: #f2f2f2;
+            vertical-align: center;
+            padding-top: 20px
+        }
+
+        .lb {
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .question-content {
+            padding: 20px 48px 20px 20px;
+            background-color: #F6F7FA;
+        }
+
+        .question-content .title .tip {
+            padding: 5px 14px;
+            background: #A9B3BF;
+            font-size: 12px;
+            margin-right: 12px;
+            color: #fff;
+            display: inline-block;
+        }
+
+        .question-content .title .intro {
+            color: #A9B3BF;
+            vertical-align: middle;
+        }
+
+        .question-des {
+            margin-top: 10px;
+        }
+
+        .keyPanel {
+            margin-top: 15px;
+        }
+
+        .keyList {
+            width: 100%;
+        }
+
+        .keyLeft, .keyRight {
+            float: left;
+            margin-top: 10px;
+            padding: 6px;
+        }
+
+        .keyLeft {
+            position: relative;
+            bottom: 5px;
+        }
+
+        .keyRight input {
+            height: 85px;
+            width: 1300px;
+        }
+
+        .clear:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: "";
+            clear: both;
+            height: 0;
+        }
+
+        .addKeyBtn button {
+            width: 1300px;
+            margin-left: 58px;
+        }
+
+        .add-questions-btn {
+            margin-top: 35px;
+            padding-bottom: 25px;
+            text-align: center;
+
+        }
+
+        .add-questions-btn #saveAllBtn {
+            padding: 10px 35px;
+            width: 230px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="layui-col-md12 batch-type ">
+            <form class="layui-form" action="">
+
+                <label class="layui-form-label lb">试题类型</label>
+                <div class=" layui-col-md1">
+                    <select name="type" lay-verify="" id="type">
+                        {% for item in type %}
+                            <option value="{{ item.0 }}">{{ item.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="layui-form-label lb">试题科目</label>
+                <div class="layui-col-md1">
+                    <select name="course" lay-verify="" id="course">
+                        {% for course in courses %}
+                            <option value="{{ course.id }}">{{ course.course_des }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="question-content layui-col-md12 ">
+            <div class="">
+                <div class="descPanel">
+                    <div class="title">
+                        <span class="tip">题干</span>
+                        <span class="intro">这里填写题目描述</span>
+                    </div>
+                </div>
+                <div class="question-des">
+                    <textarea name="desc" id="des" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="keyRadio keyPanel">
+                <div class="descPanel">
+                    <div class="title">
+                        <span class="tip">选项</span>
+                        <span class="intro">设置选项</span>
+                    </div>
+                </div>
+                <form class="layui-form" action="">
+                    <div class="keyList clear">
+                        <div class="keyLeft">
+                            <input type="radio" checked=checked class="radioOrCheck" name="single_choice" value="1">
+                        </div>
+                        <div class="keyRight keyRight1 ">
+                            <input name="answer1" type="text" class="layui-input">
+                        </div>
+
+                    </div>
+                    <div class="keyList clear">
+
+                        <div class="keyLeft">
+                            <input type="radio" class="radioOrCheck" name="single_choice" value="2">
+                        </div>
+                        <div class="keyRight keyRight1 ">
+                            <input name="answer1" type="text" class="layui-input">
+                        </div>
+
+                    </div>
+                    <div class="keyList clear">
+
+                        <div class="keyLeft">
+                            <input type="radio" name="single_choice" value="3">
+                        </div>
+                        <div class="keyRight keyRight1 ">
+                            <input name="answer1" type="text" class="layui-input">
+                        </div>
+
+                    </div>
+                    <div class="keyList clear">
+                        <div class="keyLeft">
+                            <input type="radio" name="single_choice" value="4">
+                        </div>
+                        <div class="keyRight keyRight1 ">
+                            <input name="answer1" type="text" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+                <div class="addKeyBtn">
+                    <button type="button" class="layui-btn layui-btn-norma"><i class="layui-icon">&#xe654;</i>添加一个选项
+                    </button>
+                </div>
+            </div>
+            <div class="add-questions-btn">
+                <button type="button" class="btn btn-warning" id="saveAllBtn">全部保存</button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        form = layui.form;
+        questionBank = {
+            init: function () {
+                this.saveAll()
+
+            },
+            saveAll: function () {
+                $('#saveAllBtn').click(() => {
+                    this.crateData()
+                })
+            },
+            crateData: () => {
+
+                // 构建需要提交的数据
+                let questionType = $("#type").val();
+                let relatedCourse = $("#course").val();
+                let questionDes = $("#des").val();
+                let optionElement = $("input[name=answer1]");
+                let options = [];
+                let rightAnswer = $("input[name=single_choice]:checked").val();
+                let sendData = {
+                    "questionType": questionType,
+                    "relatedCourse": relatedCourse,
+                };
+                if (!questionDes) {
+                    common_ops.alert("请输入题干");
+                    return;
+                }
+
+                sendData['questionDes'] = questionDes;
+                if (!rightAnswer) {
+                    common_ops.alert("至少选择一个正确答案");
+                    return;
+                }
+                sendData['rightAnswer'] = rightAnswer;
+                optionElement.each((index, item) => {
+                    if (!$(item).val()) {
+                        common_ops.alert("请填写完选项");
+                        return;
+                    }
+                    options.push($(item).val())
+                });
+                sendData['options'] = options;
+                console.log(questionType, relatedCourse, options, rightAnswer)
+            },
+            submitData:(data) => {
+                $.ajax({
+                    url:'',
+
+                })
+            }
+
+
+        };
+        $(function(){questionBank.init()});
+    </script>
+{% endblock %}

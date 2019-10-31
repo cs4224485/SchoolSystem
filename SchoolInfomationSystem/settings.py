@@ -135,7 +135,10 @@ STATIC_ROOT = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_VERSION': 'v1',  # 默认版本
     'ALLOWED_VERSIONS': ['v1', 'v2'],  # 允许的
-    'VERSION_PARAM': 'version'  # URL中获取值的key
+    'VERSION_PARAM': 'version',  # URL中获取值的key
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
 
 }
 
@@ -281,3 +284,15 @@ GRADE_MAP = {'1年级': 1, '2年级': 2, '3年级': 3,
              "初一": 7, "初二": 8, "初三": 9,
              "高一": 10, "高二": 11, "高三": 12,
              '小班': 13, '中班': 14}
+
+# CELERY配置
+CELERY_BROKER_URL = 'redis://172.16.123.203:6379/'  # Broker配置，使用Redis作为消息中间件
+CELERY_RESULT_BACKEND = 'redis://172.16.123.203:6379/'  # BACKEND配置，这里使用redis
+CELERY_RESULT_SERIALIZER = 'json'  # 结果序列化方案
+
+CELERY_IMPORTS = (  # 指定导入的任务模块,可以指定多个
+    'Django_apps.web.Celery_task.update_grade',
+)
+
+CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERY_ENABLE_UTC = True

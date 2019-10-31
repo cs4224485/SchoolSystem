@@ -211,118 +211,124 @@ class SchoolTimeTable(views.View):
         '''
         res = BaseResponse()
 
-        # try:
-        time_info = request.POST.get('timeInfo')
-        school_id = kwargs.get('school_id')
-        time_obj = sc_models.SchoolTimeRange.objects.filter(start_time=time_info, school_id=school_id).first()
-        week = request.POST.get('week')
-        # 课程表Id 如果存在表示需要更新不存在则创建
-        course_table_id = request.POST.get('courseTableId')
-        record_type = int(request.POST.get('type'))
-        table_query = sc_models.SchoolTimetable.objects
+        try:
+            time_info = request.POST.get('timeInfo')
+            school_id = kwargs.get('school_id')
+            time_obj = sc_models.SchoolTimeRange.objects.filter(start_time=time_info, school_id=school_id).first()
+            week = request.POST.get('week')
+            # 课程表Id 如果存在表示需要更新不存在则创建
+            course_table_id = request.POST.get('courseTableId')
+            record_type = int(request.POST.get('type'))
+            table_query = sc_models.SchoolTimetable.objects
 
-        if not time_obj:
-            res.msg = '请先设置时间'
-            return JsonResponse(res.get_dict)
-
-        # 代表添加的是普通的课程
-        if record_type == 0:
-            teacher_id = request.POST.get('teacherId')
-            course_id = request.POST.get('courseId')
-            class_id = request.POST.get('classId')
-            class_obj = sc_models.StuClass.objects.filter(id=class_id).first()
-            # 单双周信息
-            course_week = request.POST.get('singleDoubleWeek')
-            if not class_obj:
-                res.msg = '该班级不存在'
-                return JsonResponse(res.get_dict)
-            if teacher_id:
-                teacher_obj = tea_models.TeacherInfo.objects.filter(id=teacher_id).first()
-                if not teacher_obj:
-                    res.msg = '该教师已不存在, 请刷新页面'
-                    return JsonResponse(res.get_dict)
-            else:
-                teacher_obj = None
-            course_table_obj = table_query.filter(week=week, time_range=time_obj,
-                                                  stu_class=class_id)
-            if course_table_obj and not course_week and not course_table_id:
-                res.msg = "该时段课程已存在,请重新核对或选择单双周"
+            if not time_obj:
+                res.msg = '请先设置时间'
                 return JsonResponse(res.get_dict)
 
-            course_obj = sc_models.Course.objects.filter(id=course_id).first()
-            if not course_obj:
-                res.msg = '该课程已不存在, 请刷新页面'
-                return JsonResponse(res.get_dict)
-            save_dict = {
-                'stu_class_id': class_id,
-                'course': course_obj,
-                'week': week,
-                'school_id': school_id,
-                'time_range': time_obj,
-                'teacher': teacher_obj,
-                'single_double_week': course_week
-            }
-            if int(course_week) == 1:
-                filter_dic = {'time_range': time_obj, 'single_double_week__in': [2, 3]}
-                # 如果单周或双周改为每周 要把对应单元格另外的一个单双周数据删除
-                if course_table_id:
-                    table_query.filter(**filter_dic).exclude(id=course_table_id).delete()
-                else:
-                    table_query.filter(**filter_dic).delete()
-
-            else:
-                table_obj = table_query.filter(time_range=time_obj, single_double_week=course_week)
-                if table_obj:
-                    table_obj.delete()
-
-        # 代表添加的是其他事件
-        elif record_type == 1:
-            event_id = request.POST.get('event')
-            save_dict = {
-                'week': week,
-                'school_id': school_id,
-                'time_range': time_obj,
-                'other_event': int(event_id),
-                'info_type': 2
-            }
-        else:
-            raise Exception
-        if course_table_id:
-            obj = table_query.filter(id=course_table_id)
+            # 代表添加的是普通的课程
             if record_type == 0:
-                obj.update(info_type=1, other_event=None)
-            obj.update(**save_dict)
-            obj = obj.first()
-            res.msg = '修改成功'
-        else:
-            obj = table_query.create(**save_dict)
+                teacher_id = request.POST.get('teacherId')
+                course_id = request.POST.get('courseId')
+                class_id = request.POST.get('classId')
+                class_obj = sc_models.StuClass.objects.filter(id=class_id).first()
+                # 单双周信息
+                course_week = request.POST.get('singleDoubleWeek')
 
-        # 添加或修改成功后将需要的数据返回给前端
-        if obj:
-            if obj.info_type == 1:
-                result_data = {
-                    'table_id': obj.id,
-                    'course_id': obj.course.id,
-                    'course_name': obj.course.course_des,
-                    'teacher_id': obj.teacher.id if obj.teacher else '',
-                    'teacher_name': obj.teacher.last_name + obj.teacher.first_name if obj.teacher else '',
-                    'course_week': int(obj.single_double_week),
-                    'info_type': 0
+                if not class_obj:
+                    res.msg = '该班级不存在'
+                    return JsonResponse(res.get_dict)
+                if teacher_id:
+                    teacher_obj = tea_models.TeacherInfo.objects.filter(id=teacher_id).first()
+                    # 判断同一个时间点 如果老师在同时给不同班级上课表示有问题
+                    is_exist = table_query.filter(week=week, time_range=time_obj, teacher=teacher_obj).exists()
+                    if is_exist:
+                        res.msg = '同一位教师在同一时间段只能带一个班级，请重新确认'
+                        res.code = 500
+                        return JsonResponse(res.get_dict)
+                    if not teacher_obj:
+                        res.msg = '该教师已不存在, 请刷新页面'
+                        return JsonResponse(res.get_dict)
+                else:
+                    teacher_obj = None
+                course_table_obj = table_query.filter(week=week, time_range=time_obj,
+                                                      stu_class=class_id)
+                if course_table_obj and not course_week and not course_table_id:
+                    res.msg = "该时段课程已存在,请重新核对或选择单双周"
+                    return JsonResponse(res.get_dict)
+
+                course_obj = sc_models.Course.objects.filter(id=course_id).first()
+                if not course_obj:
+                    res.msg = '该课程已不存在, 请刷新页面'
+                    return JsonResponse(res.get_dict)
+                save_dict = {
+                    'stu_class_id': class_id,
+                    'course': course_obj,
+                    'week': week,
+                    'school_id': school_id,
+                    'time_range': time_obj,
+                    'teacher': teacher_obj,
+                    'single_double_week': course_week
+                }
+                if int(course_week) == 1:
+                    filter_dic = {'time_range': time_obj, 'single_double_week__in': [2, 3]}
+                    # 如果单周或双周改为每周 要把对应单元格另外的一个单双周数据删除
+                    if course_table_id:
+                        table_query.filter(**filter_dic).exclude(id=course_table_id).delete()
+                    else:
+                        table_query.filter(**filter_dic).delete()
+
+                else:
+                    table_obj = table_query.filter(time_range=time_obj, single_double_week=course_week)
+                    if table_obj:
+                        table_obj.delete()
+
+            # 代表添加的是其他事件
+            elif record_type == 1:
+                event_id = request.POST.get('event')
+                save_dict = {
+                    'week': week,
+                    'school_id': school_id,
+                    'time_range': time_obj,
+                    'other_event': int(event_id),
+                    'info_type': 2
                 }
             else:
-                result_data = {
-                    'table_id': obj.id,
-                    'event_id': obj.other_event,
-                    'event_name': obj.get_other_event_display(),
-                    'info_type': 1
-                }
-            res.msg = '添加成功'
-            res.data = result_data
-            res.state = True
-    # except Exception as e:
-    #     print(e)
-    #     res.msg = '添加失败'
+                raise Exception
+            if course_table_id:
+                obj = table_query.filter(id=course_table_id)
+                if record_type == 0:
+                    obj.update(info_type=1, other_event=None)
+                obj.update(**save_dict)
+                obj = obj.first()
+                res.msg = '修改成功'
+            else:
+                obj = table_query.create(**save_dict)
 
+            # 添加或修改成功后将需要的数据返回给前端
+            if obj:
+                if obj.info_type == 1:
+                    result_data = {
+                        'table_id': obj.id,
+                        'course_id': obj.course.id,
+                        'course_name': obj.course.course_des,
+                        'teacher_id': obj.teacher.id if obj.teacher else '',
+                        'teacher_name': obj.teacher.last_name + obj.teacher.first_name if obj.teacher else '',
+                        'course_week': int(obj.single_double_week),
+                        'info_type': 0
+                    }
+                else:
+                    result_data = {
+                        'table_id': obj.id,
+                        'event_id': obj.other_event,
+                        'event_name': obj.get_other_event_display(),
+                        'info_type': 1
+                    }
+                res.msg = '添加成功'
+                res.data = result_data
+                res.state = True
+        except Exception as e:
+            print(e)
+            res.msg = '添加失败'
         return JsonResponse(res.get_dict)
 
     def patch(self, request, *args, **kwargs):
