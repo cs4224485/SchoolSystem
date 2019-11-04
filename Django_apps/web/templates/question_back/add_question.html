@@ -236,6 +236,12 @@
             submitData:(data) => {
                 $.ajax({
                     url:'',
+                    type:'post',
+                    data:data,
+                    dataType:'json',
+                    success:function(res){
+
+                    }
 
                 })
             }

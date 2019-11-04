@@ -106,8 +106,9 @@ class StudentInfoViewSet(BaseViewSet):
                 return Response(self.message)
             birthday = info['birthday']
             request_data['gender'] = info['gender'][0]
+
         # 根据生日计算出生肖，年龄，星座，生肖
-        if birthday:
+        if birthday is None:
             y, m, d = birthday.split('-')
             constellations = get_constellation(int(m), int(d))
             ChineseZodiac = get_ChineseZodiac(int(y))

@@ -14,9 +14,10 @@ class QuestionBankConfig(StarkConfig):
                    Option('relate_course', is_choice=False)]
 
     def add_view(self, request, template='stark/change.html', *args, **kwargs):
-        # 课程列表
-        course_list = Course.objects.all()
-        # 题型
-        question_type = QuestionBank.question_type_choice
+        if request.method == 'GET':
+            # 课程列表
+            course_list = Course.objects.all()
+            # 题型
+            question_type = QuestionBank.question_type_choice
+            return render(request, 'question_back/add_question.html', {'courses': course_list, 'type': question_type})
 
-        return render(request, 'question_back/add_question.html', {'courses': course_list, 'type': question_type})

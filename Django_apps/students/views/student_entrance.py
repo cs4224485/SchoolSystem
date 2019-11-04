@@ -15,6 +15,11 @@ class StudentInfo(views.View):
     '''
 
     start_time = []
+    message = {
+        'state': False,
+        'msg': '',
+        'data': []
+    }
 
     def get(self, request, nid, *args, **kwargs):
         step = request.GET.get('step', 'start_page')
@@ -36,12 +41,6 @@ class StudentInfo(views.View):
         :param kwargs:
         :return:
         '''
-
-        self.message = {
-            'state': False,
-            'msg': '',
-            'data': []
-        }
 
         stu_name = request.POST.get('name')
         birthday = request.POST.get('birthday')

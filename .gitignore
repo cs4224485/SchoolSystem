@@ -114,3 +114,4 @@ wsgi.py
 settings_product.py
 settings_dev.py
 manage.py
+celery.py
