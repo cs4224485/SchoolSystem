@@ -201,4 +201,4 @@ class StudentInfo(views.View):
         sc_models.TableInfo.objects.get_or_create(defaults=create_dict, table=setting_obj, student_id=student_id)
 
         peroration = setting_obj.peroration
-        return render(request, 'entrance/table_finish.html', {'peroration': peroration})
+        return render(request, 'entrance/End.html', {'peroration': peroration})
