@@ -140,7 +140,6 @@ var common_ops = {
                     for (var i = 0; i < search_arr.length; i++) {
                         var temp = search_arr[i].split('=');
                         if (keys[j] === temp[0]) {
-                            console.log(keys[j], temp[0], '111');
                             url_arr.splice(search_arr[i]);
                         }
                     }

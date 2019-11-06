@@ -229,6 +229,7 @@ class StudentParents(models.Model):
     '''
     first_name = models.CharField(verbose_name='名', max_length=64, null=True, blank=True)
     last_name = models.CharField(verbose_name='姓', max_length=64, null=True, blank=True)
+    full_name = models.CharField(verbose_name="姓名", max_length=64, null=True, blank=True)
     birthday = models.DateField(verbose_name='生日', null=True, blank=True, default=None)
     telephone = models.CharField(verbose_name='联系电话', max_length=32, null=True, blank=True)
     education_choice = ((1, '博士'), (2, '硕士'), (3, '本科'), (4, '大专'), (5, '高中'), (6, '高中以下'), (7, '暂不知道'))

@@ -134,7 +134,7 @@
                         <span class="intro">设置选项</span>
                     </div>
                 </div>
-                <form class="layui-form" action="">
+                <form class="layui-form " id="options" action="">
                     <div class="keyList clear">
                         <div class="keyLeft">
                             <input type="radio" checked=checked class="radioOrCheck" name="single_choice" value="1">
@@ -161,6 +161,7 @@
                         </div>
                         <div class="keyRight keyRight1 ">
                             <input name="answer1" type="text" class="layui-input">
+                            <span class="delete-option">X</span>
                         </div>
 
                     </div>
@@ -170,11 +171,13 @@
                         </div>
                         <div class="keyRight keyRight1 ">
                             <input name="answer1" type="text" class="layui-input">
+                            <span class="delete-option">X</span>
                         </div>
                     </div>
                 </form>
                 <div class="addKeyBtn">
-                    <button type="button" class="layui-btn layui-btn-norma"><i class="layui-icon">&#xe654;</i>添加一个选项
+                    <button type="button" class="layui-btn layui-btn-norma" id="add-option">
+                        <i class="layui-icon">&#xe654;</i>添加一个选项
                     </button>
                 </div>
             </div>
@@ -191,26 +194,26 @@
         form = layui.form;
         questionBank = {
             init: function () {
-                this.saveAll()
-
+                this.saveAll();
+                this.deleteOption();
+                this.addOption();
             },
             saveAll: function () {
                 $('#saveAllBtn').click(() => {
                     this.crateData()
                 })
             },
-            crateData: () => {
-
+            crateData: function () {
                 // 构建需要提交的数据
                 let questionType = $("#type").val();
                 let relatedCourse = $("#course").val();
                 let questionDes = $("#des").val();
                 let optionElement = $("input[name=answer1]");
-                let options = [];
                 let rightAnswer = $("input[name=single_choice]:checked").val();
                 let sendData = {
                     "questionType": questionType,
                     "relatedCourse": relatedCourse,
+                    "options":[]
                 };
                 if (!questionDes) {
                     common_ops.alert("请输入题干");
@@ -228,26 +231,54 @@
                         common_ops.alert("请填写完选项");
                         return;
                     }
-                    options.push($(item).val())
+                    sendData['options'].push($(item).val())
                 });
-                sendData['options'] = options;
-                console.log(questionType, relatedCourse, options, rightAnswer)
+
+                this.submitData(sendData);
             },
-            submitData:(data) => {
+            submitData: function (sendData) {
+                console.log(sendData);
                 $.ajax({
-                    url:'',
-                    type:'post',
-                    data:data,
-                    dataType:'json',
-                    success:function(res){
+                    url: '',
+                    type: 'post',
+                    data: {sendData:JSON.stringify(sendData)},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code === 200) {
 
+                        }
                     }
-
+                })
+            },
+            deleteOption: () => {
+                // 删除一个选项
+                $('#options').on('click', '.delete-option', function () {
+                    $(this).parents('.keyList').remove()
+                })
+            },
+            addOption: () => {
+                // 添加一个选项
+                $('#add-option').click(function () {
+                    let total_len = $('#options').children('.keyList').length + 1;
+                    let html_text = `
+                        <div class="keyList clear">
+                            <div class="keyLeft">
+                                <input type="radio" name="single_choice" value="${total_len}">
+                            </div>
+                            <div class="keyRight keyRight1 ">
+                                <input name="answer1" type="text" class="layui-input">
+                                <span class="delete-option">X</span>
+                            </div>
+                        </div>
+                    `;
+                    $('#options').append(html_text)
                 })
             }
 
 
         };
-        $(function(){questionBank.init()});
+        $(function () {
+            questionBank.init()
+        });
     </script>
 {% endblock %}

@@ -6,6 +6,7 @@ __mtime__ = '2019/10/22'
 from stark.service.stark import StarkConfig, Option
 from django.shortcuts import render
 from school.models import Course, QuestionBank
+import json
 
 
 class QuestionBankConfig(StarkConfig):
@@ -21,3 +22,7 @@ class QuestionBankConfig(StarkConfig):
             question_type = QuestionBank.question_type_choice
             return render(request, 'question_back/add_question.html', {'courses': course_list, 'type': question_type})
 
+        data = json.loads(request.POST.get('sendData'))
+
+        print(data.get('options'))
+        print(data.get('questionDes'))

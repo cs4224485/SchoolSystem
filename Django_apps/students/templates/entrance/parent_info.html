@@ -36,24 +36,38 @@
     <div class="mui-input-group box_sizing" id="input_information">
         <ul class="mui-table-view">
             <li class="mui-table-view-cell mui-collapse mui-active find_li">
-            <button class="btnClose">×</button>
+                <button class="btnClose">×</button>
                 <a class="mui-navigate-right" href="#" data-name=""><span></span></a>
                 <div class="mui-collapse-content">
                     {% for fam_field in fam_field_list %}
                         {% if fam_field.fields__fieldName == '家长姓名' %}
+                            <!-- 与<div class="mui-input-row flex_center box_sizing">
+                                <label>中文姓{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}
+                                <span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %}
+                                 required{% endif %}" placeholder="请填写您的中文姓" name="last_name">
+                            </div>
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>中文名{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}
+                                <span>(选填)</span>{% endif %}：</label>
+                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %}
+                                 required{% endif %}" placeholder="请填写您的中文名" name="first_name">
+                            </div>
+                            -->
+                            <div class="mui-input-row flex_center box_sizing">
+                                <label>家长姓名{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="请填写您的中文姓" name="full_name">
+                            </div>
 
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>中文姓{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的中文姓" name="last_name">
-                            </div>
-                            <div class="mui-input-row flex_center box_sizing">
-                                <label>中文名{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的中文名" name="first_name">
-                            </div>
                         {% elif fam_field.fields__fieldName == '家长生日' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>生日{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear Birthday  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                <label>生日{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear Birthday  {% if fam_field.is_required == 1 %} required{% endif %}"
                                        data-options='{"type":"date","beginYear":"1940","endYear":""}'
                                        placeholder="请选择日期" name="birthday">
                                 <div class="right_pop flex_center">
@@ -62,8 +76,11 @@
                             </div>
                         {% elif fam_field.fields__fieldName == '学历' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>最高学历{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear visionType  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请选择最高学历" name='0'
+                                <label>最高学历{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear visionType  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="请选择最高学历" name='0'
                                        readonly="readonly">
                                 <div class="right_pop flex_center">
                                     <span class="mui-icon mui-icon-arrowright"></span>
@@ -72,32 +89,47 @@
 
                         {% elif fam_field.fields__fieldName == '工作单位' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>工作单位{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的工作单位" name="company">
+                                <label>工作单位{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="请填写您的工作单位" name="company">
                             </div>
 
                         {% elif fam_field.fields__fieldName == '职业' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>当前职业{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的当前职业" name="occupation">
+                                <label>当前职业{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="请填写您的当前职业" name="occupation">
                             </div>
 
                         {% elif fam_field.fields__fieldName == '职务' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>当前职务{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="请填写您的当前职务" name="job">
+                                <label>当前职务{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="请填写您的当前职务" name="job">
                             </div>
 
                         {% elif  fam_field.fields__fieldName == '家长微信' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>微信号{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="wechat">
+                                <label>微信号{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="选填写" name="wechat">
                             </div>
 
                         {% elif  fam_field.fields__fieldName == '家长电话' %}
                             <div class="mui-input-row flex_center box_sizing">
-                                <label>电话{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else%}<span>(选填)</span>{% endif %}：</label>
-                                <input type="text" class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}" placeholder="选填写" name="telephone">
+                                <label>电话{% if fam_field.is_required == 1 %}<span>(必填)</span>{% else %}
+                                    <span>(选填)</span>{% endif %}：</label>
+                                <input type="text"
+                                       class="mui-input-clear  {% if fam_field.is_required == 1 %} required{% endif %}"
+                                       placeholder="选填写" name="telephone">
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -131,11 +163,12 @@
     <div class="flex_center">
         <div class="body box_sizing" style="position: relative;">
             <ul class="mui-table-view mui-table-view-radio">
-                 <li class="mui-table-view-cell">
+                <li class="mui-table-view-cell">
                     <a class="mui-navigate-right ">
                         父亲
                     </a>
-                </li> <li class="mui-table-view-cell">
+                </li>
+                <li class="mui-table-view-cell">
                     <a class="mui-navigate-right ">
                         母亲
                     </a>
@@ -208,7 +241,19 @@
         font-weight: 666;
         font-size: 30px;
     }
-.btnClose{ position: absolute;top:10px; left: 10px; z-index: 9; width: 20px; height: 20px; border-radius: 50%; border:1px solid #007AFF; padding: 0; color: #f00;}
+
+    .btnClose {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 9;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1px solid #007AFF;
+        padding: 0;
+        color: #f00;
+    }
 
 </style>
 <script type="text/javascript" src="{% static 'pub/js/jQuery1.9.js' %}"></script>

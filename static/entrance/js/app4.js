@@ -170,13 +170,11 @@ mui("#input_information").on('tap', '.Submission', function () {
                     relation = 5
                     break;
                 case "外婆":
-                    education = $(".visionType").eq(e).attr("name")
+                    education = $(".visionType").eq(e).attr("name");
                     relation = 6
                     break;
                 default:
-
             }
-
             if (is_main_contact == "0") {
                 is_contact = true
 
@@ -184,8 +182,9 @@ mui("#input_information").on('tap', '.Submission', function () {
                 is_contact = false
             }
             obj[obj_name] = {
-                "last_name": $("input[name='last_name']").eq(e).val() || '', //姓
-                "first_name": $("input[name='first_name']").eq(e).val() || '', //名
+                // "last_name": $("input[name='last_name']").eq(e).val() || '', //姓
+                // "first_name": $("input[name='first_name']").eq(e).val() || '', //名
+                "full_name": $("input[name='full_name']").eq(e).val() || '',
                 "birthday": $("input[name='birthday']").eq(e).val() || '1900-01-01', //生日
                 "telephone": $("input[name='telephone']").eq(e).val() || "", //联系电话
                 "education": parseInt(education) || 7,  		//最高学历
@@ -266,7 +265,7 @@ document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener(
             check = true;
         });
     }
-    add_radio_num++
+    add_radio_num++;
     let radio_name = "add_radio" + add_radio_num;
     if (check) {
         $(".pop_Choice").hide();

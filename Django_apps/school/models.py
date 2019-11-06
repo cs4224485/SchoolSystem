@@ -25,7 +25,7 @@ class SchoolInfo(models.Model):
     pattern = models.FileField(verbose_name='学校图案', upload_to='school/pattern/', default='school/logo/default.png',
                                null=True)
     website = models.URLField(verbose_name='学校官网', max_length=128, null=True)
-    school_type_choice = (('1', '公立'), ('2', '民办'))
+    school_type_choice = (('1', '公立'), ('2', '民办'), ('3', '培训机构'))
     school_type = models.CharField(verbose_name='学校类型', choices=school_type_choice, default=None, null=True, blank=True,
                                    max_length=4)
     school_layer_choice = ((1, '幼儿园'), (2, '小学'), (3, '初中'), (4, '高中阶段'), (5, '九年一惯制'), (6, '中等职业学校'), (7, '十二年一贯制'))
