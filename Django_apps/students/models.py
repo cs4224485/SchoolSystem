@@ -241,7 +241,8 @@ class StudentParents(models.Model):
     occupation = models.CharField(verbose_name='职业', max_length=32, null=True, blank=True)
 
     def __str__(self):
-        return self.first_name + self.last_name
+        parent_name = self.full_name if self.full_name else self.last_name + self.first_name
+        return parent_name
 
     class Meta:
         db_table = 'StudentParents'
