@@ -263,7 +263,10 @@ class StudentToParents(models.Model):
     is_main_contact = models.BooleanField(verbose_name='是否为主要接送人', null=True, blank=True)
 
     def __str__(self):
-        parent_name = self.parents.full_name if self.parents.full_name else ''
+        parent = self.parents
+        parent_name = ''
+        if parent:
+            parent_name = parent.full_name if parent.full_name else ''
         if self.parents:
             return "学生：%s 家长：%s" % (self.student.full_name, parent_name)
         else:
