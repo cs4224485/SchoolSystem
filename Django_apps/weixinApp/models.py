@@ -16,7 +16,7 @@ class WechatUserInfo(models.Model):
     updated_time = models.DateField(verbose_name="更新时间", null=True, blank=True)
     create_time = models.DateField(verbose_name='创建时间', auto_now=True)
     user_type_choice = ((1, '家长'), (2, '老师'), (3, '学生'))
-    user_type = models.SmallIntegerField(verbose_name='用户类型', choices=user_type_choice)
+    user_type = models.SmallIntegerField(verbose_name='用户类型', choices=user_type_choice, null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -71,7 +71,7 @@ class IndexNotification(models.Model):
     '''
 
     create_time = models.DateTimeField(auto_now=True, verbose_name='创建时间')
-    event_choice = ((1, '家访'), (2, '徽章'), (3, '报表'), (4, '作业'))
+    event_choice = ((1, '家访'), (2, '徽章'), (3, '报表'), (4, '作业'), (5, '通知'))
     event = models.PositiveSmallIntegerField(verbose_name='事件类型', choices=event_choice)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -164,3 +164,21 @@ class IssuedRecord(models.Model):
 
     class Meta:
         db_table = 'IssuedRecord'
+
+
+class SchoolNotification(models.Model):
+    '''学校通知'''
+
+    title = models.CharField(verbose_name='名称', max_length=32)
+    content = models.CharField(verbose_name='内容描述', max_length=255)
+    note_type_choice = ((1, '每日学科'), (2, '重要通知'), (3, '情况说明'))
+    note_type = models.SmallIntegerField(choices=note_type_choice)
+    photo = models.FileField(upload_to='school/notify/', verbose_name='照片', null=True, blank=True)
+    associate_class = models.ManyToManyField(to='school.StuClass', verbose_name='关联班级')
+    create_user = models.ForeignKey(to='WechatUserInfo', verbose_name='发布人', on_delete=models.CASCADE, related_name='notify')
+    create_time = models.DateTimeField(auto_now=True)
+
+
+class BrowseOfNotification(models.Model):
+    '''通知浏览记录'''
+    read_time = models.DateTimeField(verbose_name='查看时间', auto_now=True)

@@ -411,6 +411,7 @@ class StarkConfig(object):
         return redirect(origin_list_url)
 
     def search_condition(self, request):
+        '''构造搜索条件'''
         search_list = self.get_search_list()
         keyword = request.GET.get('q', '')
         conn = Q()
@@ -421,7 +422,7 @@ class StarkConfig(object):
         return search_list, keyword, conn
 
     def reverse_list_url(self, *args, **kwargs):
-
+        '''反向生成列表页URL'''
         namespace = self.site.namespace
         name = '%s:%s' % (namespace, self.get_list_url_name)
         list_url = reverse(name, args=args, kwargs=kwargs)
@@ -497,6 +498,7 @@ class StarkConfig(object):
         return mark_safe('<a href="%s" class="btn btn-success">添加</a>' % self.reverse_add_url())
 
     def get_order_by(self):
+        '''排序'''
         return self.order_by
 
     def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
