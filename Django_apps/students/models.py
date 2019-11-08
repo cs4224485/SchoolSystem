@@ -241,7 +241,7 @@ class StudentParents(models.Model):
     occupation = models.CharField(verbose_name='职业', max_length=32, null=True, blank=True)
 
     def __str__(self):
-        parent_name = self.full_name if self.full_name else self.last_name + self.first_name
+        parent_name = self.full_name if self.full_name else ''
         return parent_name
 
     class Meta:
@@ -263,7 +263,7 @@ class StudentToParents(models.Model):
     is_main_contact = models.BooleanField(verbose_name='是否为主要接送人', null=True, blank=True)
 
     def __str__(self):
-        parent_name = self.parents.full_name if self.parents.full_name else self.parents.last_name + self.parents.first_name
+        parent_name = self.parents.full_name if self.parents.full_name else ''
         if self.parents:
             return "学生：%s 家长：%s" % (self.student.full_name, parent_name)
         else:
