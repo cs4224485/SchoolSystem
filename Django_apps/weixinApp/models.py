@@ -193,3 +193,6 @@ class BrowseOfNotification(models.Model):
     read_notify = models.ForeignKey(verbose_name='阅读消息', to='SchoolNotification', on_delete=models.CASCADE)
     read_user = models.ForeignKey(verbose_name='阅读用户', to='WechatUserInfo', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = "BrowseOfNotification"
+        unique_together = (('read_time', 'read_notify', 'read_user'),)
