@@ -175,10 +175,21 @@ class SchoolNotification(models.Model):
     note_type = models.SmallIntegerField(choices=note_type_choice)
     photo = models.FileField(upload_to='school/notify/', verbose_name='照片', null=True, blank=True)
     associate_class = models.ManyToManyField(to='school.StuClass', verbose_name='关联班级')
-    create_user = models.ForeignKey(to='WechatUserInfo', verbose_name='发布人', on_delete=models.CASCADE, related_name='notify')
+    create_user = models.ForeignKey(to='WechatUserInfo', verbose_name='发布人', on_delete=models.CASCADE,
+                                    related_name='notify')
     create_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'SchoolNotification'
+        unique_together = (('create_user', 'title', 'content'),)
+
+    def __str__(self):
+        return self.title
 
 
 class BrowseOfNotification(models.Model):
     '''通知浏览记录'''
     read_time = models.DateTimeField(verbose_name='查看时间', auto_now=True)
+    read_notify = models.ForeignKey(verbose_name='阅读消息', to='SchoolNotification', on_delete=models.CASCADE)
+    read_user = models.ForeignKey(verbose_name='阅读用户', to='WechatUserInfo', on_delete=models.CASCADE)
+
