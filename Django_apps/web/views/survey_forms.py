@@ -115,7 +115,7 @@ class TableSettingsConfig(StarkConfig):
                         address = home.province + home.city + home.region + home.address
                         student_data_row.append(address)
                     if field == '家长姓名':
-                        student_data_row.append(parent.last_name + parent.first_name)
+                        student_data_row.append(parent.full_name)
                     if field == '职业':
                         student_data_row.append(parent.occupation)
                     if field == "家长电话":
