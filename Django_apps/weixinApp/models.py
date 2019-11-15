@@ -208,10 +208,10 @@ class AskForLeave(models.Model):
     begin_time = models.DateTimeField(verbose_name='开始时间')
     end_time = models.DateTimeField(verbose_name='结束时间')
     applicant = models.ForeignKey(verbose_name='申请人', to='WechatUserInfo', on_delete=models.CASCADE)
-    detail = models.TextField(verbose_name='请假详情', max_length=255)
+    detail = models.TextField(verbose_name='请假详情', max_length=255, default=1111)
     create_time = models.DateTimeField(verbose_name='创建日期', auto_now=True)
     notification = GenericRelation(to='IndexNotification')
-    
+
     class Meta:
         db_table = "AskForLeave"
         unique_together = (('begin_time', 'end_time', 'student'), )
