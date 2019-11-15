@@ -55,7 +55,7 @@ class StudentInfo(models.Model):
 
     class Meta:
         db_table = 'StudentInfo'
-        unique_together = (('full_name', 'student_id', 'grade'),)
+        unique_together = (('full_name', 'student_id', 'grade', "stu_class"),)
 
 
 class GraduatedStudent(models.Model):

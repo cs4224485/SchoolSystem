@@ -81,8 +81,7 @@ class TableSettingsConfig(StarkConfig):
         form_id = kwargs.get("pk")
         fields_queryset = models.SettingToField.objects.filter(setting_id=form_id). \
             values('fields__fieldName',
-                   'fields__field_english').all().order_by(
-            'order')
+                   'fields__field_english').all().order_by('order')
         school_range = models.TableSettings.objects.filter(id=form_id).values_list('school_range')
         school_range = [item[0] for item in school_range]
         # 表的字段
@@ -90,11 +89,11 @@ class TableSettingsConfig(StarkConfig):
         field_name_list = [item['fields__fieldName'] for item in fields_queryset]
         fields.extend(field_name_list)
         student_queryset = StudentInfo.objects.filter(school_id__in=school_range, for_student__isnull=False).order_by(
-            'stu_class', 'grade')
+            'stu_class', 'grade').distinct()
         data_list = []
         for student in student_queryset:
             grade = student.grade.get_grade_name_display()
-            _class = student.stu_class.name
+            _class = student.stu_class.name if student.stu_class else ''
             student_data_row = [grade, _class, student.country.country_name, student.full_name]
             health_info = HealthInfo.objects.filter(student_id=student.id).first()
             health_record = HealthRecord.objects.filter(health_info=health_info).order_by("record_date").first()
@@ -125,7 +124,7 @@ class TableSettingsConfig(StarkConfig):
                     continue
 
             # 学生量表填写情况
-            stu_scale = ScaleQuestion.objects.filter(student=student).all()
+            stu_scale = ScaleQuestion.objects.filter(student=student, scale__setting_table_id=form_id).all()
             for per_scale in stu_scale:
                 for item in per_scale.scale_value.select_related():
                     # print(item.value.des)
@@ -135,7 +134,8 @@ class TableSettingsConfig(StarkConfig):
                         fields.append(line_title)
                     student_data_row.append(line_value)
             # 学生填写单选多选情况
-            choice_question_queryset = ChoiceQuestion.objects.filter(student=student).all()
+            choice_question_queryset = ChoiceQuestion.objects.filter(student=student,
+                                                                     choice_table__setting_table_id=form_id).all()
             for item in choice_question_queryset:
                 choices = item.values.all()
                 title = item.choice_table.title
