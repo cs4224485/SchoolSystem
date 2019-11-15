@@ -124,7 +124,7 @@ class TableSettingsConfig(StarkConfig):
                     continue
 
             # 学生量表填写情况
-            stu_scale = ScaleQuestion.objects.filter(student=student, scale__setting_table_id=form_id).all()
+            stu_scale = ScaleQuestion.objects.filter(student=student, scale__setting_table_id=form_id).all().distinct()
             for per_scale in stu_scale:
                 for item in per_scale.scale_value.select_related():
                     # print(item.value.des)
@@ -135,7 +135,7 @@ class TableSettingsConfig(StarkConfig):
                     student_data_row.append(line_value)
             # 学生填写单选多选情况
             choice_question_queryset = ChoiceQuestion.objects.filter(student=student,
-                                                                     choice_table__setting_table_id=form_id).all()
+                                                                     choice_table__setting_table_id=form_id).all().distinct()
             for item in choice_question_queryset:
                 choices = item.values.all()
                 title = item.choice_table.title
