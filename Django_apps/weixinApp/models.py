@@ -178,6 +178,7 @@ class SchoolNotification(models.Model):
     create_user = models.ForeignKey(to='WechatUserInfo', verbose_name='发布人', on_delete=models.CASCADE,
                                     related_name='notify')
     create_time = models.DateTimeField(auto_now=True)
+    notification = GenericRelation(to='IndexNotification')
 
     class Meta:
         db_table = 'SchoolNotification'
@@ -196,3 +197,19 @@ class BrowseOfNotification(models.Model):
     class Meta:
         db_table = "BrowseOfNotification"
         unique_together = (('read_time', 'read_notify', 'read_user'),)
+
+
+class AskForLeave(models.Model):
+    '''请假表'''
+
+    student = models.ForeignKey(verbose_name='请求学生', to='students.StudentInfo', on_delete=models.CASCADE)
+    reason_choice = ((1, '事假'), (2, '病假'), (3, "其他原因"))
+    reason = models.PositiveSmallIntegerField(choices=reason_choice, verbose_name='请假事由')
+    begin_time = models.DateTimeField(verbose_name='开始时间')
+    end_time = models.DateTimeField(verbose_name='结束时间')
+    applicant = models.ForeignKey(verbose_name='申请人', to='WechatUserInfo', on_delete=models.CASCADE)
+    create_time = models.DateTimeField(verbose_name='创建日期', auto_now=True)
+
+    class Meta:
+        db_table = "AskForLeave"
+        unique_together = (('begin_time', 'end_time', 'student'), )
